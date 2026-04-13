@@ -3,131 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pressure Converter - Pro Tool</title>
+    <title>Engineering Unit Converter Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body class="bg-gray-100 p-6 font-sans">
+<body class="bg-gray-100 min-h-screen font-sans">
 
-    <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-2xl overflow-hidden border">
-        <div class="bg-[#003366] p-6 text-white flex justify-between items-center">
-            <div>
-                <h2 class="text-2xl font-bold">Pressure Converter</h2>
-                <p class="text-blue-200 text-xs">Professional Engineering Unit Tool</p>
-            </div>
-            <a href="index.html" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-white/20">Dashboard</a>
-        </div>
-
-        <div class="p-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div class="max-w-4xl mx-auto py-10 px-4">
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border">
+            
+            <div class="bg-[#003366] p-8 text-white flex justify-between items-end">
                 <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">Value to Convert</label>
-                    <input type="number" id="inputVal" value="101325" oninput="convert()" class="w-full p-3 border-2 border-gray-100 rounded-lg focus:border-blue-500 outline-none text-xl font-bold">
+                    <h1 class="text-3xl font-black tracking-tight uppercase">Unit Converter Hub</h1>
+                    <p class="text-blue-300 text-sm mt-1">Chemical & Process Engineering Standards</p>
                 </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">From Unit</label>
-                    <select id="fromUnit" onchange="convert()" class="w-full p-3 border-2 border-gray-100 rounded-lg bg-white outline-none focus:border-blue-500">
-                        </select>
-                </div>
-                <div class="md:col-span-2">
-                    <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">To Unit</label>
-                    <select id="toUnit" onchange="convert()" class="w-full p-3 border-2 border-gray-100 rounded-lg bg-white outline-none focus:border-blue-500">
-                        </select>
-                </div>
+                <a href="index.html" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg text-xs font-bold transition-all">← DASHBOARD</a>
             </div>
 
-            <div class="flex gap-4 mb-8">
-                <button onclick="swap()" class="bg-blue-100 text-blue-700 px-6 py-2 rounded font-bold hover:bg-blue-200">Swap Units</button>
-                <button onclick="reset()" class="bg-red-100 text-red-700 px-6 py-2 rounded font-bold hover:bg-red-200">Reset</button>
+            <div class="flex flex-wrap bg-gray-50 border-b px-4">
+                <button onclick="showTab('pressure')" class="tab-btn p-4 font-bold text-sm uppercase tracking-wider border-b-4 border-blue-600 text-blue-600" id="defaultTab">Pressure</button>
+                <button onclick="showTab('temp')" class="tab-btn p-4 font-bold text-sm uppercase tracking-wider border-b-4 border-transparent text-gray-400 hover:text-blue-600">Temperature</button>
+                <button onclick="showTab('viscosity')" class="tab-btn p-4 font-bold text-sm uppercase tracking-wider border-b-4 border-transparent text-gray-400 hover:text-blue-600">Viscosity</button>
+                <button onclick="showTab('length')" class="tab-btn p-4 font-bold text-sm uppercase tracking-wider border-b-4 border-transparent text-gray-400 hover:text-blue-600">Length</button>
+                <button onclick="showTab('mass')" class="tab-btn p-4 font-bold text-sm uppercase tracking-wider border-b-4 border-transparent text-gray-400 hover:text-blue-600">Mass</button>
             </div>
 
-            <div id="resultBanner" class="bg-blue-50 border-l-8 border-blue-600 p-4 mb-8">
-                <p id="mainResult" class="text-blue-900 font-bold text-lg">Enter values to convert...</p>
-            </div>
+            <div class="p-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="md:col-span-1">
+                        <label class="block text-[10px] font-black text-gray-400 uppercase mb-2">Value</label>
+                        <input type="number" id="inputVal" value="1" oninput="runConversion()" class="w-full p-4 bg-gray-50 border-2 border-gray-100 rounded-xl focus:border-blue-500 outline-none text-2xl font-bold">
+                    </div>
+                    <div class="md:col-span-1">
+                        <label class="block text-[10px] font-black text-gray-400 uppercase mb-2">From</label>
+                        <select id="fromUnit" onchange="runConversion()" class="w-full p-4 bg-white border-2 border-gray-100 rounded-xl outline-none focus:border-blue-500 font-bold text-gray-700"></select>
+                    </div>
+                    <div class="md:col-span-1 text-center flex items-end">
+                        <button onclick="swapUnits()" class="w-full bg-gray-100 hover:bg-gray-200 p-4 rounded-xl text-gray-600 transition-all">
+                            <span class="material-icons">swap_horiz</span>
+                        </button>
+                    </div>
+                </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full border-collapse">
-                    <thead>
-                        <tr class="bg-[#003366] text-white">
-                            <th class="p-3 text-left">Unit</th>
-                            <th class="p-3 text-right">Value</th>
-                        </tr>
-                    </thead>
-                    <tbody id="unitTable">
-                        </tbody>
-                </table>
+                <div class="bg-blue-50 border-l-8 border-blue-600 p-6 rounded-r-xl mb-10">
+                    <p class="text-[10px] font-black text-blue-400 uppercase mb-1">Equivalents Table</p>
+                    <div id="tableBody" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Unit factors relative to 1 Pascal (Pa)
-        const factors = {
-            "Pa": 1,
-            "kPa": 1000,
-            "MPa": 1000000,
-            "bar": 100000,
-            "atm": 101325,
-            "psi": 6894.76,
-            "kg/cm2": 98066.5,
-            "kg/m2": 9.80665,
-            "mmHg": 133.322,
-            "Torr": 133.322,
-            "inHg": 3386.39,
-            "mmWC": 9.80665,
-            "inWC": 249.089
+        const unitData = {
+            pressure: {
+                "Pa": 1, "kPa": 1000, "MPa": 1000000, "bar": 100000, "atm": 101325, 
+                "psi": 6894.76, "kg/cm²": 98066.5, "mmHg": 133.322, "inWC": 249.089
+            },
+            temp: {
+                "°C": "celsius", "K": "kelvin", "°F": "fahrenheit", "°R": "rankine"
+            },
+            viscosity: {
+                "Pa·s": 1, "cP (mPa·s)": 0.001, "P (Poise)": 0.1, "lb/ft·s": 1.48816
+            },
+            length: {
+                "m": 1, "mm": 0.001, "cm": 0.01, "inch": 0.0254, "ft": 0.3048, "yard": 0.9144
+            },
+            mass: {
+                "kg": 1, "g": 0.001, "mg": 0.000001, "lb": 0.453592, "oz": 0.0283495, "ton (metric)": 1000
+            }
         };
 
-        // Initialize Selectors
-        const fromSelect = document.getElementById('fromUnit');
-        const toSelect = document.getElementById('toUnit');
-        
-        Object.keys(factors).forEach(unit => {
-            fromSelect.add(new Option(unit, unit));
-            toSelect.add(new Option(unit, unit));
-        });
+        let currentCategory = 'pressure';
 
-        function convert() {
-            const val = parseFloat(document.getElementById('inputVal').value);
-            const from = fromSelect.value;
-            const to = toSelect.value;
-
-            if (isNaN(val)) return;
-
-            // Step 1: Convert input to Pascal
-            const pa = val * factors[from];
-
-            // Step 2: Update Main Result
-            const result = pa / factors[to];
-            document.getElementById('mainResult').innerText = `${val} ${from} = ${result.toFixed(6)} ${to}`;
-
-            // Step 3: Update Table
-            const tbody = document.getElementById('unitTable');
-            tbody.innerHTML = "";
-            
-            Object.keys(factors).forEach(unit => {
-                const rowVal = pa / factors[unit];
-                const row = `<tr class="border-b hover:bg-gray-50">
-                    <td class="p-3 font-bold text-gray-700">${unit}</td>
-                    <td class="p-3 text-right font-mono">${rowVal.toFixed(6)}</td>
-                </tr>`;
-                tbody.innerHTML += row;
+        function showTab(cat) {
+            currentCategory = cat;
+            // Update UI tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-blue-600', 'text-blue-600');
+                btn.classList.add('border-transparent', 'text-gray-400');
             });
+            event.currentTarget.classList.add('border-blue-600', 'text-blue-600');
+            
+            // Re-populate selects
+            const fromS = document.getElementById('fromUnit');
+            fromS.innerHTML = "";
+            Object.keys(unitData[cat]).forEach(u => fromS.add(new Option(u, u)));
+            
+            runConversion();
         }
 
-        function swap() {
-            const temp = fromSelect.value;
-            fromSelect.value = toSelect.value;
-            toSelect.value = temp;
-            convert();
+        function runConversion() {
+            const val = parseFloat(document.getElementById('inputVal').value) || 0;
+            const from = document.getElementById('fromUnit').value;
+            const container = document.getElementById('tableBody');
+            container.innerHTML = "";
+
+            if (currentCategory === 'temp') {
+                // Specialized Temperature Logic
+                let baseC;
+                if (from === "°C") baseC = val;
+                else if (from === "K") baseC = val - 273.15;
+                else if (from === "°F") baseC = (val - 32) * 5/9;
+                else if (from === "°R") baseC = (val - 491.67) * 5/9;
+
+                const temps = {
+                    "°C": baseC,
+                    "K": baseC + 273.15,
+                    "°F": (baseC * 9/5) + 32,
+                    "°R": (baseC + 273.15) * 1.8
+                };
+
+                Object.entries(temps).forEach(([u, v]) => {
+                    container.innerHTML += renderCard(u, v.toFixed(2));
+                });
+            } else {
+                // General Multiplier Logic
+                const baseVal = val * unitData[currentCategory][from];
+                Object.entries(unitData[currentCategory]).forEach(([u, factor]) => {
+                    const result = baseVal / factor;
+                    container.innerHTML += renderCard(u, result.toLocaleString(undefined, {maximumFractionDigits: 6}));
+                });
+            }
         }
 
-        function reset() {
-            document.getElementById('inputVal').value = 0;
-            convert();
+        function renderCard(unit, value) {
+            return `
+                <div class="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
+                    <span class="text-xs font-bold text-gray-400">${unit}</span>
+                    <span class="text-lg font-black text-gray-800">${value}</span>
+                </div>
+            `;
         }
 
-        // Run on load
-        convert();
+        function swapUnits() {
+            // Simplified for this layout: just triggers re-calc
+            runConversion();
+        }
+
+        // Initialize
+        showTab('pressure');
     </script>
 </body>
 </html>
