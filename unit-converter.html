@@ -56,30 +56,36 @@
 
             <div class="space-y-4">
                 <div>
-                    <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
+                    <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
                         <div class="flex items-center">
                             <span class="material-icons text-blue-500 mr-3 text-sm">water_drop</span>
-                            <span class="text-[10px] font-black uppercase tracking-[0.2em]">Fluid Mechanics</span>
+                            <span class="text-sm font-bold">Fluid Mechanics</span>
                         </div>
                         <span class="material-icons text-sm transition-transform" id="fluid-arrow">expand_more</span>
                     </button>
                     <div id="fluid-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
                         <a href="reynolds.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Reynolds Number</a>
-                        <a href="pressure-drop.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Pressure Drop</a>
+                        <a href="pressure-drop.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Pressure & Head</a>
                     </div>
                 </div>
 
                 <div>
-                    <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
+                    <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
                         <div class="flex items-center">
                             <span class="material-icons text-orange-500 mr-3 text-sm">sync_alt</span>
-                            <span class="text-[10px] font-black uppercase tracking-[0.2em]">Utility</span>
+                            <span class="text-sm font-bold">Unit Converter</span>
                         </div>
                         <span class="material-icons text-sm transition-transform" id="unit-arrow">expand_more</span>
                     </button>
                     <div id="unit-menu" class="submenu pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
-                        <a href="unit-converter.html" class="block text-xs text-blue-400 font-bold py-2 border-l-2 border-blue-400 pl-2">Unit Converter</a>
+                        <a href="unit-converter.html" class="block text-xs text-blue-400 font-bold py-2 border-l-2 border-blue-400 pl-2">Main Hub</a>
                     </div>
+                </div>
+
+                <div class="flex items-center p-3 text-slate-600 cursor-not-allowed opacity-40">
+                    <span class="material-icons mr-3 text-sm">thermostat</span>
+                    <span class="text-sm font-bold">Heat Transfer</span>
+                    <span class="material-icons text-xs ml-auto">lock</span>
                 </div>
             </div>
         </nav>
