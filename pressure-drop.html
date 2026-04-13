@@ -43,10 +43,10 @@
 
             <div class="space-y-4">
                 <div>
-                    <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
+                    <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
                         <div class="flex items-center">
-                            <span class="material-icons text-blue-500 mr-3">water_drop</span>
-                            <span class="text-[10px] font-black uppercase tracking-[0.2em]">Fluid Mechanics</span>
+                            <span class="material-icons text-blue-500 mr-3 text-sm">water_drop</span>
+                            <span class="text-sm font-bold">Fluid Mechanics</span>
                         </div>
                         <span class="material-icons text-sm transition-transform" id="fluid-arrow">expand_more</span>
                     </button>
@@ -57,16 +57,22 @@
                 </div>
 
                 <div>
-                    <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
+                    <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
                         <div class="flex items-center">
-                            <span class="material-icons text-orange-500 mr-3">sync_alt</span>
-                            <span class="text-[10px] font-black uppercase tracking-[0.2em]">Utility</span>
+                            <span class="material-icons text-orange-500 mr-3 text-sm">sync_alt</span>
+                            <span class="text-sm font-bold">Unit Converter</span>
                         </div>
                         <span class="material-icons text-sm transition-transform" id="unit-arrow">expand_more</span>
                     </button>
                     <div id="unit-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
-                        <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-2 font-bold transition-all">Unit Converter</a>
+                        <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Main Hub</a>
                     </div>
+                </div>
+
+                <div class="flex items-center p-3 text-slate-600 cursor-not-allowed opacity-40">
+                    <span class="material-icons mr-3 text-sm">thermostat</span>
+                    <span class="text-sm font-bold">Heat Transfer</span>
+                    <span class="material-icons text-xs ml-auto">lock</span>
                 </div>
             </div>
         </nav>
@@ -79,7 +85,7 @@
             <div class="h-2 bg-green-600"></div>
             <div class="p-10">
                 <div class="mb-4">
-                    <a href="fluid-mechanics.html" class="text-[#059669] text-sm font-medium hover:underline flex items-center transition-all">
+                    <a href="index.html" class="text-[#059669] text-sm font-medium hover:underline flex items-center transition-all">
                         <span class="mr-1">←</span> Back to Fluid Tools
                     </a>
                 </div>
@@ -162,6 +168,12 @@
             document.getElementById('dpVal').innerText = Math.round(dp).toLocaleString();
             document.getElementById('hlVal').innerText = hl.toFixed(3);
         }
+
+        window.onload = () => {
+            // Keep Fluid menu expanded by default on this page
+            const arrow = document.getElementById('fluid-arrow');
+            arrow.style.transform = 'rotate(180deg)';
+        };
     </script>
 </body>
 </html>
