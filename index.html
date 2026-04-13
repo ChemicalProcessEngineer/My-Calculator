@@ -3,107 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Process Design Pro | Engineering Suite</title>
+    <title>Process Pro | Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        .sidebar-link:hover { background: rgba(255, 255, 255, 0.1); }
-        .submenu { display: none; }
-        .submenu.active { display: block; }
-        .rotate-icon { transition: transform 0.3s; }
-        .rotate-icon.active { transform: rotate(180deg); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        
+        .sidebar-item:hover { background: rgba(255, 255, 255, 0.05); }
+        .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .submenu.open { max-height: 200px; }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .glass-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
     </style>
 </head>
-<body class="bg-slate-50 flex min-h-screen font-sans">
+<body class="flex min-h-screen">
 
-    <aside class="w-72 bg-[#001f3f] text-white flex flex-col fixed h-full shadow-2xl">
-        <div class="p-8 border-b border-white/10">
+    <aside class="w-72 bg-[#0a192f] text-white flex flex-col fixed h-full shadow-2xl z-50">
+        <div class="p-8 border-b border-white/5">
             <h1 class="text-xl font-black tracking-tighter uppercase text-blue-400">Process Pro</h1>
-            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Chemical Suite</p>
+            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Engineering Suite</p>
         </div>
 
-        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
-            
+        <nav class="flex-1 p-4 space-y-2">
             <div>
-                <button onclick="toggleSub('fluid-sub', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl sidebar-link transition-all">
+                <button onclick="toggleMenu('fluid-menu')" class="w-full flex justify-between items-center p-3 rounded-xl sidebar-item transition-all">
                     <div class="flex items-center">
-                        <span class="material-icons text-blue-400 mr-3">water_drop</span>
-                        <span class="font-bold text-sm">Fluid Mechanics</span>
+                        <span class="material-icons text-blue-500 mr-3">water_drop</span>
+                        <span class="text-sm font-bold">Fluid Mechanics</span>
                     </div>
-                    <span id="fluid-arrow" class="material-icons text-sm rotate-icon">expand_more</span>
+                    <span class="material-icons text-sm">expand_more</span>
                 </button>
-                <div id="fluid-sub" class="submenu pl-10 mt-2 space-y-2 border-l border-white/10 ml-6">
+                <div id="fluid-menu" class="submenu pl-10 space-y-2 mt-1">
                     <a href="reynolds.html" class="block text-xs text-slate-400 hover:text-white py-1">Reynolds Number</a>
-                    <a href="pressure-drop.html" class="block text-xs text-slate-400 hover:text-white py-1">Pressure Drop</a>
-                    <a href="#" class="block text-xs text-slate-200/30 py-1">Pump Sizing (Soon)</a>
+                    <a href="pressure-drop.html" class="block text-xs text-slate-400 hover:text-white py-1">Pressure & Head</a>
                 </div>
             </div>
 
             <div>
-                <button onclick="toggleSub('unit-sub', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl sidebar-link transition-all">
+                <button onclick="toggleMenu('unit-menu')" class="w-full flex justify-between items-center p-3 rounded-xl sidebar-item transition-all">
                     <div class="flex items-center">
-                        <span class="material-icons text-orange-400 mr-3">sync_alt</span>
-                        <span class="font-bold text-sm">Unit Converters</span>
+                        <span class="material-icons text-orange-500 mr-3">sync_alt</span>
+                        <span class="text-sm font-bold">Unit Converter</span>
                     </div>
-                    <span id="unit-arrow" class="material-icons text-sm rotate-icon">expand_more</span>
+                    <span class="material-icons text-sm">expand_more</span>
                 </button>
-                <div id="unit-sub" class="submenu pl-10 mt-2 space-y-2 border-l border-white/10 ml-6">
-                    <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-1">Pressure & Temp</a>
-                    <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-1">Mass & Viscosity</a>
+                <div id="unit-menu" class="submenu pl-10 space-y-2 mt-1">
+                    <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-1">Multi-Unit Hub</a>
                 </div>
             </div>
 
-            <div>
-                <button class="w-full flex justify-between items-center p-3 rounded-xl opacity-40 cursor-not-allowed">
-                    <div class="flex items-center">
-                        <span class="material-icons text-red-400 mr-3">thermostat</span>
-                        <span class="font-bold text-sm">Heat Transfer</span>
-                    </div>
-                </button>
+            <div class="opacity-30 cursor-not-allowed p-3 flex items-center">
+                <span class="material-icons text-slate-400 mr-3">thermostat</span>
+                <span class="text-sm font-bold">Heat Transfer</span>
             </div>
-
         </nav>
 
-        <div class="p-6 border-t border-white/10 text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-            &copy; 2026 Pro Suite
+        <div class="p-6 border-t border-white/5">
+            <p class="text-[9px] text-slate-600 font-bold uppercase tracking-[0.2em]">&copy; 2026 PRECISION TOOLS</p>
         </div>
     </aside>
 
-    <main class="ml-72 flex-1 p-12">
-        <header class="mb-12">
-            <h2 class="text-4xl font-black text-slate-900 tracking-tight">Main Dashboard</h2>
-            <p class="text-slate-500 font-medium">Welcome back, Engineer. Select a tool from the menu to begin.</p>
-        </header>
+    <main class="ml-72 flex-1 min-h-screen">
+        
+        <section class="max-w-6xl mx-auto pt-20 pb-12 px-10 text-center">
+            <h1 class="text-6xl font-[900] tracking-tight text-[#1e293b] mb-4">
+                Precision <span class="text-blue-600">Calculations.</span>
+            </h1>
+            <p class="text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
+                A high-performance toolkit designed for Chemical Engineers. Reliable, fast, and optimized for industrial process design.
+            </p>
+        </section>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 group hover:shadow-xl transition-all">
-                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-6">
-                    <span class="material-icons">insights</span>
+        <section class="max-w-6xl mx-auto px-10 pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <a href="fluid-mechanics.html" class="glass-card p-10 rounded-[2.5rem] border border-slate-100 flex flex-col group">
+                <div class="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center mb-8">
+                    <span class="material-icons">water_drop</span>
                 </div>
-                <h4 class="text-xl font-bold mb-2">Project Analytics</h4>
-                <p class="text-sm text-slate-500 leading-relaxed">View recent calculations and historical design data.</p>
+                <h3 class="text-2xl font-bold text-slate-800 mb-3">Fluid Mechanics</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">Advanced solvers for Reynolds number, pressure drops, and flow regimes.</p>
+                <div class="text-blue-600 font-bold text-xs uppercase tracking-widest flex items-center">
+                    Open Solver <span class="material-icons text-sm ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+            </a>
+
+            <a href="unit-converter.html" class="glass-card p-10 rounded-[2.5rem] border border-slate-100 flex flex-col group">
+                <div class="w-14 h-14 bg-orange-500 text-white rounded-2xl flex items-center justify-center mb-8">
+                    <span class="material-icons text-xl font-bold">sync_alt</span>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-800 mb-3">Unit Converter</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">Multi-unit engineering conversions for Pressure, Temperature, and Mass.</p>
+                <div class="text-orange-600 font-bold text-xs uppercase tracking-widest flex items-center">
+                    Open Hub <span class="material-icons text-sm ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </div>
+            </a>
+
+            <div class="glass-card p-10 rounded-[2.5rem] border border-slate-100 opacity-50 relative overflow-hidden">
+                <div class="w-14 h-14 bg-slate-100 text-slate-300 rounded-2xl flex items-center justify-center mb-8">
+                    <span class="material-icons">thermostat</span>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-300 mb-3">Heat Transfer</h3>
+                <p class="text-slate-300 text-sm leading-relaxed mb-8">LMTD and heat exchanger design tools currently under development.</p>
+                <div class="text-slate-200 font-black text-[10px] uppercase tracking-widest">Feature Locked</div>
             </div>
 
-            <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 group hover:shadow-xl transition-all">
-                <div class="w-12 h-12 bg-green-50 text-green-600 rounded-xl flex items-center justify-center mb-6">
-                    <span class="material-icons">verified</span>
-                </div>
-                <h4 class="text-xl font-bold mb-2">Design Standards</h4>
-                <p class="text-sm text-slate-500 leading-relaxed">Calculations compliant with ASME & SI standards.</p>
-            </div>
-        </div>
+        </section>
     </main>
 
     <script>
-        function toggleSub(menuId, arrowId) {
-            const menu = document.getElementById(menuId);
-            const arrow = document.getElementById(arrowId);
-            
-            // Toggle the menu visibility
-            menu.classList.toggle('active');
-            
-            // Toggle the arrow rotation
-            arrow.classList.toggle('active');
+        function toggleMenu(id) {
+            const menu = document.getElementById(id);
+            // Close other menus if you want (optional)
+            document.querySelectorAll('.submenu').forEach(el => {
+                if (el.id !== id) el.classList.remove('open');
+            });
+            menu.classList.toggle('open');
         }
     </script>
 </body>
