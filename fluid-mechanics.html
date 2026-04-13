@@ -3,39 +3,194 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fluid Mechanics Tools</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <title>ChemE Calculator</title>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --sidebar-bg: #111827; /* Matches your screenshot's dark tone */
+            --text-main: #9ca3af;
+            --accent-blue: #3b82f6;
+            --hover-bg: #1f2937;
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: white;
+        }
+
+        /* Sidebar Container */
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            background-color: var(--sidebar-bg);
+            padding: 24px 16px;
+            box-sizing: border-box;
+            border-right: 1px solid #1f2937;
+        }
+
+        /* Dashboard Button */
+        .dashboard-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #374151;
+            border-radius: 12px;
+            background: transparent;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 40px;
+            transition: all 0.2s;
+        }
+
+        .dashboard-btn:hover {
+            background: var(--hover-bg);
+            border-color: var(--accent-blue);
+        }
+
+        /* Category Labels */
+        .category-header {
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            color: #4b5563;
+            margin: 24px 0 8px 12px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-transform: uppercase;
+        }
+
+        .category-header:hover {
+            color: var(--text-main);
+        }
+
+        /* Submenu Logic */
+        .menu-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            max-height: 0; /* Hidden by default */
+            transition: max-height 0.3s ease-in-out;
+        }
+
+        .menu-list.show {
+            max-height: 300px; /* Expands when this class is added */
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+            transition: 0.2s;
+        }
+
+        .menu-item i {
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+
+        .menu-item:hover {
+            background-color: var(--hover-bg);
+            color: white;
+        }
+
+        /* Active Blue Highlight */
+        .menu-item.active {
+            color: var(--accent-blue);
+            font-weight: 600;
+            background: rgba(59, 130, 246, 0.05);
+            border-left: 3px solid var(--accent-blue);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .arrow-icon {
+            transition: transform 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .rotate {
+            transform: rotate(180deg);
+        }
+    </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body>
 
-    <header class="bg-[#003366] text-white py-10 px-4 text-center">
-        <h1 class="text-3xl font-bold mb-2">Fluid Mechanics Section</h1>
-        <p class="text-blue-100">Select a specific tool below</p>
-    </header>
+    <aside class="sidebar">
+        <button class="dashboard-btn" onclick="window.location.href='index.html'">
+            <i class="ph ph-arrow-left" style="margin-right: 10px;"></i> DASHBOARD
+        </button>
 
-    <main class="max-w-4xl mx-auto py-12 px-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            
-            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-blue-500 hover:shadow-xl transition-all">
-                <span class="material-icons text-4xl text-blue-500 mb-4">speed</span>
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">Reynolds Calculator</h2>
-                <p class="text-gray-600 mb-6">Calculate flow regime (Laminar, Transitional, Turbulent) using fluid properties.</p>
-                <a href="reynolds.html" class="inline-block bg-[#003366] text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-800">Open</a>
-            </div>
-
-            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-green-500 hover:shadow-xl transition-all">
-                <span class="material-icons text-4xl text-green-500 mb-4">compress</span>
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">Pressure & Head Loss</h2>
-                <p class="text-gray-600 mb-6">Calculate Darcy friction factor, head loss in meters, and pressure drop in Pa.</p>
-                <a href="pressure-drop.html" class="inline-block bg-[#003366] text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-800">Open</a>
-            </div>
-
+        <div class="category-header" onclick="toggleMenu('fluid-sub')">
+            Fluid Mechanics
+            <i class="ph ph-caret-down arrow-icon" id="fluid-arrow"></i>
         </div>
-        <div class="mt-10 text-center">
-            <a href="index.html" class="text-blue-600 hover:underline">← Back to Main Dashboard</a>
+        <ul id="fluid-sub" class="menu-list">
+            <li>
+                <a href="reynolds.html" class="menu-item">
+                    <i class="ph ph-gauge"></i> Reynolds Number
+                </a>
+            </li>
+            <li>
+                <a href="pressure-drop.html" class="menu-item">
+                    <i class="ph ph-arrows-out-line-vertical"></i> Pressure Drop
+                </a>
+            </li>
+        </ul>
+
+        <div class="category-header" onclick="toggleMenu('util-sub')">
+            Utility
+            <i class="ph ph-caret-down arrow-icon" id="util-arrow"></i>
         </div>
+        <ul id="util-sub" class="menu-list">
+            <li>
+                <a href="unit-converter.html" class="menu-item">
+                    <i class="ph ph-arrows-left-right"></i> Unit Converter
+                </a>
+            </li>
+        </ul>
+    </aside>
+
+    <main style="padding: 40px; flex-grow: 1;">
+        <h1>Select a tool from the sidebar to begin.</h1>
     </main>
 
+    <script>
+        function toggleMenu(id) {
+            const menu = document.getElementById(id);
+            const arrow = document.getElementById(id.split('-')[0] + '-arrow');
+            
+            // Toggle visibility
+            menu.classList.toggle('show');
+            
+            // Toggle arrow rotation
+            arrow.classList.toggle('rotate');
+        }
+
+        // AUTO-OPEN: This checks which page you are on and opens the right menu
+        window.onload = function() {
+            const currentPage = window.location.pathname;
+            
+            if (currentPage.includes('reynolds') || currentPage.includes('pressure')) {
+                toggleMenu('fluid-sub');
+            } else if (currentPage.includes('unit-converter')) {
+                toggleMenu('util-sub');
+            }
+        }
+    </script>
 </body>
 </html>
