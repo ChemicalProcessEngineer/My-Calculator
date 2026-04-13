@@ -5,145 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fluid Mechanics Tools</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
-<body class="bg-gray-100 min-h-screen pb-20">
+<body class="bg-gray-50 font-sans">
 
-    <nav class="bg-[#003366] p-4 text-white shadow-md">
-        <div class="max-w-6xl mx-auto flex justify-between items-center">
-            <span class="font-bold">Fluid Mechanics Dashboard</span>
-            <a href="index.html" class="text-xs bg-white/10 px-3 py-1 rounded hover:bg-white/20">← Dashboard</a>
+    <header class="bg-[#003366] text-white py-10 px-4 text-center">
+        <h1 class="text-3xl font-bold mb-2">Fluid Mechanics Section</h1>
+        <p class="text-blue-100">Select a specific tool below</p>
+    </header>
+
+    <main class="max-w-4xl mx-auto py-12 px-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-blue-500 hover:shadow-xl transition-all">
+                <span class="material-icons text-4xl text-blue-500 mb-4">speed</span>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Reynolds Calculator</h2>
+                <p class="text-gray-600 mb-6">Calculate flow regime (Laminar, Transitional, Turbulent) using fluid properties.</p>
+                <a href="reynolds.html" class="inline-block bg-[#003366] text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-800">Open</a>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-green-500 hover:shadow-xl transition-all">
+                <span class="material-icons text-4xl text-green-500 mb-4">compress</span>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Pressure & Head Loss</h2>
+                <p class="text-gray-600 mb-6">Calculate Darcy friction factor, head loss in meters, and pressure drop in Pa.</p>
+                <a href="pressure-drop.html" class="inline-block bg-[#003366] text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-800">Open</a>
+            </div>
+
         </div>
-    </nav>
+        <div class="mt-10 text-center">
+            <a href="index.html" class="text-blue-600 hover:underline">← Back to Main Dashboard</a>
+        </div>
+    </main>
 
-    <div class="max-w-6xl mx-auto mt-10 px-4 space-y-12">
-
-        <section class="bg-white rounded-2xl shadow-lg border-t-8 border-blue-600 overflow-hidden">
-            <div class="p-6 bg-blue-50 border-b flex justify-between items-center">
-                <div>
-                    <h2 class="text-2xl font-black text-blue-900 uppercase">Section 1: Reynolds Number</h2>
-                    <p class="text-sm text-blue-600">Determine flow regime (Laminar vs Turbulent)</p>
-                </div>
-                <div class="text-xl font-serif text-blue-800">$$Re = \frac{\rho u D}{\mu}$$</div>
-            </div>
-            
-            <div class="p-8 grid md:grid-cols-2 gap-10">
-                <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 mb-1">DENSITY (kg/m³)</label>
-                            <input type="number" id="re_rho" value="1000" class="w-full p-2 border rounded">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 mb-1">VELOCITY (m/s)</label>
-                            <input type="number" id="re_u" value="0.05" class="w-full p-2 border rounded">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 mb-1">DIAMETER (mm)</label>
-                        <input type="number" id="re_d" value="50" class="w-full p-2 border rounded">
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 mb-1">VISCOSITY (Pa·s)</label>
-                        <input type="number" id="re_mu" value="0.001" step="0.0001" class="w-full p-2 border rounded">
-                    </div>
-                    <button onclick="calcRe()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700">Calculate Reynolds</button>
-                </div>
-                <div id="re_result" class="bg-gray-50 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-gray-200">
-                    <p class="text-gray-400 font-bold uppercase tracking-widest text-xs">Result</p>
-                    <h3 id="re_val" class="text-5xl font-black text-blue-900 my-2">--</h3>
-                    <span id="re_tag" class="px-4 py-1 rounded-full text-xs font-bold uppercase">--</span>
-                </div>
-            </div>
-        </section>
-
-        <section class="bg-white rounded-2xl shadow-lg border-t-8 border-green-600 overflow-hidden">
-            <div class="p-6 bg-green-50 border-b flex justify-between items-center">
-                <div>
-                    <h2 class="text-2xl font-black text-green-900 uppercase">Section 2: Head Loss</h2>
-                    <p class="text-sm text-green-600">Calculate friction and energy loss</p>
-                </div>
-                <div class="text-xl font-serif text-green-800">$$\Delta P = f \frac{L}{D} \frac{\rho u^2}{2}$$</div>
-            </div>
-
-            <div class="p-8 grid md:grid-cols-2 gap-10">
-                <div class="space-y-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 mb-1">REYNOLDS NO.</label>
-                            <input type="number" id="hl_re" placeholder="Enter Re" class="w-full p-2 border rounded">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-500 mb-1">LENGTH (m)</label>
-                            <input type="number" id="hl_l" value="10" class="w-full p-2 border rounded">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-500 mb-1">ROUGHNESS (ε) [mm]</label>
-                        <select id="hl_eps" class="w-full p-2 border rounded">
-                            <option value="0.0015">PVC (0.0015mm)</option>
-                            <option value="0.045">Steel (0.045mm)</option>
-                            <option value="0.15">Galv. Iron (0.15mm)</option>
-                        </select>
-                    </div>
-                    <button onclick="calcHL()" class="w-full bg-green-600 text-white font-bold py-3 rounded-xl hover:bg-green-700">Calculate Pressure Drop</button>
-                </div>
-                <div class="bg-gray-50 rounded-xl p-6 border-2 border-dashed border-gray-200 flex flex-col justify-center space-y-4">
-                    <div class="text-center">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase">Pressure Drop (Pa)</p>
-                        <h3 id="hl_dp" class="text-3xl font-black text-green-800 tracking-tighter">--</h3>
-                    </div>
-                    <div class="text-center">
-                        <p class="text-[10px] font-bold text-gray-400 uppercase">Friction Factor (f)</p>
-                        <h3 id="hl_f" class="text-2xl font-bold text-gray-600">--</h3>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </div>
-
-    <script>
-        function calcRe() {
-            const rho = parseFloat(document.getElementById('re_rho').value);
-            const u = parseFloat(document.getElementById('re_u').value);
-            const d = parseFloat(document.getElementById('re_d').value) / 1000;
-            const mu = parseFloat(document.getElementById('re_mu').value);
-            
-            const re = (rho * u * d) / mu;
-            document.getElementById('re_val').innerText = Math.round(re).toLocaleString();
-            
-            const tag = document.getElementById('re_tag');
-            if (re < 2100) {
-                tag.innerText = "Laminar";
-                tag.className = "px-4 py-1 rounded-full text-xs font-bold uppercase bg-green-100 text-green-700";
-            } else if (re >= 2100 && re <= 4000) {
-                tag.innerText = "Transitional";
-                tag.className = "px-4 py-1 rounded-full text-xs font-bold uppercase bg-yellow-100 text-yellow-700";
-            } else {
-                tag.innerText = "Turbulent";
-                tag.className = "px-4 py-1 rounded-full text-xs font-bold uppercase bg-red-100 text-red-700";
-            }
-            // Auto-fill Reynolds in Section 2
-            document.getElementById('hl_re').value = Math.round(re);
-        }
-
-        function calcHL() {
-            const re = parseFloat(document.getElementById('hl_re').value);
-            const l = parseFloat(document.getElementById('hl_l').value);
-            const eps = parseFloat(document.getElementById('hl_eps').value) / 1000;
-            const rho = parseFloat(document.getElementById('re_rho').value);
-            const u = parseFloat(document.getElementById('re_u').value);
-            const d = parseFloat(document.getElementById('re_d').value) / 1000;
-            const g = 9.81;
-
-            let f = (re < 2100) ? (64/re) : Math.pow(-1.8 * Math.log10(Math.pow((eps/d)/3.7, 1.11) + 6.9/re), -2);
-            const dp = f * (l/d) * (rho * Math.pow(u, 2) / 2);
-
-            document.getElementById('hl_f').innerText = f.toFixed(4);
-            document.getElementById('hl_dp').innerText = Math.round(dp).toLocaleString();
-        }
-    </script>
 </body>
 </html>
