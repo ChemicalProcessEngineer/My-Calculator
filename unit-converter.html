@@ -58,7 +58,7 @@
                 <div>
                     <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
                         <div class="flex items-center">
-                            <span class="material-icons text-blue-500 mr-3">water_drop</span>
+                            <span class="material-icons text-blue-500 mr-3 text-sm">water_drop</span>
                             <span class="text-[10px] font-black uppercase tracking-[0.2em]">Fluid Mechanics</span>
                         </div>
                         <span class="material-icons text-sm transition-transform" id="fluid-arrow">expand_more</span>
@@ -72,7 +72,7 @@
                 <div>
                     <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
                         <div class="flex items-center">
-                            <span class="material-icons text-orange-500 mr-3">sync_alt</span>
+                            <span class="material-icons text-orange-500 mr-3 text-sm">sync_alt</span>
                             <span class="text-[10px] font-black uppercase tracking-[0.2em]">Utility</span>
                         </div>
                         <span class="material-icons text-sm transition-transform" id="unit-arrow">expand_more</span>
@@ -194,7 +194,6 @@
 
         window.onload = () => {
             changeCat('pressure', document.querySelector('.tab-btn'));
-            // Keep Utility menu open by default for this page
             const arrow = document.getElementById('unit-arrow');
             arrow.style.transform = 'rotate(180deg)';
         };
