@@ -12,6 +12,10 @@
         #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .sidebar-closed { transform: translateX(-100%); }
         .sidebar-open { transform: translateX(0); }
+        
+        /* Submenu transition logic */
+        .submenu { transition: all 0.3s ease-in-out; overflow: hidden; }
+        .submenu.hidden { display: none; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -26,30 +30,43 @@
 
     <aside id="sidebar" class="fixed left-0 top-0 h-full w-72 bg-[#0a192f] text-white z-50 sidebar-closed shadow-2xl overflow-y-auto">
         <div class="p-8 border-b border-white/5 flex justify-between items-center">
-            <h1 class="text-xl font-black text-blue-400 uppercase tracking-tighter">Navigation</h1>
+            <h1 class="text-xl font-black text-blue-400 uppercase tracking-tighter italic">Navigation</h1>
             <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white"><span class="material-icons">close</span></button>
         </div>
+        
         <nav class="p-6">
             <div class="mb-10">
                 <a href="index.html" class="flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white font-black py-3 rounded-2xl transition-all shadow-lg active:scale-95 text-[11px] uppercase tracking-widest">
                     <span class="material-icons text-sm">arrow_back</span> Dashboard
                 </a>
             </div>
-            <div class="space-y-8">
+
+            <div class="space-y-4">
                 <div>
-                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4">Fluid Mechanics</p>
-                    <a href="reynolds.html" class="flex items-center text-slate-400 hover:text-white font-bold py-2 pl-3 transition-all">
-                        <span class="material-icons mr-3 text-sm">speed</span> Reynolds Number
-                    </a>
-                    <a href="pressure-drop.html" class="flex items-center text-blue-400 font-black py-2 border-l-2 border-blue-400 pl-3 mt-2">
-                        <span class="material-icons mr-3 text-sm">compress</span> Pressure Drop
-                    </a>
+                    <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
+                        <div class="flex items-center">
+                            <span class="material-icons text-blue-500 mr-3">water_drop</span>
+                            <span class="text-[10px] font-black uppercase tracking-[0.2em]">Fluid Mechanics</span>
+                        </div>
+                        <span class="material-icons text-sm transition-transform" id="fluid-arrow">expand_more</span>
+                    </button>
+                    <div id="fluid-menu" class="submenu pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="reynolds.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Reynolds Number</a>
+                        <a href="pressure-drop.html" class="block text-xs text-blue-400 font-bold py-2 border-l-2 border-blue-400 pl-2">Pressure Drop</a>
+                    </div>
                 </div>
+
                 <div>
-                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4">Utility</p>
-                    <a href="unit-converter.html" class="flex items-center text-slate-300 hover:text-white font-bold py-2 transition-all">
-                        <span class="material-icons mr-3 text-sm">sync_alt</span> Unit Converter
-                    </a>
+                    <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
+                        <div class="flex items-center">
+                            <span class="material-icons text-orange-500 mr-3">sync_alt</span>
+                            <span class="text-[10px] font-black uppercase tracking-[0.2em]">Utility</span>
+                        </div>
+                        <span class="material-icons text-sm transition-transform" id="unit-arrow">expand_more</span>
+                    </button>
+                    <div id="unit-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-2 font-bold transition-all">Unit Converter</a>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -61,7 +78,6 @@
         <div class="max-w-xl w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-200">
             <div class="h-2 bg-green-600"></div>
             <div class="p-10">
-                
                 <div class="mb-4">
                     <a href="fluid-mechanics.html" class="text-[#059669] text-sm font-medium hover:underline flex items-center transition-all">
                         <span class="mr-1">←</span> Back to Fluid Tools
@@ -99,11 +115,11 @@
                         Calculate Loss
                     </button>
                     <div id="resultBox" class="hidden mt-8 grid grid-cols-2 gap-4">
-                        <div class="bg-green-50 p-6 rounded-3xl border border-green-100 text-center">
+                        <div class="bg-green-50 p-6 rounded-3xl border border-green-100 text-center animate-in fade-in zoom-in duration-300">
                             <p class="text-[10px] font-black text-green-400 uppercase tracking-widest">ΔP (Pa)</p>
                             <h3 id="dpVal" class="text-2xl font-black text-green-900 my-1">--</h3>
                         </div>
-                        <div class="bg-orange-50 p-6 rounded-3xl border border-orange-100 text-center">
+                        <div class="bg-orange-50 p-6 rounded-3xl border border-orange-100 text-center animate-in fade-in zoom-in duration-300">
                             <p class="text-[10px] font-black text-orange-400 uppercase tracking-widest">Head (m)</p>
                             <h3 id="hlVal" class="text-2xl font-black text-orange-900 my-1">--</h3>
                         </div>
@@ -119,6 +135,19 @@
             document.getElementById('sidebar').classList.toggle('sidebar-open');
             document.getElementById('overlay').classList.toggle('hidden');
         }
+
+        // Accordion Toggle Function
+        function toggleMenu(menuId, arrowId) {
+            const menu = document.getElementById(menuId);
+            const arrow = document.getElementById(arrowId);
+            menu.classList.toggle('hidden');
+            if (menu.classList.contains('hidden')) {
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                arrow.style.transform = 'rotate(180deg)';
+            }
+        }
+
         function calculate() {
             const re = parseFloat(document.getElementById('re').value);
             const l = parseFloat(document.getElementById('l').value);
