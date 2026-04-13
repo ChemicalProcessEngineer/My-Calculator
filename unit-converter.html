@@ -15,6 +15,10 @@
         .sidebar-closed { transform: translateX(-100%); }
         .sidebar-open { transform: translateX(0); }
 
+        /* Submenu transition logic */
+        .submenu { transition: all 0.3s ease-in-out; overflow: hidden; }
+        .submenu.hidden { display: none; }
+
         /* Professional Tab Highlighting */
         .tab-active { 
             border-color: #2563eb !important; 
@@ -50,22 +54,32 @@
                 </a>
             </div>
 
-            <div class="space-y-8">
+            <div class="space-y-4">
                 <div>
-                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4">Fluid Mechanics</p>
-                    <a href="reynolds.html" class="flex items-center text-slate-400 hover:text-white font-bold py-2 pl-3 transition-all">
-                        <span class="material-icons mr-3 text-sm">speed</span> Reynolds Number
-                    </a>
-                    <a href="pressure-drop.html" class="flex items-center text-slate-400 hover:text-white font-bold py-2 pl-3 mt-2 transition-all">
-                        <span class="material-icons mr-3 text-sm">compress</span> Pressure Drop
-                    </a>
+                    <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
+                        <div class="flex items-center">
+                            <span class="material-icons text-blue-500 mr-3">water_drop</span>
+                            <span class="text-[10px] font-black uppercase tracking-[0.2em]">Fluid Mechanics</span>
+                        </div>
+                        <span class="material-icons text-sm transition-transform" id="fluid-arrow">expand_more</span>
+                    </button>
+                    <div id="fluid-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="reynolds.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Reynolds Number</a>
+                        <a href="pressure-drop.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Pressure Drop</a>
+                    </div>
                 </div>
 
                 <div>
-                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-4">Utility</p>
-                    <a href="unit-converter.html" class="flex items-center text-blue-400 font-black py-2 border-l-2 border-blue-400 pl-3">
-                        <span class="material-icons mr-3 text-sm text-blue-500">sync_alt</span> Unit Converter
-                    </a>
+                    <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
+                        <div class="flex items-center">
+                            <span class="material-icons text-orange-500 mr-3">sync_alt</span>
+                            <span class="text-[10px] font-black uppercase tracking-[0.2em]">Utility</span>
+                        </div>
+                        <span class="material-icons text-sm transition-transform" id="unit-arrow">expand_more</span>
+                    </button>
+                    <div id="unit-menu" class="submenu pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="unit-converter.html" class="block text-xs text-blue-400 font-bold py-2 border-l-2 border-blue-400 pl-2">Unit Converter</a>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -123,6 +137,17 @@
             document.getElementById('overlay').classList.toggle('hidden');
         }
 
+        function toggleMenu(menuId, arrowId) {
+            const menu = document.getElementById(menuId);
+            const arrow = document.getElementById(arrowId);
+            menu.classList.toggle('hidden');
+            if (menu.classList.contains('hidden')) {
+                arrow.style.transform = 'rotate(0deg)';
+            } else {
+                arrow.style.transform = 'rotate(180deg)';
+            }
+        }
+
         function changeCat(cat, btn) {
             currentCat = cat;
             document.querySelectorAll('.tab-btn').forEach(b => {
@@ -167,7 +192,12 @@
             </div>`;
         }
 
-        window.onload = () => changeCat('pressure', document.querySelector('.tab-btn'));
+        window.onload = () => {
+            changeCat('pressure', document.querySelector('.tab-btn'));
+            // Keep Utility menu open by default for this page
+            const arrow = document.getElementById('unit-arrow');
+            arrow.style.transform = 'rotate(180deg)';
+        };
     </script>
 </body>
 </html>
