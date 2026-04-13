@@ -3,46 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChemEng Calc Hub</title>
+    <title>Process Design Pro | Engineering Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        /* Modern Gradient Background */
+        body {
+            background: radial-gradient(circle at top right, #f0f9ff, #ffffff);
+            min-height: screen;
+        }
+        /* Glassmorphism Effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 25px 50px -12px rgba(0, 51, 102, 0.15);
+        }
+    </style>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="text-slate-800 font-sans leading-relaxed">
 
-    <header class="bg-[#003366] text-white py-12 px-4 text-center shadow-lg">
-        <h1 class="text-4xl font-bold mb-2">Chemical Engineering Hub</h1>
-        <p class="text-blue-100 text-lg">Professional Grade Calculation Tools</p>
+    <header class="max-w-6xl mx-auto pt-24 pb-16 px-6 text-center">
+        <div class="inline-flex items-center px-4 py-1.5 mb-6 text-[10px] font-black tracking-[0.2em] text-blue-600 uppercase bg-blue-50 rounded-full border border-blue-100">
+            Professional Engineering Suite v1.0
+        </div>
+        <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-6 text-slate-900">
+            Precision <span class="text-blue-600">Calculations.</span>
+        </h1>
+        <p class="text-lg text-slate-500 max-w-2xl mx-auto font-medium">
+            A high-performance toolkit designed for Chemical Engineers. Reliable, fast, and optimized for industrial process design.
+        </p>
     </header>
 
-    <main class="max-w-6xl mx-auto py-12 px-6">
+    <main class="max-w-6xl mx-auto pb-24 px-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             
-            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-[#003366] hover:shadow-2xl transition-all transform hover:-translate-y-2">
-                <span class="material-icons text-4xl text-blue-600 mb-4">water_drop</span>
-                <h2 class="text-2xl font-bold text-gray-800 mb-3">Fluid Mechanics</h2>
-                <p class="text-gray-600 mb-6 leading-relaxed">Calculate Reynolds number, pressure drop, friction factors, and pump sizing.</p>
-                <a href="fluid-mechanics.html" class="inline-block bg-[#003366] text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-800 transition">Open</a>
+            <a href="fluid-mechanics.html" class="glass-card group p-10 rounded-[2.5rem] shadow-sm relative overflow-hidden">
+                <div class="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                    <span class="material-icons text-3xl">water_drop</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 tracking-tight">Fluid Mechanics</h3>
+                <p class="text-slate-500 text-sm mb-8 leading-relaxed">Advanced solvers for Reynolds number, pressure drops, and flow regimes.</p>
+                <div class="flex items-center text-blue-600 font-bold text-sm uppercase tracking-widest">
+                    Open Solver <span class="material-icons ml-2 text-base transition-transform group-hover:translate-x-2">arrow_forward</span>
+                </div>
+            </a>
+
+            <a href="unit-converter.html" class="glass-card group p-10 rounded-[2.5rem] shadow-sm relative overflow-hidden">
+                <div class="w-16 h-16 bg-orange-500 text-white rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                    <span class="material-icons text-3xl">sync_alt</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 tracking-tight">Unit Converter</h3>
+                <p class="text-slate-500 text-sm mb-8 leading-relaxed">Multi-unit engineering conversions for Pressure, Temperature, and Mass.</p>
+                <div class="flex items-center text-orange-600 font-bold text-sm uppercase tracking-widest">
+                    Open Hub <span class="material-icons ml-2 text-base transition-transform group-hover:translate-x-2">arrow_forward</span>
+                </div>
+            </a>
+
+            <div class="glass-card p-10 rounded-[2.5rem] shadow-sm opacity-50 cursor-not-allowed">
+                <div class="w-16 h-16 bg-slate-200 text-slate-400 rounded-2xl flex items-center justify-center mb-8">
+                    <span class="material-icons text-3xl">thermostat</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 tracking-tight text-slate-400">Heat Transfer</h3>
+                <p class="text-slate-400 text-sm mb-8 leading-relaxed">LMTD and heat exchanger design tools currently under development.</p>
+                <div class="text-slate-300 font-bold text-[10px] uppercase tracking-[0.2em]">
+                    Feature Locked
+                </div>
             </div>
 
-            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-orange-500 hover:shadow-2xl transition-all transform hover:-translate-y-2">
-                <span class="material-icons text-4xl text-orange-500 mb-4">sync_alt</span>
-                <h2 class="text-2xl font-bold text-gray-800 mb-3">Unit Converters</h2>
-                <p class="text-gray-600 mb-6 leading-relaxed">Quickly convert Pressure, Temperature, and Flow units for engineering data.</p>
-                <a href="unit-converter.html" class="inline-block bg-[#003366] text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-800 transition">Open</a>
-            </div>
-
-            <div class="bg-white p-8 rounded-xl shadow-md border-t-4 border-red-500 hover:shadow-2xl transition-all transform hover:-translate-y-2 opacity-75">
-                <span class="material-icons text-4xl text-red-500 mb-4">thermostat</span>
-                <h2 class="text-2xl font-bold text-gray-800 mb-3">Heat Transfer</h2>
-                <p class="text-gray-600 mb-6 leading-relaxed">LMTD calculations, heat exchanger effectiveness, and conduction analysis.</p>
-                <button disabled class="inline-block bg-gray-400 text-white px-6 py-2 rounded-lg font-semibold cursor-not-allowed">Coming Soon</button>
+            <div class="glass-card p-10 rounded-[2.5rem] shadow-sm opacity-50 cursor-not-allowed">
+                <div class="w-16 h-16 bg-slate-200 text-slate-400 rounded-2xl flex items-center justify-center mb-8">
+                    <span class="material-icons text-3xl">category</span>
+                </div>
+                <h3 class="text-2xl font-bold mb-3 tracking-tight text-slate-400">Other Tools</h3>
+                <p class="text-slate-400 text-sm mb-8 leading-relaxed">Reactor sizing and mass transfer tools coming in the next update.</p>
             </div>
 
         </div>
     </main>
 
-    <footer class="text-center py-8 text-gray-500 text-sm border-t mt-12">
-        © 2026 Chemical Engineering Hub | Designed for Precision
+    <footer class="max-w-6xl mx-auto py-12 border-t border-slate-100 px-6 flex flex-col md:flex-row justify-between items-center text-slate-400 text-[10px] font-black uppercase tracking-[0.3em]">
+        <div>&copy; 2026 Process Design Calculations</div>
+        <div class="mt-4 md:mt-0">Precision Engineering Standards</div>
     </footer>
 
 </body>
