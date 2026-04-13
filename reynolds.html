@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reynolds Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-xl mx-auto bg-white p-8 rounded-2xl shadow-lg border-t-8 border-blue-600">
+        <a href="fluid-mechanics.html" class="text-xs text-blue-500 hover:underline">← Back to Fluid Tools</a>
+        <h2 class="text-2xl font-black mt-4 mb-6 uppercase text-blue-900">Reynolds Number</h2>
+        
+        <div class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">DENSITY (kg/m³)</label>
+                <input type="number" id="rho" value="1000" class="w-full p-2 border rounded">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">VELOCITY (m/s)</label>
+                <input type="number" id="u" value="0.05" class="w-full p-2 border rounded">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">DIAMETER (mm)</label>
+                <input type="number" id="d" value="50" class="w-full p-2 border rounded">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 mb-1">VISCOSITY (Pa·s)</label>
+                <input type="number" id="mu" value="0.001" step="0.0001" class="w-full p-2 border rounded">
+            </div>
+            <button onclick="calc()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg">Calculate</button>
+            
+            <div id="res_box" class="mt-6 p-6 bg-gray-50 rounded-xl text-center hidden">
+                <p class="text-xs font-bold text-gray-400">RESULT (Re)</p>
+                <h3 id="re_val" class="text-4xl font-black text-blue-900">--</h3>
+                <div id="re_tag" class="mt-2 inline-block px-4 py-1 rounded-full text-xs font-bold uppercase">--</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calc() {
+            const rho = parseFloat(document.getElementById('rho').value);
+            const u = parseFloat(document.getElementById('u').value);
+            const d = parseFloat(document.getElementById('d').value) / 1000;
+            const mu = parseFloat(document.getElementById('mu').value);
+            const re = (rho * u * d) / mu;
+
+            document.getElementById('res_box').classList.remove('hidden');
+            document.getElementById('re_val').innerText = Math.round(re).toLocaleString();
+            
+            const tag = document.getElementById('re_tag');
+            if (re < 2100) {
+                tag.innerText = "Laminar";
+                tag.className = "mt-2 inline-block px-4 py-1 rounded-full text-xs font-bold uppercase bg-green-100 text-green-700";
+            } else if (re >= 2100 && re <= 4000) {
+                tag.innerText = "Transitional";
+                tag.className = "mt-2 inline-block px-4 py-1 rounded-full text-xs font-bold uppercase bg-yellow-100 text-yellow-700";
+            } else {
+                tag.innerText = "Turbulent";
+                tag.className = "mt-2 inline-block px-4 py-1 rounded-full text-xs font-bold uppercase bg-red-100 text-red-700";
+            }
+        }
+    </script>
+</body>
+</html>
