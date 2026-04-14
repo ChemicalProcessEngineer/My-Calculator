@@ -14,6 +14,10 @@
         .sidebar-open { transform: translateX(0); }
         .submenu { transition: all 0.3s ease-in-out; overflow: hidden; }
         .submenu.hidden { display: none; }
+        
+        /* Custom scrollbar for history */
+        #history-list::-webkit-scrollbar { width: 4px; }
+        #history-list::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -33,6 +37,7 @@
         </div>
         <nav class="p-6">
             <div class="mb-10"><a href="index.html" class="flex items-center justify-center gap-2 bg-white/10 border border-white/20 hover:bg-white/20 text-white font-black py-3 rounded-2xl transition-all shadow-lg text-[11px] uppercase tracking-widest"><span class="material-icons text-sm">arrow_back</span> Dashboard</a></div>
+            
             <div class="space-y-4">
                 <div>
                     <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
@@ -44,6 +49,7 @@
                         <a href="pressure-drop.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Pressure & Head</a>
                     </div>
                 </div>
+
                 <div>
                     <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
                         <div class="flex items-center"><span class="material-icons text-orange-500 mr-3 text-sm">sync_alt</span><span class="text-sm font-bold">Unit Converter</span></div>
@@ -53,6 +59,7 @@
                         <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Main Hub</a>
                     </div>
                 </div>
+
                 <div>
                     <button onclick="toggleMenu('heat-menu', 'heat-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
                         <div class="flex items-center"><span class="material-icons text-red-500 mr-3 text-sm">thermostat</span><span class="text-sm font-bold">Heat Transfer</span></div>
@@ -63,14 +70,24 @@
                         <a href="heat-duty.html" class="block text-xs text-slate-400 hover:text-white py-2">Heat Duty & Area</a>
                     </div>
                 </div>
+                
                 <div>
                     <button onclick="toggleMenu('db-menu', 'db-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
                         <div class="flex items-center"><span class="material-icons text-green-500 mr-3 text-sm">science</span><span class="text-sm font-bold">Property DB</span></div>
                         <span class="material-icons text-sm transition-transform" id="db-arrow">expand_more</span>
                     </button>
                     <div id="db-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
-                        <a href="chemical-db.html" class="block text-xs text-slate-400 hover:text-white py-2">Chemical Search</a>
+                        <a href="chemical-db.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Chemical Search</a>
                     </div>
+                </div>
+
+                <div class="mt-10 pt-6 border-t border-white/5">
+                    <div class="flex justify-between items-center px-4 mb-4">
+                        <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest">History</p>
+                        <button onclick="clearHistory()" class="text-[10px] text-red-400 font-bold uppercase hover:text-red-300">Clear</button>
+                    </div>
+                    <div id="history-list" class="px-4 space-y-3 max-h-60 overflow-y-auto">
+                        </div>
                 </div>
             </div>
         </nav>
@@ -103,8 +120,75 @@
     <script>
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('sidebar-closed'); document.getElementById('sidebar').classList.toggle('sidebar-open'); document.getElementById('overlay').classList.toggle('hidden'); }
         function toggleMenu(menuId, arrowId) { const menu = document.getElementById(menuId); const arrow = document.getElementById(arrowId); menu.classList.toggle('hidden'); arrow.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)'; }
-        function calculate() { const rho = parseFloat(document.getElementById('rho').value); const u = parseFloat(document.getElementById('u').value); const d = parseFloat(document.getElementById('d').value) / 1000; const mu = parseFloat(document.getElementById('mu').value); const re = (rho * u * d) / mu; document.getElementById('resultBox').classList.remove('hidden'); document.getElementById('reVal').innerText = Math.round(re).toLocaleString(); const tag = document.getElementById('reTag'); if (re < 2100) { tag.innerText = "Laminar Flow"; tag.className = "inline-block px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-green-100 text-green-700"; } else if (re <= 4000) { tag.innerText = "Transitional Flow"; tag.className = "inline-block px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-yellow-100 text-yellow-700"; } else { tag.innerText = "Turbulent Flow"; tag.className = "inline-block px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-red-100 text-red-700"; } }
-        window.onload = () => { const arrow = document.getElementById('fluid-arrow'); arrow.style.transform = 'rotate(180deg)'; };
+
+        // --- HISTORY LOGIC ---
+        function saveToHistory(label, value) {
+            let history = JSON.parse(localStorage.getItem('processProHistory')) || [];
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            history.unshift({ label, value, time: timestamp }); // Add to start
+            if(history.length > 10) history.pop(); // Keep only last 10
+            localStorage.setItem('processProHistory', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            const history = JSON.parse(localStorage.getItem('processProHistory')) || [];
+            if (history.length === 0) {
+                list.innerHTML = '<p class="text-[10px] text-slate-600 italic">No calculations yet...</p>';
+                return;
+            }
+            list.innerHTML = history.map(item => `
+                <div class="bg-white/5 p-3 rounded-xl border border-white/5">
+                    <div class="flex justify-between text-[9px] uppercase font-black text-blue-400 mb-1">
+                        <span>${item.label}</span>
+                        <span class="text-slate-500">${item.time}</span>
+                    </div>
+                    <div class="text-sm font-bold text-white">${item.value}</div>
+                </div>
+            `).join('');
+        }
+
+        function clearHistory() {
+            localStorage.removeItem('processProHistory');
+            renderHistory();
+        }
+
+        function calculate() { 
+            const rho = parseFloat(document.getElementById('rho').value); 
+            const u = parseFloat(document.getElementById('u').value); 
+            const d = parseFloat(document.getElementById('d').value) / 1000; 
+            const mu = parseFloat(document.getElementById('mu').value); 
+            const re = Math.round((rho * u * d) / mu);
+            
+            document.getElementById('resultBox').classList.remove('hidden'); 
+            document.getElementById('reVal').innerText = re.toLocaleString(); 
+            
+            const tag = document.getElementById('reTag'); 
+            let flowStatus = "";
+            if (re < 2100) { 
+                flowStatus = "Laminar";
+                tag.innerText = "Laminar Flow"; 
+                tag.className = "inline-block px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-green-100 text-green-700"; 
+            } else if (re <= 4000) { 
+                flowStatus = "Transitional";
+                tag.innerText = "Transitional Flow"; 
+                tag.className = "inline-block px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-yellow-100 text-yellow-700"; 
+            } else { 
+                flowStatus = "Turbulent";
+                tag.innerText = "Turbulent Flow"; 
+                tag.className = "inline-block px-6 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest bg-red-100 text-red-700"; 
+            }
+
+            // SAVE TO HISTORY
+            saveToHistory("Reynolds", `${re.toLocaleString()} (${flowStatus})`);
+        }
+
+        window.onload = () => { 
+            const arrow = document.getElementById('fluid-arrow'); 
+            arrow.style.transform = 'rotate(180deg)'; 
+            renderHistory(); // Load history on start
+        };
     </script>
 </body>
 </html>
