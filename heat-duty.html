@@ -14,6 +14,8 @@
         .sidebar-open { transform: translateX(0); }
         .submenu { transition: all 0.3s ease-in-out; overflow: hidden; }
         .submenu.hidden { display: none; }
+        #history-list::-webkit-scrollbar { width: 4px; }
+        #history-list::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -73,6 +75,14 @@
                         <a href="chemical-db.html" class="block text-xs text-slate-400 hover:text-white py-2">Chemical Search</a>
                     </div>
                 </div>
+                
+                <div class="mt-10 pt-6 border-t border-white/5">
+                    <div class="flex justify-between items-center px-4 mb-4">
+                        <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest">History</p>
+                        <button onclick="clearHistory()" class="text-[10px] text-red-400 font-bold uppercase hover:text-red-300">Clear</button>
+                    </div>
+                    <div id="history-list" class="px-4 space-y-3 max-h-60 overflow-y-auto"></div>
+                </div>
             </div>
         </nav>
     </aside>
@@ -106,13 +116,35 @@
     <script>
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('sidebar-closed'); document.getElementById('sidebar').classList.toggle('sidebar-open'); document.getElementById('overlay').classList.toggle('hidden'); }
         function toggleMenu(id, arrowId) { const menu = document.getElementById(id); const arrow = document.getElementById(arrowId); menu.classList.toggle('hidden'); arrow.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)'; }
+        
+        function saveToHistory(label, value) {
+            let history = JSON.parse(localStorage.getItem('processProHistory')) || [];
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            history.unshift({ label, value, time: timestamp });
+            if(history.length > 10) history.pop();
+            localStorage.setItem('processProHistory', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            const history = JSON.parse(localStorage.getItem('processProHistory')) || [];
+            if (history.length === 0) { list.innerHTML = '<p class="text-[10px] text-slate-600 italic">No calculations yet...</p>'; return; }
+            list.innerHTML = history.map(item => `<div class="bg-white/5 p-3 rounded-xl border border-white/5"><div class="flex justify-between text-[9px] uppercase font-black text-blue-400 mb-1"><span>${item.label}</span><span class="text-slate-500">${item.time}</span></div><div class="text-sm font-bold text-white">${item.value}</div></div>`).join('');
+        }
+
+        function clearHistory() { localStorage.removeItem('processProHistory'); renderHistory(); }
+
         function calculate() {
             const m = parseFloat(document.getElementById('flow').value); const cp = parseFloat(document.getElementById('cp').value); const dt = parseFloat(document.getElementById('dt').value);
             const u = parseFloat(document.getElementById('uval').value); const lmtd = parseFloat(document.getElementById('lmtd').value);
             const q = m * cp * dt; const a = q / (u * lmtd);
-            document.getElementById('resultBox').classList.remove('hidden'); document.getElementById('qVal').innerText = (q / 1000).toFixed(2); document.getElementById('aVal').innerText = a.toFixed(2);
+            document.getElementById('resultBox').classList.remove('hidden'); 
+            document.getElementById('qVal').innerText = (q / 1000).toFixed(2); 
+            document.getElementById('aVal').innerText = a.toFixed(2);
+            saveToHistory("Heat Duty", `${(q/1000).toFixed(1)} kW / ${a.toFixed(1)} m²`);
         }
-        window.onload = () => { const arrow = document.getElementById('heat-arrow'); arrow.style.transform = 'rotate(180deg)'; };
+        window.onload = () => { renderHistory(); const arrow = document.getElementById('heat-arrow'); arrow.style.transform = 'rotate(180deg)'; };
     </script>
 </body>
 </html>
