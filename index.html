@@ -57,10 +57,17 @@
                 </div>
             </div>
 
-            <div class="opacity-30 p-3 flex items-center">
-                <span class="material-icons text-slate-400 mr-3">thermostat</span>
-                <span class="text-sm font-bold">Heat Transfer</span>
-                <span class="material-icons text-xs ml-auto">lock</span>
+            <div>
+                <button onclick="toggleMenu('heat-menu', 'heat-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
+                    <div class="flex items-center">
+                        <span class="material-icons text-red-500 mr-3">thermostat</span>
+                        <span class="text-sm font-bold">Heat Transfer</span>
+                    </div>
+                    <span class="material-icons text-sm transition-transform duration-300" id="heat-arrow">expand_more</span>
+                </button>
+                <div id="heat-menu" class="submenu pl-10 space-y-2 mt-1">
+                    <a href="lmtd.html" class="block text-xs text-slate-400 hover:text-white py-1">LMTD Solver</a>
+                </div>
             </div>
         </nav>
     </aside>
@@ -101,16 +108,16 @@
                 </div>
             </a>
 
-            <div class="glass-card p-10 rounded-[2.5rem] border border-slate-100 opacity-50 relative overflow-hidden flex flex-col">
-                <div class="w-14 h-14 bg-slate-100 text-slate-300 rounded-2xl flex items-center justify-center mb-8">
+            <a href="lmtd.html" class="glass-card p-10 rounded-[2.5rem] border border-slate-100 flex flex-col group">
+                <div class="w-14 h-14 bg-red-500 text-white rounded-2xl flex items-center justify-center mb-8">
                     <span class="material-icons">thermostat</span>
                 </div>
-                <h3 class="text-2xl font-black text-slate-300 mb-3 uppercase italic tracking-tighter">Heat Transfer</h3>
-                <p class="text-slate-300 text-sm leading-relaxed mb-8">LMTD and heat exchanger design tools currently under development.</p>
-                <div class="text-slate-200 font-black text-[10px] uppercase tracking-widest flex items-center">
-                    <span class="material-icons text-xs mr-2">lock</span> Feature Locked
+                <h3 class="text-2xl font-black text-slate-800 mb-3 uppercase italic tracking-tighter">Heat Transfer</h3>
+                <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">Professional LMTD and Heat Exchanger duty solvers for process design.</p>
+                <div class="text-red-600 font-black text-xs uppercase tracking-widest flex items-center mt-auto">
+                    Open Solver <span class="material-icons text-sm ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
                 </div>
-            </div>
+            </a>
 
         </section>
     </main>
