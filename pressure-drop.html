@@ -14,6 +14,9 @@
         .sidebar-open { transform: translateX(0); }
         .submenu { transition: all 0.3s ease-in-out; overflow: hidden; }
         .submenu.hidden { display: none; }
+        
+        #history-list::-webkit-scrollbar { width: 4px; }
+        #history-list::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -33,6 +36,7 @@
         </div>
         <nav class="p-6">
             <div class="mb-10"><a href="index.html" class="flex items-center justify-center gap-2 bg-white/10 border border-white/20 hover:bg-white/20 text-white font-black py-3 rounded-2xl transition-all shadow-lg text-[11px] uppercase tracking-widest"><span class="material-icons text-sm">arrow_back</span> Dashboard</a></div>
+            
             <div class="space-y-4">
                 <div>
                     <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
@@ -44,6 +48,7 @@
                         <a href="pressure-drop.html" class="block text-xs text-blue-400 font-bold py-2 border-l-2 border-blue-400 pl-2">Pressure & Head</a>
                     </div>
                 </div>
+
                 <div>
                     <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
                         <div class="flex items-center"><span class="material-icons text-orange-500 mr-3 text-sm">sync_alt</span><span class="text-sm font-bold">Unit Converter</span></div>
@@ -53,6 +58,7 @@
                         <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Main Hub</a>
                     </div>
                 </div>
+
                 <div>
                     <button onclick="toggleMenu('heat-menu', 'heat-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
                         <div class="flex items-center"><span class="material-icons text-red-500 mr-3 text-sm">thermostat</span><span class="text-sm font-bold">Heat Transfer</span></div>
@@ -63,14 +69,23 @@
                         <a href="heat-duty.html" class="block text-xs text-slate-400 hover:text-white py-2">Heat Duty & Area</a>
                     </div>
                 </div>
+
                 <div>
                     <button onclick="toggleMenu('db-menu', 'db-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
                         <div class="flex items-center"><span class="material-icons text-green-500 mr-3 text-sm">science</span><span class="text-sm font-bold">Property DB</span></div>
                         <span class="material-icons text-sm transition-transform" id="db-arrow">expand_more</span>
                     </button>
                     <div id="db-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
-                        <a href="chemical-db.html" class="block text-xs text-slate-400 hover:text-white py-2">Chemical Search</a>
+                        <a href="chemical-db.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Chemical Search</a>
                     </div>
+                </div>
+
+                <div class="mt-10 pt-6 border-t border-white/5">
+                    <div class="flex justify-between items-center px-4 mb-4">
+                        <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest">History</p>
+                        <button onclick="clearHistory()" class="text-[10px] text-red-400 font-bold uppercase hover:text-red-300">Clear</button>
+                    </div>
+                    <div id="history-list" class="px-4 space-y-3 max-h-60 overflow-y-auto"></div>
                 </div>
             </div>
         </nav>
@@ -84,6 +99,7 @@
             <div class="p-10">
                 <div class="mb-4"><a href="index.html" class="text-[#059669] text-sm font-medium hover:underline flex items-center transition-all"><span class="mr-1">←</span> Back to Dashboard</a></div>
                 <h2 class="text-3xl font-[900] text-slate-800 mb-8 uppercase tracking-tight italic">Pressure & Head Loss</h2>
+                
                 <div class="space-y-5">
                     <div class="grid grid-cols-2 gap-4">
                         <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Re No.</label><input type="number" id="re" value="5000" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold"></div>
@@ -96,8 +112,14 @@
                     </div>
                     <button onclick="calculate()" class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-5 rounded-2xl shadow-lg transition-all transform active:scale-95 uppercase tracking-[0.2em] mt-4">Calculate Loss</button>
                     <div id="resultBox" class="hidden mt-8 grid grid-cols-2 gap-4">
-                        <div class="bg-green-50 p-6 rounded-3xl border border-green-100 text-center animate-in fade-in zoom-in duration-300"><p class="text-[10px] font-black text-green-400 uppercase tracking-widest">ΔP (Pa)</p><h3 id="dpVal" class="text-2xl font-black text-green-900 my-1">--</h3></div>
-                        <div class="bg-orange-50 p-6 rounded-3xl border border-orange-100 text-center animate-in fade-in zoom-in duration-300"><p class="text-[10px] font-black text-orange-400 uppercase tracking-widest">Head (m)</p><h3 id="hlVal" class="text-2xl font-black text-orange-900 my-1">--</h3></div>
+                        <div class="bg-green-50 p-6 rounded-3xl border border-green-100 text-center animate-in fade-in zoom-in duration-300">
+                            <p class="text-[10px] font-black text-green-400 uppercase tracking-widest">ΔP (Pa)</p>
+                            <h3 id="dpVal" class="text-2xl font-black text-green-900 my-1">--</h3>
+                        </div>
+                        <div class="bg-orange-50 p-6 rounded-3xl border border-orange-100 text-center animate-in fade-in zoom-in duration-300">
+                            <p class="text-[10px] font-black text-orange-400 uppercase tracking-widest">Head (m)</p>
+                            <h3 id="hlVal" class="text-2xl font-black text-orange-900 my-1">--</h3>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -107,8 +129,44 @@
     <script>
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('sidebar-closed'); document.getElementById('sidebar').classList.toggle('sidebar-open'); document.getElementById('overlay').classList.toggle('hidden'); }
         function toggleMenu(menuId, arrowId) { const menu = document.getElementById(menuId); const arrow = document.getElementById(arrowId); menu.classList.toggle('hidden'); arrow.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)'; }
-        function calculate() { const re = parseFloat(document.getElementById('re').value); const l = parseFloat(document.getElementById('l').value); const d = parseFloat(document.getElementById('d').value) / 1000; const rho = parseFloat(document.getElementById('rho').value); const u = parseFloat(document.getElementById('u').value); const g = 9.81; let f = (re < 2100) ? (64/re) : 0.316 * Math.pow(re, -0.25); const hl = f * (l/d) * (Math.pow(u,2)/(2*g)); const dp = rho * g * hl; document.getElementById('resultBox').classList.remove('hidden'); document.getElementById('dpVal').innerText = Math.round(dp).toLocaleString(); document.getElementById('hlVal').innerText = hl.toFixed(3); }
-        window.onload = () => { const arrow = document.getElementById('fluid-arrow'); arrow.style.transform = 'rotate(180deg)'; };
+
+        function saveToHistory(label, value) {
+            let history = JSON.parse(localStorage.getItem('processProHistory')) || [];
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            history.unshift({ label, value, time: timestamp });
+            if(history.length > 10) history.pop();
+            localStorage.setItem('processProHistory', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            const history = JSON.parse(localStorage.getItem('processProHistory')) || [];
+            if (history.length === 0) { list.innerHTML = '<p class="text-[10px] text-slate-600 italic">No calculations yet...</p>'; return; }
+            list.innerHTML = history.map(item => `<div class="bg-white/5 p-3 rounded-xl border border-white/5"><div class="flex justify-between text-[9px] uppercase font-black text-blue-400 mb-1"><span>${item.label}</span><span class="text-slate-500">${item.time}</span></div><div class="text-sm font-bold text-white">${item.value}</div></div>`).join('');
+        }
+
+        function clearHistory() { localStorage.removeItem('processProHistory'); renderHistory(); }
+
+        function calculate() {
+            const re = parseFloat(document.getElementById('re').value);
+            const l = parseFloat(document.getElementById('l').value);
+            const d = parseFloat(document.getElementById('d').value) / 1000;
+            const rho = parseFloat(document.getElementById('rho').value);
+            const u = parseFloat(document.getElementById('u').value);
+            const g = 9.81;
+            let f = (re < 2100) ? (64/re) : 0.316 * Math.pow(re, -0.25);
+            const hl = f * (l/d) * (Math.pow(u,2)/(2*g));
+            const dp = rho * g * hl;
+            
+            document.getElementById('resultBox').classList.remove('hidden');
+            document.getElementById('dpVal').innerText = Math.round(dp).toLocaleString();
+            document.getElementById('hlVal').innerText = hl.toFixed(3);
+
+            saveToHistory("Pressure Drop", `${Math.round(dp).toLocaleString()} Pa / ${hl.toFixed(2)} m`);
+        }
+
+        window.onload = () => { renderHistory(); const arrow = document.getElementById('fluid-arrow'); arrow.style.transform = 'rotate(180deg)'; };
     </script>
 </body>
 </html>
