@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMTD Calculator | Process Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sidebar-closed { transform: translateX(-100%); }
+        .sidebar-open { transform: translateX(0); }
+        .submenu { transition: all 0.3s ease-in-out; overflow: hidden; }
+        .submenu.hidden { display: none; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="bg-white border-b p-4 flex items-center shadow-sm z-40 fixed w-full">
+        <button onclick="toggleSidebar()" class="p-2 hover:bg-slate-100 rounded-lg transition-all mr-4 flex items-center">
+            <span class="material-icons text-slate-600">menu</span>
+            <span class="ml-2 text-[10px] font-black uppercase text-slate-400 tracking-widest">Menu</span>
+        </button>
+        <h1 class="font-[900] text-slate-800 uppercase tracking-tighter text-xl italic">Process <span class="text-blue-600">Pro</span></h1>
+    </nav>
+
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-72 bg-[#0a192f] text-white z-50 sidebar-closed shadow-2xl overflow-y-auto">
+        <div class="p-8 border-b border-white/5 flex justify-between items-center">
+            <h1 class="text-xl font-black text-blue-400 uppercase tracking-tighter italic">Navigation</h1>
+            <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white"><span class="material-icons">close</span></button>
+        </div>
+        
+        <nav class="p-6">
+            <div class="mb-10">
+                <a href="index.html" class="flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white font-black py-3 rounded-2xl transition-all shadow-lg active:scale-95 text-[11px] uppercase tracking-widest">
+                    <span class="material-icons text-sm">arrow_back</span> Dashboard
+                </a>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center">
+                            <span class="material-icons text-blue-500 mr-3 text-sm">water_drop</span>
+                            <span class="text-sm font-bold">Fluid Mechanics</span>
+                        </div>
+                        <span class="material-icons text-sm transition-transform" id="fluid-arrow">expand_more</span>
+                    </button>
+                    <div id="fluid-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="reynolds.html" class="block text-xs text-slate-400 hover:text-white py-2">Reynolds Number</a>
+                        <a href="pressure-drop.html" class="block text-xs text-slate-400 hover:text-white py-2">Pressure & Head</a>
+                    </div>
+                </div>
+
+                <div>
+                    <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center">
+                            <span class="material-icons text-orange-500 mr-3 text-sm">sync_alt</span>
+                            <span class="text-sm font-bold">Unit Converter</span>
+                        </div>
+                        <span class="material-icons text-sm transition-transform" id="unit-arrow">expand_more</span>
+                    </button>
+                    <div id="unit-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-2">Main Hub</a>
+                    </div>
+                </div>
+
+                <div>
+                    <button onclick="toggleMenu('heat-menu', 'heat-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center">
+                            <span class="material-icons text-red-500 mr-3 text-sm">thermostat</span>
+                            <span class="text-sm font-bold">Heat Transfer</span>
+                        </div>
+                        <span class="material-icons text-sm transition-transform" id="heat-arrow">expand_more</span>
+                    </button>
+                    <div id="heat-menu" class="submenu pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="lmtd.html" class="block text-xs text-blue-400 font-bold py-2 border-l-2 border-blue-400 pl-2">LMTD Solver</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
+
+    <main class="flex-1 pt-32 pb-20 flex flex-col items-center px-6">
+        <div class="max-w-2xl w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-200">
+            <div class="h-2 bg-red-500"></div>
+            <div class="p-10">
+                <div class="mb-4">
+                    <a href="index.html" class="text-[#10b981] text-sm font-medium hover:underline flex items-center transition-all">
+                        <span class="mr-1">←</span> Back to Dashboard
+                    </a>
+                </div>
+
+                <h2 class="text-3xl font-[900] text-slate-800 mb-8 uppercase tracking-tight italic">LMTD Calculator</h2>
+                
+                <div class="space-y-6">
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Flow Configuration</label>
+                        <div class="flex gap-4">
+                            <button id="counterBtn" onclick="setFlow('counter')" class="flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all border-2 border-red-500 bg-red-50 text-red-600">Counter-Current</button>
+                            <button id="coBtn" onclick="setFlow('co')" class="flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all border-2 border-slate-100 text-slate-400 hover:bg-slate-100">Co-Current</button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <p class="text-[10px] font-black text-red-500 uppercase tracking-widest">Hot Stream</p>
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-400 mb-1">Inlet Temp (T1) °C</label>
+                                <input type="number" id="t1" value="100" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-400 mb-1">Outlet Temp (T2) °C</label>
+                                <input type="number" id="t2" value="60" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold">
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <p class="text-[10px] font-black text-blue-500 uppercase tracking-widest">Cold Stream</p>
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-400 mb-1">Inlet Temp (t1) °C</label>
+                                <input type="number" id="tc1" value="25" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-black text-slate-400 mb-1">Outlet Temp (t2) °C</label>
+                                <input type="number" id="tc2" value="45" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="calculateLMTD()" class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-5 rounded-2xl shadow-lg transition-all transform active:scale-95 uppercase tracking-[0.2em] mt-4">
+                        Calculate LMTD
+                    </button>
+                    
+                    <div id="resultBox" class="hidden mt-8 p-8 bg-red-50 rounded-[2rem] border border-red-100 text-center animate-in fade-in zoom-in duration-300">
+                        <p class="text-[10px] font-black text-red-400 uppercase tracking-[0.2em]">Log Mean Temp Difference</p>
+                        <h3 id="lmtdVal" class="text-5xl font-[900] text-red-900 my-3 tracking-tighter">--</h3>
+                        <span class="text-xs font-bold text-red-400 uppercase tracking-widest">Degrees Celsius (°C)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let flowType = 'counter';
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('sidebar-closed');
+            document.getElementById('sidebar').classList.toggle('sidebar-open');
+            document.getElementById('overlay').classList.toggle('hidden');
+        }
+
+        function toggleMenu(id, arrowId) {
+            const menu = document.getElementById(id);
+            const arrow = document.getElementById(arrowId);
+            menu.classList.toggle('hidden');
+            arrow.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+
+        function setFlow(type) {
+            flowType = type;
+            const counterBtn = document.getElementById('counterBtn');
+            const coBtn = document.getElementById('coBtn');
+            if (type === 'counter') {
+                counterBtn.className = "flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all border-2 border-red-500 bg-red-50 text-red-600";
+                coBtn.className = "flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all border-2 border-slate-100 text-slate-400 hover:bg-slate-100";
+            } else {
+                coBtn.className = "flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all border-2 border-red-500 bg-red-50 text-red-600";
+                counterBtn.className = "flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all border-2 border-slate-100 text-slate-400 hover:bg-slate-100";
+            }
+        }
+
+        function calculateLMTD() {
+            const T1 = parseFloat(document.getElementById('t1').value);
+            const T2 = parseFloat(document.getElementById('t2').value);
+            const t1 = parseFloat(document.getElementById('tc1').value);
+            const t2 = parseFloat(document.getElementById('tc2').value);
+
+            let dt1, dt2;
+            if (flowType === 'counter') {
+                dt1 = T1 - t2;
+                dt2 = T2 - t1;
+            } else {
+                dt1 = T1 - t1;
+                dt2 = T2 - t2;
+            }
+
+            let lmtd;
+            if (dt1 === dt2) {
+                lmtd = dt1; // Arithmetic mean if differences are equal
+            } else {
+                lmtd = (dt1 - dt2) / Math.log(dt1 / dt2);
+            }
+
+            if (isNaN(lmtd) || lmtd < 0) {
+                alert("Invalid Temperature Gradient. Check your inputs (Hot must be > Cold).");
+                return;
+            }
+
+            document.getElementById('resultBox').classList.remove('hidden');
+            document.getElementById('lmtdVal').innerText = lmtd.toFixed(2);
+        }
+
+        window.onload = () => {
+            const arrow = document.getElementById('heat-arrow');
+            arrow.style.transform = 'rotate(180deg)';
+        };
+    </script>
+</body>
+</html>
