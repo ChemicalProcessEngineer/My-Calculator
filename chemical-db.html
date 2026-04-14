@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemical Database | Process Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sidebar-closed { transform: translateX(-100%); }
+        .sidebar-open { transform: translateX(0); }
+        .submenu { transition: all 0.3s ease-in-out; overflow: hidden; }
+        .submenu.hidden { display: none; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="bg-white border-b p-4 flex items-center shadow-sm z-40 fixed w-full">
+        <button onclick="toggleSidebar()" class="p-2 hover:bg-slate-100 rounded-lg transition-all mr-4 flex items-center">
+            <span class="material-icons text-slate-600">menu</span>
+            <span class="ml-2 text-[10px] font-black uppercase text-slate-400 tracking-widest">Menu</span>
+        </button>
+        <h1 class="font-[900] text-slate-800 uppercase tracking-tighter text-xl italic">Process <span class="text-blue-600">Pro</span></h1>
+    </nav>
+
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-72 bg-[#0a192f] text-white z-50 sidebar-closed shadow-2xl overflow-y-auto">
+        <div class="p-8 border-b border-white/5 flex justify-between items-center">
+            <h1 class="text-xl font-black text-blue-400 uppercase tracking-tighter italic">Navigation</h1>
+            <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white"><span class="material-icons">close</span></button>
+        </div>
+        
+        <nav class="p-6">
+            <div class="mb-10 text-center">
+                <a href="index.html" class="flex items-center justify-center gap-2 bg-white/10 border border-white/20 hover:bg-white/20 text-white font-black py-3 rounded-2xl transition-all shadow-lg text-[11px] uppercase tracking-widest">
+                    <span class="material-icons text-sm">arrow_back</span> Dashboard
+                </a>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <button onclick="toggleMenu('db-menu', 'db-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center">
+                            <span class="material-icons text-green-500 mr-3 text-sm">science</span>
+                            <span class="text-sm font-bold">Property DB</span>
+                        </div>
+                        <span class="material-icons text-sm transition-transform" id="db-arrow">expand_more</span>
+                    </button>
+                    <div id="db-menu" class="submenu pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="chemical-db.html" class="block text-xs text-blue-400 font-bold py-2 border-l-2 border-blue-400 pl-2">Chemical Search</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
+
+    <main class="flex-1 pt-32 pb-20 flex flex-col items-center px-6">
+        <div class="max-w-5xl w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-200">
+            <div class="h-2 bg-green-500"></div>
+            <div class="p-10">
+                <h2 class="text-3xl font-[900] text-slate-800 mb-4 uppercase tracking-tight italic">Physical Properties Database</h2>
+                <p class="text-slate-400 text-sm mb-8 italic">Standard properties at 25°C and 1 atm.</p>
+
+                <div class="relative mb-8">
+                    <span class="material-icons absolute left-4 top-4 text-slate-400">search</span>
+                    <input type="text" id="dbSearch" onkeyup="searchDB()" placeholder="Search by name or formula..." class="w-full p-4 pl-12 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 font-bold text-slate-700">
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                                <th class="pb-4 px-4">Chemical</th>
+                                <th class="pb-4 px-4">Density (kg/m³)</th>
+                                <th class="pb-4 px-4">Viscosity (Pa·s)</th>
+                                <th class="pb-4 px-4">Cp (J/kg·K)</th>
+                                <th class="pb-4 px-4">Thermal Cond. (W/m·K)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dbBody" class="text-sm font-bold text-slate-700">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const chemicals = [
+            { name: "Water (H2O)", rho: 997, mu: 0.00089, cp: 4187, k: 0.606 },
+            { name: "Ethanol (C2H5OH)", rho: 789, mu: 0.00107, cp: 2440, k: 0.171 },
+            { name: "Air", rho: 1.18, mu: 0.000018, cp: 1006, k: 0.026 },
+            { name: "Methanol", rho: 792, mu: 0.00054, cp: 2530, k: 0.202 },
+            { name: "Ethylene Glycol", rho: 1113, mu: 0.016, cp: 2430, k: 0.258 },
+            { name: "Mercury", rho: 13546, mu: 0.00155, cp: 139, k: 8.54 }
+        ];
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('sidebar-closed');
+            document.getElementById('sidebar').classList.toggle('sidebar-open');
+            document.getElementById('overlay').classList.toggle('hidden');
+        }
+
+        function toggleMenu(id, arrowId) {
+            const menu = document.getElementById(id);
+            const arrow = document.getElementById(arrowId);
+            menu.classList.toggle('hidden');
+            arrow.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+
+        function loadDB(data) {
+            const body = document.getElementById('dbBody');
+            body.innerHTML = data.map(c => `
+                <tr class="border-b border-slate-50 hover:bg-slate-50 transition-all group">
+                    <td class="py-4 px-4 text-blue-600">${c.name}</td>
+                    <td class="py-4 px-4">${c.rho}</td>
+                    <td class="py-4 px-4">${c.mu}</td>
+                    <td class="py-4 px-4">${c.cp}</td>
+                    <td class="py-4 px-4">${c.k}</td>
+                </tr>
+            `).join('');
+        }
+
+        function searchDB() {
+            const query = document.getElementById('dbSearch').value.toLowerCase();
+            const filtered = chemicals.filter(c => c.name.toLowerCase().includes(query));
+            loadDB(filtered);
+        }
+
+        window.onload = () => {
+            loadDB(chemicals);
+            toggleMenu('db-menu', 'db-arrow');
+        };
+    </script>
+</body>
+</html>
