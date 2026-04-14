@@ -33,19 +33,40 @@
         </div>
         
         <nav class="p-6">
-            <div class="mb-10 text-center">
-                <a href="index.html" class="flex items-center justify-center gap-2 bg-white/10 border border-white/20 hover:bg-white/20 text-white font-black py-3 rounded-2xl transition-all shadow-lg text-[11px] uppercase tracking-widest">
-                    <span class="material-icons text-sm">arrow_back</span> Dashboard
-                </a>
-            </div>
-
+            <div class="mb-10"><a href="index.html" class="flex items-center justify-center gap-2 bg-white/10 border border-white/20 hover:bg-white/20 text-white font-black py-3 rounded-2xl transition-all shadow-lg text-[11px] uppercase tracking-widest"><span class="material-icons text-sm">arrow_back</span> Dashboard</a></div>
             <div class="space-y-4">
                 <div>
+                    <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center"><span class="material-icons text-blue-500 mr-3 text-sm">water_drop</span><span class="text-sm font-bold">Fluid Mechanics</span></div>
+                        <span class="material-icons text-sm transition-transform" id="fluid-arrow">expand_more</span>
+                    </button>
+                    <div id="fluid-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="reynolds.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Reynolds Number</a>
+                        <a href="pressure-drop.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Pressure & Head</a>
+                    </div>
+                </div>
+                <div>
+                    <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center"><span class="material-icons text-orange-500 mr-3 text-sm">sync_alt</span><span class="text-sm font-bold">Unit Converter</span></div>
+                        <span class="material-icons text-sm transition-transform" id="unit-arrow">expand_more</span>
+                    </button>
+                    <div id="unit-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Main Hub</a>
+                    </div>
+                </div>
+                <div>
+                    <button onclick="toggleMenu('heat-menu', 'heat-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center"><span class="material-icons text-red-500 mr-3 text-sm">thermostat</span><span class="text-sm font-bold">Heat Transfer</span></div>
+                        <span class="material-icons text-sm transition-transform" id="heat-arrow">expand_more</span>
+                    </button>
+                    <div id="heat-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="lmtd.html" class="block text-xs text-slate-400 hover:text-white py-2">LMTD Solver</a>
+                        <a href="heat-duty.html" class="block text-xs text-slate-400 hover:text-white py-2">Heat Duty & Area</a>
+                    </div>
+                </div>
+                <div>
                     <button onclick="toggleMenu('db-menu', 'db-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
-                        <div class="flex items-center">
-                            <span class="material-icons text-green-500 mr-3 text-sm">science</span>
-                            <span class="text-sm font-bold">Property DB</span>
-                        </div>
+                        <div class="flex items-center"><span class="material-icons text-green-500 mr-3 text-sm">science</span><span class="text-sm font-bold">Property DB</span></div>
                         <span class="material-icons text-sm transition-transform" id="db-arrow">expand_more</span>
                     </button>
                     <div id="db-menu" class="submenu pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
@@ -63,13 +84,10 @@
             <div class="h-2 bg-green-500"></div>
             <div class="p-10">
                 <h2 class="text-3xl font-[900] text-slate-800 mb-4 uppercase tracking-tight italic">Physical Properties Database</h2>
-                <p class="text-slate-400 text-sm mb-8 italic">Standard properties at 25°C and 1 atm.</p>
-
                 <div class="relative mb-8">
                     <span class="material-icons absolute left-4 top-4 text-slate-400">search</span>
                     <input type="text" id="dbSearch" onkeyup="searchDB()" placeholder="Search by name or formula..." class="w-full p-4 pl-12 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:ring-2 focus:ring-green-500 font-bold text-slate-700">
                 </div>
-
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
@@ -81,8 +99,7 @@
                                 <th class="pb-4 px-4">Thermal Cond. (W/m·K)</th>
                             </tr>
                         </thead>
-                        <tbody id="dbBody" class="text-sm font-bold text-slate-700">
-                            </tbody>
+                        <tbody id="dbBody" class="text-sm font-bold text-slate-700"></tbody>
                     </table>
                 </div>
             </div>
@@ -98,43 +115,27 @@
             { name: "Ethylene Glycol", rho: 1113, mu: 0.016, cp: 2430, k: 0.258 },
             { name: "Mercury", rho: 13546, mu: 0.00155, cp: 139, k: 8.54 }
         ];
-
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('sidebar-closed');
             document.getElementById('sidebar').classList.toggle('sidebar-open');
             document.getElementById('overlay').classList.toggle('hidden');
         }
-
         function toggleMenu(id, arrowId) {
             const menu = document.getElementById(id);
             const arrow = document.getElementById(arrowId);
             menu.classList.toggle('hidden');
             arrow.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
         }
-
         function loadDB(data) {
             const body = document.getElementById('dbBody');
-            body.innerHTML = data.map(c => `
-                <tr class="border-b border-slate-50 hover:bg-slate-50 transition-all group">
-                    <td class="py-4 px-4 text-blue-600">${c.name}</td>
-                    <td class="py-4 px-4">${c.rho}</td>
-                    <td class="py-4 px-4">${c.mu}</td>
-                    <td class="py-4 px-4">${c.cp}</td>
-                    <td class="py-4 px-4">${c.k}</td>
-                </tr>
-            `).join('');
+            body.innerHTML = data.map(c => `<tr class="border-b border-slate-50 hover:bg-slate-50 transition-all group"><td class="py-4 px-4 text-blue-600">${c.name}</td><td class="py-4 px-4">${c.rho}</td><td class="py-4 px-4">${c.mu}</td><td class="py-4 px-4">${c.cp}</td><td class="py-4 px-4">${c.k}</td></tr>`).join('');
         }
-
         function searchDB() {
             const query = document.getElementById('dbSearch').value.toLowerCase();
             const filtered = chemicals.filter(c => c.name.toLowerCase().includes(query));
             loadDB(filtered);
         }
-
-        window.onload = () => {
-            loadDB(chemicals);
-            toggleMenu('db-menu', 'db-arrow');
-        };
+        window.onload = () => { loadDB(chemicals); const arrow = document.getElementById('db-arrow'); arrow.style.transform = 'rotate(180deg)'; };
     </script>
 </body>
 </html>
