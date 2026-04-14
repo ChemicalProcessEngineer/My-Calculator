@@ -9,10 +9,8 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        
         .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .submenu.open { max-height: 200px; }
-        
         .glass-card {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
@@ -67,6 +65,7 @@
                 </button>
                 <div id="heat-menu" class="submenu pl-10 space-y-2 mt-1">
                     <a href="lmtd.html" class="block text-xs text-slate-400 hover:text-white py-1">LMTD Solver</a>
+                    <a href="heat-duty.html" class="block text-xs text-slate-400 hover:text-white py-1">Heat Duty & Area</a>
                 </div>
             </div>
         </nav>
@@ -86,7 +85,6 @@
                 </div>
                 <h3 class="text-2xl font-black text-slate-800 mb-3 uppercase italic tracking-tighter">Fluid Mechanics</h3>
                 <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">Solvers for Reynolds number, pressure drops, and flow regimes.</p>
-                
                 <div class="space-y-3">
                     <a href="reynolds.html" class="flex items-center justify-between bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-600 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">
                         Reynolds Number <span class="material-icons text-sm">arrow_forward</span>
@@ -108,16 +106,21 @@
                 </div>
             </a>
 
-            <a href="lmtd.html" class="glass-card p-10 rounded-[2.5rem] border border-slate-100 flex flex-col group">
+            <div class="glass-card p-10 rounded-[2.5rem] border border-slate-100 flex flex-col group">
                 <div class="w-14 h-14 bg-red-500 text-white rounded-2xl flex items-center justify-center mb-8">
                     <span class="material-icons">thermostat</span>
                 </div>
                 <h3 class="text-2xl font-black text-slate-800 mb-3 uppercase italic tracking-tighter">Heat Transfer</h3>
-                <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">Professional LMTD and Heat Exchanger duty solvers for process design.</p>
-                <div class="text-red-600 font-black text-xs uppercase tracking-widest flex items-center mt-auto">
-                    Open Solver <span class="material-icons text-sm ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">LMTD and Heat Exchanger duty solvers for process design.</p>
+                <div class="space-y-3">
+                    <a href="lmtd.html" class="flex items-center justify-between bg-red-50 hover:bg-red-600 hover:text-white text-red-600 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">
+                        LMTD Solver <span class="material-icons text-sm">arrow_forward</span>
+                    </a>
+                    <a href="heat-duty.html" class="flex items-center justify-between bg-slate-50 hover:bg-red-600 hover:text-white text-slate-600 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">
+                        Heat Duty & Area <span class="material-icons text-sm">arrow_forward</span>
+                    </a>
                 </div>
-            </a>
+            </div>
 
         </section>
     </main>
@@ -127,11 +130,7 @@
             const menu = document.getElementById(id);
             const arrow = document.getElementById(arrowId);
             menu.classList.toggle('open');
-            if (menu.classList.contains('open')) {
-                arrow.style.transform = 'rotate(180deg)';
-            } else {
-                arrow.style.transform = 'rotate(0deg)';
-            }
+            arrow.style.transform = menu.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
         }
     </script>
 </body>
