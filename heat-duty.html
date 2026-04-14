@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heat Duty & Area | Process Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sidebar-closed { transform: translateX(-100%); }
+        .sidebar-open { transform: translateX(0); }
+        .submenu { transition: all 0.3s ease-in-out; overflow: hidden; }
+        .submenu.hidden { display: none; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="bg-white border-b p-4 flex items-center shadow-sm z-40 fixed w-full">
+        <button onclick="toggleSidebar()" class="p-2 hover:bg-slate-100 rounded-lg transition-all mr-4 flex items-center">
+            <span class="material-icons text-slate-600">menu</span>
+            <span class="ml-2 text-[10px] font-black uppercase text-slate-400 tracking-widest">Menu</span>
+        </button>
+        <h1 class="font-[900] text-slate-800 uppercase tracking-tighter text-xl italic">Process <span class="text-blue-600">Pro</span></h1>
+    </nav>
+
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-72 bg-[#0a192f] text-white z-50 sidebar-closed shadow-2xl overflow-y-auto">
+        <div class="p-8 border-b border-white/5 flex justify-between items-center">
+            <h1 class="text-xl font-black text-blue-400 uppercase tracking-tighter italic">Navigation</h1>
+            <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white"><span class="material-icons">close</span></button>
+        </div>
+        
+        <nav class="p-6">
+            <div class="mb-10">
+                <a href="index.html" class="flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white font-black py-3 rounded-2xl transition-all shadow-lg active:scale-95 text-[11px] uppercase tracking-widest">
+                    <span class="material-icons text-sm">arrow_back</span> Dashboard
+                </a>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center">
+                            <span class="material-icons text-blue-500 mr-3 text-sm">water_drop</span>
+                            <span class="text-sm font-bold">Fluid Mechanics</span>
+                        </div>
+                        <span class="material-icons text-sm transition-transform" id="fluid-arrow">expand_more</span>
+                    </button>
+                    <div id="fluid-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="reynolds.html" class="block text-xs text-slate-400 hover:text-white py-2">Reynolds Number</a>
+                        <a href="pressure-drop.html" class="block text-xs text-slate-400 hover:text-white py-2">Pressure & Head</a>
+                    </div>
+                </div>
+
+                <div>
+                    <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center">
+                            <span class="material-icons text-orange-500 mr-3 text-sm">sync_alt</span>
+                            <span class="text-sm font-bold">Unit Converter</span>
+                        </div>
+                        <span class="material-icons text-sm transition-transform" id="unit-arrow">expand_more</span>
+                    </button>
+                    <div id="unit-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-2">Main Hub</a>
+                    </div>
+                </div>
+
+                <div>
+                    <button onclick="toggleMenu('heat-menu', 'heat-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center">
+                            <span class="material-icons text-red-500 mr-3 text-sm">thermostat</span>
+                            <span class="text-sm font-bold">Heat Transfer</span>
+                        </div>
+                        <span class="material-icons text-sm transition-transform" id="heat-arrow">expand_more</span>
+                    </button>
+                    <div id="heat-menu" class="submenu pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="lmtd.html" class="block text-xs text-slate-400 hover:text-white py-2">LMTD Solver</a>
+                        <a href="heat-duty.html" class="block text-xs text-blue-400 font-bold py-2 border-l-2 border-blue-400 pl-2">Heat Duty & Area</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
+
+    <main class="flex-1 pt-32 pb-20 flex flex-col items-center px-6">
+        <div class="max-w-xl w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-200">
+            <div class="h-2 bg-red-600"></div>
+            <div class="p-10">
+                <div class="mb-4">
+                    <a href="index.html" class="text-[#10b981] text-sm font-medium hover:underline flex items-center transition-all">
+                        <span class="mr-1">←</span> Back to Dashboard
+                    </a>
+                </div>
+
+                <h2 class="text-3xl font-[900] text-slate-800 mb-8 uppercase tracking-tight italic">Heat Duty & Area</h2>
+                
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Mass Flow Rate (kg/s)</label>
+                        <input type="number" id="flow" value="1.5" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Specific Heat Cp (J/kg·K)</label>
+                        <input type="number" id="cp" value="4187" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Temp Change ΔT (°C)</label>
+                        <input type="number" id="dt" value="20" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">U Value (W/m²·K)</label>
+                            <input type="number" id="uval" value="500" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">LMTD (°C)</label>
+                            <input type="number" id="lmtd" value="35" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold">
+                        </div>
+                    </div>
+                    
+                    <button onclick="calculate()" class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-5 rounded-2xl shadow-lg transition-all transform active:scale-95 uppercase tracking-[0.2em] mt-4">
+                        Calculate Duty & Area
+                    </button>
+                    
+                    <div id="resultBox" class="hidden mt-8 grid grid-cols-2 gap-4">
+                        <div class="bg-red-50 p-6 rounded-3xl border border-red-100 text-center animate-in fade-in zoom-in duration-300">
+                            <p class="text-[10px] font-black text-red-400 uppercase tracking-widest">Duty (kW)</p>
+                            <h3 id="qVal" class="text-2xl font-black text-red-900 my-1">--</h3>
+                        </div>
+                        <div class="bg-blue-50 p-6 rounded-3xl border border-blue-100 text-center animate-in fade-in zoom-in duration-300">
+                            <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest">Area (m²)</p>
+                            <h3 id="aVal" class="text-2xl font-black text-blue-900 my-1">--</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('sidebar-closed');
+            document.getElementById('sidebar').classList.toggle('sidebar-open');
+            document.getElementById('overlay').classList.toggle('hidden');
+        }
+
+        function toggleMenu(id, arrowId) {
+            const menu = document.getElementById(id);
+            const arrow = document.getElementById(arrowId);
+            menu.classList.toggle('hidden');
+            arrow.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        }
+
+        function calculate() {
+            const m = parseFloat(document.getElementById('flow').value);
+            const cp = parseFloat(document.getElementById('cp').value);
+            const dt = parseFloat(document.getElementById('dt').value);
+            const u = parseFloat(document.getElementById('uval').value);
+            const lmtd = parseFloat(document.getElementById('lmtd').value);
+
+            const q = m * cp * dt; // Watts
+            const a = q / (u * lmtd);
+
+            document.getElementById('resultBox').classList.remove('hidden');
+            document.getElementById('qVal').innerText = (q / 1000).toFixed(2);
+            document.getElementById('aVal').innerText = a.toFixed(2);
+        }
+
+        window.onload = () => {
+            const arrow = document.getElementById('heat-arrow');
+            arrow.style.transform = 'rotate(180deg)';
+        };
+    </script>
+</body>
+</html>
