@@ -9,13 +9,9 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        
-        /* Sidebar transition */
         #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .sidebar-closed { transform: translateX(-100%); }
         .sidebar-open { transform: translateX(0); }
-
-        /* Submenu transition logic */
         .submenu { transition: all 0.3s ease-in-out; overflow: hidden; }
         .submenu.hidden { display: none; }
     </style>
@@ -33,26 +29,14 @@
     <aside id="sidebar" class="fixed left-0 top-0 h-full w-72 bg-[#0a192f] text-white z-50 sidebar-closed shadow-2xl overflow-y-auto">
         <div class="p-8 border-b border-white/5 flex justify-between items-center">
             <h1 class="text-xl font-black text-blue-400 uppercase tracking-tighter italic">Navigation</h1>
-            <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white">
-                <span class="material-icons">close</span>
-            </button>
+            <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white"><span class="material-icons">close</span></button>
         </div>
-        
         <nav class="p-6">
-            <div class="mb-10">
-                <a href="index.html" class="flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white font-black py-3 rounded-2xl transition-all shadow-lg active:scale-95 text-[11px] uppercase tracking-widest">
-                    <span class="material-icons text-sm">arrow_back</span>
-                    Dashboard
-                </a>
-            </div>
-
+            <div class="mb-10"><a href="index.html" class="flex items-center justify-center gap-2 bg-white/10 border border-white/20 hover:bg-white/20 text-white font-black py-3 rounded-2xl transition-all shadow-lg text-[11px] uppercase tracking-widest"><span class="material-icons text-sm">arrow_back</span> Dashboard</a></div>
             <div class="space-y-4">
                 <div>
                     <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
-                        <div class="flex items-center">
-                            <span class="material-icons text-blue-500 mr-3 text-sm">water_drop</span>
-                            <span class="text-sm font-bold">Fluid Mechanics</span>
-                        </div>
+                        <div class="flex items-center"><span class="material-icons text-blue-500 mr-3 text-sm">water_drop</span><span class="text-sm font-bold">Fluid Mechanics</span></div>
                         <span class="material-icons text-sm transition-transform" id="fluid-arrow">expand_more</span>
                     </button>
                     <div id="fluid-menu" class="submenu pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
@@ -60,30 +44,32 @@
                         <a href="pressure-drop.html" class="block text-xs text-blue-400 font-bold py-2 border-l-2 border-blue-400 pl-2">Pressure & Head</a>
                     </div>
                 </div>
-
                 <div>
                     <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
-                        <div class="flex items-center">
-                            <span class="material-icons text-orange-500 mr-3 text-sm">sync_alt</span>
-                            <span class="text-sm font-bold">Unit Converter</span>
-                        </div>
+                        <div class="flex items-center"><span class="material-icons text-orange-500 mr-3 text-sm">sync_alt</span><span class="text-sm font-bold">Unit Converter</span></div>
                         <span class="material-icons text-sm transition-transform" id="unit-arrow">expand_more</span>
                     </button>
                     <div id="unit-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
                         <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Main Hub</a>
                     </div>
                 </div>
-
                 <div>
                     <button onclick="toggleMenu('heat-menu', 'heat-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
-                        <div class="flex items-center">
-                            <span class="material-icons text-red-500 mr-3 text-sm">thermostat</span>
-                            <span class="text-sm font-bold">Heat Transfer</span>
-                        </div>
+                        <div class="flex items-center"><span class="material-icons text-red-500 mr-3 text-sm">thermostat</span><span class="text-sm font-bold">Heat Transfer</span></div>
                         <span class="material-icons text-sm transition-transform" id="heat-arrow">expand_more</span>
                     </button>
                     <div id="heat-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
-                        <a href="lmtd.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">LMTD Solver</a>
+                        <a href="lmtd.html" class="block text-xs text-slate-400 hover:text-white py-2">LMTD Solver</a>
+                        <a href="heat-duty.html" class="block text-xs text-slate-400 hover:text-white py-2">Heat Duty & Area</a>
+                    </div>
+                </div>
+                <div>
+                    <button onclick="toggleMenu('db-menu', 'db-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center"><span class="material-icons text-green-500 mr-3 text-sm">science</span><span class="text-sm font-bold">Property DB</span></div>
+                        <span class="material-icons text-sm transition-transform" id="db-arrow">expand_more</span>
+                    </button>
+                    <div id="db-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="chemical-db.html" class="block text-xs text-slate-400 hover:text-white py-2">Chemical Search</a>
                     </div>
                 </div>
             </div>
@@ -96,51 +82,22 @@
         <div class="max-w-xl w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-200">
             <div class="h-2 bg-green-600"></div>
             <div class="p-10">
-                <div class="mb-4">
-                    <a href="index.html" class="text-[#059669] text-sm font-medium hover:underline flex items-center transition-all">
-                        <span class="mr-1">←</span> Back to Dashboard
-                    </a>
-                </div>
-
+                <div class="mb-4"><a href="index.html" class="text-[#059669] text-sm font-medium hover:underline flex items-center transition-all"><span class="mr-1">←</span> Back to Dashboard</a></div>
                 <h2 class="text-3xl font-[900] text-slate-800 mb-8 uppercase tracking-tight italic">Pressure & Head Loss</h2>
-                
                 <div class="space-y-5">
                     <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Re No.</label>
-                            <input type="number" id="re" value="5000" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Length (m)</label>
-                            <input type="number" id="l" value="10" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold">
-                        </div>
+                        <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Re No.</label><input type="number" id="re" value="5000" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold"></div>
+                        <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Length (m)</label><input type="number" id="l" value="10" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold"></div>
                     </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Diameter (mm)</label>
-                        <input type="number" id="d" value="50" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold">
-                    </div>
+                    <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Diameter (mm)</label><input type="number" id="d" value="50" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold"></div>
                     <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Density (kg/m³)</label>
-                            <input type="number" id="rho" value="1000" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Velocity (m/s)</label>
-                            <input type="number" id="u" value="2.0" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold">
-                        </div>
+                        <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Density (kg/m³)</label><input type="number" id="rho" value="1000" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold"></div>
+                        <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Velocity (m/s)</label><input type="number" id="u" value="2.0" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold"></div>
                     </div>
-                    <button onclick="calculate()" class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-5 rounded-2xl shadow-lg transition-all transform active:scale-95 uppercase tracking-[0.2em] mt-4">
-                        Calculate Loss
-                    </button>
+                    <button onclick="calculate()" class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-5 rounded-2xl shadow-lg transition-all transform active:scale-95 uppercase tracking-[0.2em] mt-4">Calculate Loss</button>
                     <div id="resultBox" class="hidden mt-8 grid grid-cols-2 gap-4">
-                        <div class="bg-green-50 p-6 rounded-3xl border border-green-100 text-center animate-in fade-in zoom-in duration-300">
-                            <p class="text-[10px] font-black text-green-400 uppercase tracking-widest">ΔP (Pa)</p>
-                            <h3 id="dpVal" class="text-2xl font-black text-green-900 my-1">--</h3>
-                        </div>
-                        <div class="bg-orange-50 p-6 rounded-3xl border border-orange-100 text-center animate-in fade-in zoom-in duration-300">
-                            <p class="text-[10px] font-black text-orange-400 uppercase tracking-widest">Head (m)</p>
-                            <h3 id="hlVal" class="text-2xl font-black text-orange-900 my-1">--</h3>
-                        </div>
+                        <div class="bg-green-50 p-6 rounded-3xl border border-green-100 text-center animate-in fade-in zoom-in duration-300"><p class="text-[10px] font-black text-green-400 uppercase tracking-widest">ΔP (Pa)</p><h3 id="dpVal" class="text-2xl font-black text-green-900 my-1">--</h3></div>
+                        <div class="bg-orange-50 p-6 rounded-3xl border border-orange-100 text-center animate-in fade-in zoom-in duration-300"><p class="text-[10px] font-black text-orange-400 uppercase tracking-widest">Head (m)</p><h3 id="hlVal" class="text-2xl font-black text-orange-900 my-1">--</h3></div>
                     </div>
                 </div>
             </div>
@@ -148,44 +105,10 @@
     </main>
 
     <script>
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('sidebar-closed');
-            document.getElementById('sidebar').classList.toggle('sidebar-open');
-            document.getElementById('overlay').classList.toggle('hidden');
-        }
-
-        function toggleMenu(menuId, arrowId) {
-            const menu = document.getElementById(menuId);
-            const arrow = document.getElementById(arrowId);
-            
-            if (menu.classList.contains('hidden')) {
-                menu.classList.remove('hidden');
-                arrow.style.transform = 'rotate(180deg)';
-            } else {
-                menu.classList.add('hidden');
-                arrow.style.transform = 'rotate(0deg)';
-            }
-        }
-
-        function calculate() {
-            const re = parseFloat(document.getElementById('re').value);
-            const l = parseFloat(document.getElementById('l').value);
-            const d = parseFloat(document.getElementById('d').value) / 1000;
-            const rho = parseFloat(document.getElementById('rho').value);
-            const u = parseFloat(document.getElementById('u').value);
-            const g = 9.81;
-            let f = (re < 2100) ? (64/re) : 0.316 * Math.pow(re, -0.25);
-            const hl = f * (l/d) * (Math.pow(u,2)/(2*g));
-            const dp = rho * g * hl;
-            document.getElementById('resultBox').classList.remove('hidden');
-            document.getElementById('dpVal').innerText = Math.round(dp).toLocaleString();
-            document.getElementById('hlVal').innerText = hl.toFixed(3);
-        }
-
-        window.onload = () => {
-            const arrow = document.getElementById('fluid-arrow');
-            arrow.style.transform = 'rotate(180deg)';
-        };
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('sidebar-closed'); document.getElementById('sidebar').classList.toggle('sidebar-open'); document.getElementById('overlay').classList.toggle('hidden'); }
+        function toggleMenu(menuId, arrowId) { const menu = document.getElementById(menuId); const arrow = document.getElementById(arrowId); menu.classList.toggle('hidden'); arrow.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)'; }
+        function calculate() { const re = parseFloat(document.getElementById('re').value); const l = parseFloat(document.getElementById('l').value); const d = parseFloat(document.getElementById('d').value) / 1000; const rho = parseFloat(document.getElementById('rho').value); const u = parseFloat(document.getElementById('u').value); const g = 9.81; let f = (re < 2100) ? (64/re) : 0.316 * Math.pow(re, -0.25); const hl = f * (l/d) * (Math.pow(u,2)/(2*g)); const dp = rho * g * hl; document.getElementById('resultBox').classList.remove('hidden'); document.getElementById('dpVal').innerText = Math.round(dp).toLocaleString(); document.getElementById('hlVal').innerText = hl.toFixed(3); }
+        window.onload = () => { const arrow = document.getElementById('fluid-arrow'); arrow.style.transform = 'rotate(180deg)'; };
     </script>
 </body>
 </html>
