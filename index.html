@@ -68,6 +68,19 @@
                     <a href="heat-duty.html" class="block text-xs text-slate-400 hover:text-white py-1">Heat Duty & Area</a>
                 </div>
             </div>
+
+            <div>
+                <button onclick="toggleMenu('db-menu', 'db-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
+                    <div class="flex items-center">
+                        <span class="material-icons text-green-500 mr-3">science</span>
+                        <span class="text-sm font-bold">Property DB</span>
+                    </div>
+                    <span class="material-icons text-sm transition-transform duration-300" id="db-arrow">expand_more</span>
+                </button>
+                <div id="db-menu" class="submenu pl-10 space-y-2 mt-1">
+                    <a href="chemical-db.html" class="block text-xs text-slate-400 hover:text-white py-1">Chemical Search</a>
+                </div>
+            </div>
         </nav>
     </aside>
 
@@ -78,7 +91,6 @@
         </section>
 
         <section class="max-w-6xl mx-auto px-10 pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            
             <div class="glass-card p-10 rounded-[2.5rem] border border-slate-100 flex flex-col group">
                 <div class="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center mb-8">
                     <span class="material-icons">water_drop</span>
@@ -86,12 +98,8 @@
                 <h3 class="text-2xl font-black text-slate-800 mb-3 uppercase italic tracking-tighter">Fluid Mechanics</h3>
                 <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">Solvers for Reynolds number, pressure drops, and flow regimes.</p>
                 <div class="space-y-3">
-                    <a href="reynolds.html" class="flex items-center justify-between bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-600 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">
-                        Reynolds Number <span class="material-icons text-sm">arrow_forward</span>
-                    </a>
-                    <a href="pressure-drop.html" class="flex items-center justify-between bg-slate-50 hover:bg-blue-600 hover:text-white text-slate-600 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">
-                        Pressure Drop <span class="material-icons text-sm">arrow_forward</span>
-                    </a>
+                    <a href="reynolds.html" class="flex items-center justify-between bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-600 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">Reynolds Number <span class="material-icons text-sm">arrow_forward</span></a>
+                    <a href="pressure-drop.html" class="flex items-center justify-between bg-slate-50 hover:bg-blue-600 hover:text-white text-slate-600 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">Pressure Drop <span class="material-icons text-sm">arrow_forward</span></a>
                 </div>
             </div>
 
@@ -101,9 +109,7 @@
                 </div>
                 <h3 class="text-2xl font-black text-slate-800 mb-3 uppercase italic tracking-tighter">Unit Converter</h3>
                 <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">Multi-unit conversions for Pressure, Temperature, and Mass.</p>
-                <div class="text-orange-600 font-bold text-xs uppercase tracking-widest flex items-center mt-auto">
-                    Open Hub <span class="material-icons text-sm ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                </div>
+                <div class="text-orange-600 font-bold text-xs uppercase tracking-widest flex items-center mt-auto">Open Hub <span class="material-icons text-sm ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span></div>
             </a>
 
             <div class="glass-card p-10 rounded-[2.5rem] border border-slate-100 flex flex-col group">
@@ -113,15 +119,10 @@
                 <h3 class="text-2xl font-black text-slate-800 mb-3 uppercase italic tracking-tighter">Heat Transfer</h3>
                 <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">LMTD and Heat Exchanger duty solvers for process design.</p>
                 <div class="space-y-3">
-                    <a href="lmtd.html" class="flex items-center justify-between bg-red-50 hover:bg-red-600 hover:text-white text-red-600 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">
-                        LMTD Solver <span class="material-icons text-sm">arrow_forward</span>
-                    </a>
-                    <a href="heat-duty.html" class="flex items-center justify-between bg-slate-50 hover:bg-red-600 hover:text-white text-slate-600 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">
-                        Heat Duty & Area <span class="material-icons text-sm">arrow_forward</span>
-                    </a>
+                    <a href="lmtd.html" class="flex items-center justify-between bg-red-50 hover:bg-red-600 hover:text-white text-red-600 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">LMTD Solver <span class="material-icons text-sm">arrow_forward</span></a>
+                    <a href="heat-duty.html" class="flex items-center justify-between bg-slate-50 hover:bg-red-600 hover:text-white text-slate-600 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">Heat Duty & Area <span class="material-icons text-sm">arrow_forward</span></a>
                 </div>
             </div>
-
         </section>
     </main>
 
