@@ -14,6 +14,8 @@
         .sidebar-open { transform: translateX(0); }
         .submenu { transition: all 0.3s ease-in-out; overflow: hidden; }
         .submenu.hidden { display: none; }
+        #history-list::-webkit-scrollbar { width: 4px; }
+        #history-list::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -31,7 +33,6 @@
             <h1 class="text-xl font-black text-blue-400 uppercase tracking-tighter italic">Navigation</h1>
             <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white"><span class="material-icons">close</span></button>
         </div>
-        
         <nav class="p-6">
             <div class="mb-10"><a href="index.html" class="flex items-center justify-center gap-2 bg-white/10 border border-white/20 hover:bg-white/20 text-white font-black py-3 rounded-2xl transition-all shadow-lg text-[11px] uppercase tracking-widest"><span class="material-icons text-sm">arrow_back</span> Dashboard</a></div>
             <div class="space-y-4">
@@ -70,8 +71,16 @@
                         <span class="material-icons text-sm transition-transform" id="db-arrow">expand_more</span>
                     </button>
                     <div id="db-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
-                        <a href="chemical-db.html" class="block text-xs text-slate-400 hover:text-white py-2">Chemical Search</a>
+                        <a href="chemical-db.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Chemical Search</a>
                     </div>
+                </div>
+                
+                <div class="mt-10 pt-6 border-t border-white/5">
+                    <div class="flex justify-between items-center px-4 mb-4">
+                        <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest">History</p>
+                        <button onclick="clearHistory()" class="text-[10px] text-red-400 font-bold uppercase hover:text-red-300">Clear</button>
+                    </div>
+                    <div id="history-list" class="px-4 space-y-3 max-h-60 overflow-y-auto"></div>
                 </div>
             </div>
         </nav>
@@ -120,7 +129,27 @@
         let flowType = 'counter';
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('sidebar-closed'); document.getElementById('sidebar').classList.toggle('sidebar-open'); document.getElementById('overlay').classList.toggle('hidden'); }
         function toggleMenu(id, arrowId) { const menu = document.getElementById(id); const arrow = document.getElementById(arrowId); menu.classList.toggle('hidden'); arrow.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)'; }
+        
+        function saveToHistory(label, value) {
+            let history = JSON.parse(localStorage.getItem('processProHistory')) || [];
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            history.unshift({ label, value, time: timestamp });
+            if(history.length > 10) history.pop();
+            localStorage.setItem('processProHistory', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            const history = JSON.parse(localStorage.getItem('processProHistory')) || [];
+            if (history.length === 0) { list.innerHTML = '<p class="text-[10px] text-slate-600 italic">No calculations yet...</p>'; return; }
+            list.innerHTML = history.map(item => `<div class="bg-white/5 p-3 rounded-xl border border-white/5"><div class="flex justify-between text-[9px] uppercase font-black text-blue-400 mb-1"><span>${item.label}</span><span class="text-slate-500">${item.time}</span></div><div class="text-sm font-bold text-white">${item.value}</div></div>`).join('');
+        }
+
+        function clearHistory() { localStorage.removeItem('processProHistory'); renderHistory(); }
+
         function setFlow(type) { flowType = type; const counterBtn = document.getElementById('counterBtn'); const coBtn = document.getElementById('coBtn'); if (type === 'counter') { counterBtn.className = "flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all border-2 border-red-500 bg-red-50 text-red-600"; coBtn.className = "flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all border-2 border-slate-100 text-slate-400 hover:bg-slate-100"; } else { coBtn.className = "flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all border-2 border-red-500 bg-red-50 text-red-600"; counterBtn.className = "flex-1 py-3 rounded-xl font-bold text-xs uppercase tracking-widest transition-all border-2 border-slate-100 text-slate-400 hover:bg-slate-100"; } }
+        
         function calculateLMTD() {
             const T1 = parseFloat(document.getElementById('t1').value); const T2 = parseFloat(document.getElementById('t2').value);
             const t1 = parseFloat(document.getElementById('tc1').value); const t2 = parseFloat(document.getElementById('tc2').value);
@@ -129,9 +158,11 @@
             let lmtd;
             if (dt1 === dt2) { lmtd = dt1; } else { lmtd = (dt1 - dt2) / Math.log(dt1 / dt2); }
             if (isNaN(lmtd) || lmtd < 0) { alert("Invalid Temperature Gradient. Check your inputs (Hot must be > Cold)."); return; }
-            document.getElementById('resultBox').classList.remove('hidden'); document.getElementById('lmtdVal').innerText = lmtd.toFixed(2);
+            document.getElementById('resultBox').classList.remove('hidden'); 
+            document.getElementById('lmtdVal').innerText = lmtd.toFixed(2);
+            saveToHistory("LMTD", `${lmtd.toFixed(2)} °C (${flowType})`);
         }
-        window.onload = () => { const arrow = document.getElementById('heat-arrow'); arrow.style.transform = 'rotate(180deg)'; };
+        window.onload = () => { renderHistory(); const arrow = document.getElementById('heat-arrow'); arrow.style.transform = 'rotate(180deg)'; };
     </script>
 </body>
 </html>
