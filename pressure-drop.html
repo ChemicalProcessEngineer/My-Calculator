@@ -9,10 +9,12 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        
+        /* Sidebar transition */
         #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .sidebar-closed { transform: translateX(-100%); }
         .sidebar-open { transform: translateX(0); }
-        
+
         /* Submenu transition logic */
         .submenu { transition: all 0.3s ease-in-out; overflow: hidden; }
         .submenu.hidden { display: none; }
@@ -31,13 +33,16 @@
     <aside id="sidebar" class="fixed left-0 top-0 h-full w-72 bg-[#0a192f] text-white z-50 sidebar-closed shadow-2xl overflow-y-auto">
         <div class="p-8 border-b border-white/5 flex justify-between items-center">
             <h1 class="text-xl font-black text-blue-400 uppercase tracking-tighter italic">Navigation</h1>
-            <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white"><span class="material-icons">close</span></button>
+            <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white">
+                <span class="material-icons">close</span>
+            </button>
         </div>
         
         <nav class="p-6">
             <div class="mb-10">
                 <a href="index.html" class="flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white font-black py-3 rounded-2xl transition-all shadow-lg active:scale-95 text-[11px] uppercase tracking-widest">
-                    <span class="material-icons text-sm">arrow_back</span> Dashboard
+                    <span class="material-icons text-sm">arrow_back</span>
+                    Dashboard
                 </a>
             </div>
 
@@ -52,7 +57,7 @@
                     </button>
                     <div id="fluid-menu" class="submenu pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
                         <a href="reynolds.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Reynolds Number</a>
-                        <a href="pressure-drop.html" class="block text-xs text-blue-400 font-bold py-2 border-l-2 border-blue-400 pl-2">Pressure Drop</a>
+                        <a href="pressure-drop.html" class="block text-xs text-blue-400 font-bold py-2 border-l-2 border-blue-400 pl-2">Pressure & Head</a>
                     </div>
                 </div>
 
@@ -69,10 +74,17 @@
                     </div>
                 </div>
 
-                <div class="flex items-center p-3 text-slate-600 cursor-not-allowed opacity-40">
-                    <span class="material-icons mr-3 text-sm">thermostat</span>
-                    <span class="text-sm font-bold">Heat Transfer</span>
-                    <span class="material-icons text-xs ml-auto">lock</span>
+                <div>
+                    <button onclick="toggleMenu('heat-menu', 'heat-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center">
+                            <span class="material-icons text-red-500 mr-3 text-sm">thermostat</span>
+                            <span class="text-sm font-bold">Heat Transfer</span>
+                        </div>
+                        <span class="material-icons text-sm transition-transform" id="heat-arrow">expand_more</span>
+                    </button>
+                    <div id="heat-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="lmtd.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">LMTD Solver</a>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -86,7 +98,7 @@
             <div class="p-10">
                 <div class="mb-4">
                     <a href="index.html" class="text-[#059669] text-sm font-medium hover:underline flex items-center transition-all">
-                        <span class="mr-1">←</span> Back to Fluid Tools
+                        <span class="mr-1">←</span> Back to Dashboard
                     </a>
                 </div>
 
@@ -142,15 +154,16 @@
             document.getElementById('overlay').classList.toggle('hidden');
         }
 
-        // Accordion Toggle Function
         function toggleMenu(menuId, arrowId) {
             const menu = document.getElementById(menuId);
             const arrow = document.getElementById(arrowId);
-            menu.classList.toggle('hidden');
+            
             if (menu.classList.contains('hidden')) {
-                arrow.style.transform = 'rotate(0deg)';
-            } else {
+                menu.classList.remove('hidden');
                 arrow.style.transform = 'rotate(180deg)';
+            } else {
+                menu.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
             }
         }
 
@@ -170,7 +183,6 @@
         }
 
         window.onload = () => {
-            // Keep Fluid menu expanded by default on this page
             const arrow = document.getElementById('fluid-arrow');
             arrow.style.transform = 'rotate(180deg)';
         };
