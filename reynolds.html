@@ -65,14 +65,21 @@
                         <span class="material-icons text-sm transition-transform" id="unit-arrow">expand_more</span>
                     </button>
                     <div id="unit-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
-                        <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Main Hub</a>
+                        <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-2">Main Hub</a>
                     </div>
                 </div>
 
-                <div class="flex items-center p-3 text-slate-600 cursor-not-allowed opacity-40">
-                    <span class="material-icons mr-3 text-sm">thermostat</span>
-                    <span class="text-sm font-bold">Heat Transfer</span>
-                    <span class="material-icons text-xs ml-auto">lock</span>
+                <div>
+                    <button onclick="toggleMenu('heat-menu', 'heat-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center">
+                            <span class="material-icons text-red-500 mr-3 text-sm">thermostat</span>
+                            <span class="text-sm font-bold">Heat Transfer</span>
+                        </div>
+                        <span class="material-icons text-sm transition-transform" id="heat-arrow">expand_more</span>
+                    </button>
+                    <div id="heat-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="lmtd.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">LMTD Solver</a>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -86,7 +93,7 @@
             <div class="p-10">
                 <div class="mb-4">
                     <a href="index.html" class="text-[#10b981] text-sm font-medium hover:underline flex items-center transition-all">
-                        <span class="mr-1">←</span> Back to Fluid Tools
+                        <span class="mr-1">←</span> Back to Dashboard
                     </a>
                 </div>
 
@@ -131,18 +138,16 @@
             document.getElementById('overlay').classList.toggle('hidden');
         }
 
-        // Accordion Toggle Function
         function toggleMenu(menuId, arrowId) {
             const menu = document.getElementById(menuId);
             const arrow = document.getElementById(arrowId);
             
-            menu.classList.toggle('hidden');
-            
-            // Rotate Arrow smoothly
             if (menu.classList.contains('hidden')) {
-                arrow.style.transform = 'rotate(0deg)';
-            } else {
+                menu.classList.remove('hidden');
                 arrow.style.transform = 'rotate(180deg)';
+            } else {
+                menu.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
             }
         }
 
@@ -161,7 +166,6 @@
         }
 
         window.onload = () => {
-            // Keep Fluid menu expanded by default on this page
             const arrow = document.getElementById('fluid-arrow');
             arrow.style.transform = 'rotate(180deg)';
         };
