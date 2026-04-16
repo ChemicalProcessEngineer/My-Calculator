@@ -10,12 +10,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         .submenu { max-height: 0; overflow: hidden; transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .submenu.open { max-height: 200px; }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
+        .submenu.open { max-height: 250px; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); transition: all 0.3s ease; }
         .glass-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.05); }
     </style>
 </head>
@@ -30,37 +26,27 @@
         <nav class="flex-1 p-4 space-y-4 pt-10">
             <div>
                 <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
-                    <div class="flex items-center">
-                        <span class="material-icons text-blue-500 mr-3">water_drop</span>
-                        <span class="text-sm font-bold">Fluid Mechanics</span>
-                    </div>
+                    <div class="flex items-center"><span class="material-icons text-blue-500 mr-3">water_drop</span><span class="text-sm font-bold">Fluid Mechanics</span></div>
                     <span class="material-icons text-sm transition-transform duration-300" id="fluid-arrow">expand_more</span>
                 </button>
                 <div id="fluid-menu" class="submenu pl-10 space-y-2 mt-1">
                     <a href="reynolds.html" class="block text-xs text-slate-400 hover:text-white py-1">Reynolds Number</a>
                     <a href="pressure-drop.html" class="block text-xs text-slate-400 hover:text-white py-1">Pressure & Head Loss</a>
+                    <a href="pump-hydraulics.html" class="block text-xs text-slate-400 hover:text-white py-1">Pump Hydraulics</a>
                 </div>
             </div>
 
             <div>
                 <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
-                    <div class="flex items-center">
-                        <span class="material-icons text-orange-500 mr-3">sync_alt</span>
-                        <span class="text-sm font-bold">Unit Converter</span>
-                    </div>
+                    <div class="flex items-center"><span class="material-icons text-orange-500 mr-3 text-sm">sync_alt</span><span class="text-sm font-bold">Unit Converter</span></div>
                     <span class="material-icons text-sm transition-transform duration-300" id="unit-arrow">expand_more</span>
                 </button>
-                <div id="unit-menu" class="submenu pl-10 space-y-2 mt-1">
-                    <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-1">Main Hub</a>
-                </div>
+                <div id="unit-menu" class="submenu pl-10 space-y-2 mt-1"><a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-1">Main Hub</a></div>
             </div>
 
             <div>
                 <button onclick="toggleMenu('heat-menu', 'heat-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
-                    <div class="flex items-center">
-                        <span class="material-icons text-red-500 mr-3">thermostat</span>
-                        <span class="text-sm font-bold">Heat Transfer</span>
-                    </div>
+                    <div class="flex items-center"><span class="material-icons text-red-500 mr-3 text-sm">thermostat</span><span class="text-sm font-bold">Heat Transfer</span></div>
                     <span class="material-icons text-sm transition-transform duration-300" id="heat-arrow">expand_more</span>
                 </button>
                 <div id="heat-menu" class="submenu pl-10 space-y-2 mt-1">
@@ -71,22 +57,15 @@
 
             <div>
                 <button onclick="toggleMenu('db-menu', 'db-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all">
-                    <div class="flex items-center">
-                        <span class="material-icons text-green-500 mr-3">science</span>
-                        <span class="text-sm font-bold">Property DB</span>
-                    </div>
+                    <div class="flex items-center"><span class="material-icons text-green-500 mr-3 text-sm">science</span><span class="text-sm font-bold">Property DB</span></div>
                     <span class="material-icons text-sm transition-transform duration-300" id="db-arrow">expand_more</span>
                 </button>
-                <div id="db-menu" class="submenu pl-10 space-y-2 mt-1">
-                    <a href="chemical-db.html" class="block text-xs text-slate-400 hover:text-white py-1">Chemical Search</a>
-                </div>
+                <div id="db-menu" class="submenu pl-10 space-y-2 mt-1"><a href="chemical-db.html" class="block text-xs text-slate-400 hover:text-white py-1">Chemical Search</a></div>
             </div>
             
             <div class="mt-10 pt-6 border-t border-white/5">
                  <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest px-4 mb-4">Recent Sessions</p>
-                 <div id="history-list" class="px-4 space-y-2 max-h-40 overflow-y-auto">
-                      <p class="text-[10px] text-slate-600 italic">No calculations yet...</p>
-                 </div>
+                 <div id="history-list" class="px-4 space-y-2 max-h-40 overflow-y-auto"></div>
             </div>
         </nav>
     </aside>
@@ -99,30 +78,25 @@
 
         <section class="max-w-6xl mx-auto px-10 pb-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="glass-card p-10 rounded-[2.5rem] border border-slate-100 flex flex-col group">
-                <div class="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center mb-8">
-                    <span class="material-icons">water_drop</span>
-                </div>
+                <div class="w-14 h-14 bg-blue-600 text-white rounded-2xl flex items-center justify-center mb-8"><span class="material-icons">water_drop</span></div>
                 <h3 class="text-2xl font-black text-slate-800 mb-3 uppercase italic tracking-tighter">Fluid Mechanics</h3>
-                <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">Solvers for Reynolds number, pressure drops, and flow regimes.</p>
+                <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">Solvers for Reynolds, Pressure Drop, and Pump Hydraulics.</p>
                 <div class="space-y-3">
                     <a href="reynolds.html" class="flex items-center justify-between bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-600 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">Reynolds Number <span class="material-icons text-sm">arrow_forward</span></a>
                     <a href="pressure-drop.html" class="flex items-center justify-between bg-slate-50 hover:bg-blue-600 hover:text-white text-slate-600 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">Pressure Drop <span class="material-icons text-sm">arrow_forward</span></a>
+                    <a href="pump-hydraulics.html" class="flex items-center justify-between bg-slate-50 hover:bg-blue-600 hover:text-white text-slate-600 px-4 py-3 rounded-xl transition-all font-bold text-xs uppercase tracking-widest">Pump Hydraulics <span class="material-icons text-sm">arrow_forward</span></a>
                 </div>
             </div>
 
             <a href="unit-converter.html" class="glass-card p-10 rounded-[2.5rem] border border-slate-100 flex flex-col group">
-                <div class="w-14 h-14 bg-orange-500 text-white rounded-2xl flex items-center justify-center mb-8">
-                    <span class="material-icons">sync_alt</span>
-                </div>
+                <div class="w-14 h-14 bg-orange-500 text-white rounded-2xl flex items-center justify-center mb-8"><span class="material-icons">sync_alt</span></div>
                 <h3 class="text-2xl font-black text-slate-800 mb-3 uppercase italic tracking-tighter">Unit Converter</h3>
                 <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">Multi-unit conversions for Pressure, Temperature, and Mass.</p>
                 <div class="text-orange-600 font-bold text-xs uppercase tracking-widest flex items-center mt-auto">Open Hub <span class="material-icons text-sm ml-2 group-hover:translate-x-1 transition-transform">arrow_forward</span></div>
             </a>
 
             <div class="glass-card p-10 rounded-[2.5rem] border border-slate-100 flex flex-col group">
-                <div class="w-14 h-14 bg-red-500 text-white rounded-2xl flex items-center justify-center mb-8">
-                    <span class="material-icons">thermostat</span>
-                </div>
+                <div class="w-14 h-14 bg-red-500 text-white rounded-2xl flex items-center justify-center mb-8"><span class="material-icons">thermostat</span></div>
                 <h3 class="text-2xl font-black text-slate-800 mb-3 uppercase italic tracking-tighter">Heat Transfer</h3>
                 <p class="text-slate-400 text-sm leading-relaxed mb-8 flex-1">LMTD and Heat Exchanger duty solvers for process design.</p>
                 <div class="space-y-3">
@@ -134,12 +108,14 @@
     </main>
 
     <script>
-        function toggleMenu(id, arrowId) {
-            const menu = document.getElementById(id);
-            const arrow = document.getElementById(arrowId);
-            menu.classList.toggle('open');
-            arrow.style.transform = menu.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+        function toggleMenu(id, arrowId) { const menu = document.getElementById(id); const arrow = document.getElementById(arrowId); menu.classList.toggle('open'); arrow.style.transform = menu.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)'; }
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            const history = JSON.parse(localStorage.getItem('processProHistory')) || [];
+            if (!list) return;
+            list.innerHTML = history.map(item => `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2"><div class="flex justify-between text-[9px] uppercase font-black text-blue-400 mb-1"><span>${item.label}</span><span class="text-slate-500">${item.time}</span></div><div class="text-sm font-bold text-white">${item.value}</div></div>`).join('');
         }
+        window.onload = renderHistory;
     </script>
 </body>
 </html>
