@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pump Hydraulics | Process Pro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sidebar-closed { transform: translateX(-100%); }
+        .sidebar-open { transform: translateX(0); }
+        .submenu { transition: all 0.3s ease-in-out; overflow: hidden; }
+        .submenu.hidden { display: none; }
+        #history-list::-webkit-scrollbar { width: 4px; }
+        #history-list::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <nav class="bg-white border-b p-4 flex items-center shadow-sm z-40 fixed w-full">
+        <button onclick="toggleSidebar()" class="p-2 hover:bg-slate-100 rounded-lg transition-all mr-4 flex items-center">
+            <span class="material-icons text-slate-600">menu</span>
+            <span class="ml-2 text-[10px] font-black uppercase text-slate-400 tracking-widest">Menu</span>
+        </button>
+        <h1 class="font-[900] text-slate-800 uppercase tracking-tighter text-xl italic">Process <span class="text-blue-600">Pro</span></h1>
+    </nav>
+
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-72 bg-[#0a192f] text-white z-50 sidebar-closed shadow-2xl overflow-y-auto">
+        <div class="p-8 border-b border-white/5 flex justify-between items-center">
+            <h1 class="text-xl font-black text-blue-400 uppercase tracking-tighter italic">Navigation</h1>
+            <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white"><span class="material-icons">close</span></button>
+        </div>
+        <nav class="p-6">
+            <div class="mb-10"><a href="index.html" class="flex items-center justify-center gap-2 bg-white/10 border border-white/20 hover:bg-white/20 text-white font-black py-3 rounded-2xl transition-all shadow-lg text-[11px] uppercase tracking-widest"><span class="material-icons text-sm">arrow_back</span> Dashboard</a></div>
+            <div class="space-y-4">
+                <div>
+                    <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center"><span class="material-icons text-blue-500 mr-3 text-sm">water_drop</span><span class="text-sm font-bold">Fluid Mechanics</span></div>
+                        <span class="material-icons text-sm transition-transform" id="fluid-arrow">expand_more</span>
+                    </button>
+                    <div id="fluid-menu" class="submenu pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="reynolds.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Reynolds Number</a>
+                        <a href="pressure-drop.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Pressure Drop</a>
+                        <a href="pump-hydraulics.html" class="block text-xs text-blue-400 font-bold py-2 border-l-2 border-blue-400 pl-2">Pump Hydraulics</a>
+                    </div>
+                </div>
+                <div>
+                    <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center"><span class="material-icons text-orange-500 mr-3 text-sm">sync_alt</span><span class="text-sm font-bold">Unit Converter</span></div>
+                        <span class="material-icons text-sm transition-transform" id="unit-arrow">expand_more</span>
+                    </button>
+                    <div id="unit-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Main Hub</a>
+                    </div>
+                </div>
+                <div>
+                    <button onclick="toggleMenu('heat-menu', 'heat-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center"><span class="material-icons text-red-500 mr-3 text-sm">thermostat</span><span class="text-sm font-bold">Heat Transfer</span></div>
+                        <span class="material-icons text-sm transition-transform" id="heat-arrow">expand_more</span>
+                    </button>
+                    <div id="heat-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="lmtd.html" class="block text-xs text-slate-400 hover:text-white py-2">LMTD Solver</a>
+                        <a href="heat-duty.html" class="block text-xs text-slate-400 hover:text-white py-2">Heat Duty & Area</a>
+                    </div>
+                </div>
+                <div>
+                    <button onclick="toggleMenu('db-menu', 'db-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
+                        <div class="flex items-center"><span class="material-icons text-green-500 mr-3 text-sm">science</span><span class="text-sm font-bold">Property DB</span></div>
+                        <span class="material-icons text-sm transition-transform" id="db-arrow">expand_more</span>
+                    </button>
+                    <div id="db-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
+                        <a href="chemical-db.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Chemical Search</a>
+                    </div>
+                </div>
+
+                <div class="mt-10 pt-6 border-t border-white/5">
+                    <div class="flex justify-between items-center px-4 mb-4">
+                        <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest">History</p>
+                        <button onclick="clearHistory()" class="text-[10px] text-red-400 font-bold uppercase hover:text-red-300">Clear</button>
+                    </div>
+                    <div id="history-list" class="px-4 space-y-3 max-h-60 overflow-y-auto"></div>
+                </div>
+            </div>
+        </nav>
+    </aside>
+
+    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
+
+    <main class="flex-1 pt-32 pb-20 flex flex-col items-center px-6">
+        <div class="max-w-5xl w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-200">
+            <div class="h-2 bg-blue-600"></div>
+            <div class="p-10">
+                <h2 class="text-3xl font-[900] text-slate-800 mb-8 uppercase tracking-tight italic">Pump Hydraulics</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-5">
+                        <p class="text-[10px] font-black text-blue-500 uppercase tracking-widest border-b pb-1">Fluid Properties</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Flow (m³/h)</label><input type="number" id="flow" value="50" class="w-full p-3 bg-slate-50 border rounded-xl font-bold outline-none"></div>
+                            <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Density (kg/m³)</label><input type="number" id="rho" value="1000" class="w-full p-3 bg-slate-50 border rounded-xl font-bold outline-none"></div>
+                        </div>
+                        <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Viscosity (Pa·s)</label><input type="number" id="mu" value="0.001" step="0.0001" class="w-full p-3 bg-slate-50 border rounded-xl font-bold outline-none"></div>
+
+                        <p class="text-[10px] font-black text-blue-500 uppercase tracking-widest border-b pb-1 mt-6">Pipe Specification</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Material (MOC)</label>
+                                <select id="mocPicker" onchange="updateRoughness()" class="w-full p-3 bg-slate-50 border rounded-xl font-bold outline-none text-sm"></select>
+                            </div>
+                            <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Roughness (mm)</label><input type="number" id="epsilon" value="0.045" step="0.001" class="w-full p-3 bg-slate-50 border rounded-xl font-bold outline-none"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Pipe ID (mm)</label><input type="number" id="dia" value="100" class="w-full p-3 bg-slate-50 border rounded-xl font-bold outline-none"></div>
+                            <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Total Length (m)</label><input type="number" id="length" value="100" class="w-full p-3 bg-slate-50 border rounded-xl font-bold outline-none"></div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-5">
+                        <p class="text-[10px] font-black text-orange-500 uppercase tracking-widest border-b pb-1">Elevation & Pressure</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Static Head (m)</label><input type="number" id="static" value="10" class="w-full p-3 bg-slate-50 border rounded-xl font-bold outline-none"></div>
+                            <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Discharge Pr (bar g)</label><input type="number" id="pr_dis" value="2" class="w-full p-3 bg-slate-50 border rounded-xl font-bold outline-none"></div>
+                        </div>
+                        <p class="text-[10px] font-black text-orange-500 uppercase tracking-widest border-b pb-1 mt-6">Fittings Count</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">90° Elbows</label><input type="number" id="elbows" value="4" class="w-full p-3 bg-slate-50 border rounded-xl font-bold outline-none"></div>
+                            <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Gate Valves</label><input type="number" id="valves" value="2" class="w-full p-3 bg-slate-50 border rounded-xl font-bold outline-none"></div>
+                        </div>
+                        <p class="text-[10px] font-black text-red-500 uppercase tracking-widest border-b pb-1 mt-6">Pump Performance</p>
+                        <div><label class="block text-[10px] font-black text-slate-400 uppercase mb-2">Pump Efficiency (%)</label><input type="number" id="eff" value="70" class="w-full p-3 bg-slate-50 border rounded-xl font-bold outline-none"></div>
+                        
+                        <button onclick="calculatePump()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-2xl shadow-lg transition-all transform active:scale-95 uppercase tracking-widest mt-4">Run Hydraulic Calculation</button>
+                    </div>
+                </div>
+
+                <div id="resultBox" class="hidden mt-10 grid grid-cols-1 sm:grid-cols-3 gap-4 animate-in fade-in zoom-in duration-300">
+                    <div class="bg-blue-50 p-6 rounded-[2rem] border border-blue-100 text-center">
+                        <p class="text-[10px] font-black text-blue-400 uppercase tracking-widest">Total Head (m)</p>
+                        <h3 id="tdhVal" class="text-3xl font-black text-blue-900 mt-1">--</h3>
+                    </div>
+                    <div class="bg-green-50 p-6 rounded-[2rem] border border-green-100 text-center">
+                        <p class="text-[10px] font-black text-green-400 uppercase tracking-widest">Hydraulic Power (kW)</p>
+                        <h3 id="hydroVal" class="text-3xl font-black text-green-900 mt-1">--</h3>
+                    </div>
+                    <div class="bg-orange-50 p-6 rounded-[2rem] border border-orange-100 text-center">
+                        <p class="text-[10px] font-black text-orange-400 uppercase tracking-widest">Shaft Power (BHP kW)</p>
+                        <h3 id="shaftVal" class="text-3xl font-black text-orange-900 mt-1">--</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const mocRoughness = {
+            "Weld steel": 0.045, "Stainless steel": 0.015, "PVC / Plastic": 0.0015, "Galvanized Steel": 0.15,
+            "New cast iron": 0.25, "Rusted steel": 0.5, "Copper / Brass": 0.0015, "Fiber Glass": 0.005,
+            "Concrete": 0.3, "Riveted steel": 3.0
+        };
+
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('sidebar-closed'); document.getElementById('sidebar').classList.toggle('sidebar-open'); document.getElementById('overlay').classList.toggle('hidden'); }
+        function toggleMenu(id, arrowId) { const menu = document.getElementById(id); const arrow = document.getElementById(arrowId); menu.classList.toggle('hidden'); arrow.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)'; }
+
+        function updateRoughness() {
+            const picker = document.getElementById('mocPicker');
+            document.getElementById('epsilon').value = mocRoughness[picker.value];
+        }
+
+        function calculatePump() {
+            const flow_m3h = parseFloat(document.getElementById('flow').value);
+            const rho = parseFloat(document.getElementById('rho').value);
+            const mu = parseFloat(document.getElementById('mu').value);
+            const dia_mm = parseFloat(document.getElementById('dia').value);
+            const L = parseFloat(document.getElementById('length').value);
+            const epsilon_mm = parseFloat(document.getElementById('epsilon').value);
+            const static_h = parseFloat(document.getElementById('static').value);
+            const pr_dis_bar = parseFloat(document.getElementById('pr_dis').value);
+            const elbows = parseInt(document.getElementById('elbows').value);
+            const valves = parseInt(document.getElementById('valves').value);
+            const efficiency = parseFloat(document.getElementById('eff').value) / 100;
+
+            const D = dia_mm / 1000;
+            const flow_m3s = flow_m3h / 3600;
+            const velocity = flow_m3s / (Math.PI * Math.pow(D/2, 2));
+            const Re = (rho * velocity * D) / mu;
+
+            // Swamee-Jain Friction Factor
+            let f = 0.02; // fallback
+            if (Re > 2100) {
+                const term1 = (epsilon_mm / 1000) / (3.7 * D);
+                const term2 = 5.74 / Math.pow(Re, 0.9);
+                f = 0.25 / Math.pow(Math.log10(term1 + term2), 2);
+            } else {
+                f = 64 / Re;
+            }
+
+            const h_friction = f * (L / D) * (Math.pow(velocity, 2) / (2 * 9.81));
+            const h_fittings = (elbows * 0.75 + valves * 0.15) * (Math.pow(velocity, 2) / (2 * 9.81));
+            const h_pressure = (pr_dis_bar * 100000) / (rho * 9.81);
+
+            const TDH = static_h + h_pressure + h_friction + h_fittings;
+            const hyd_kw = (rho * 9.81 * flow_m3s * TDH) / 1000;
+            const shaft_kw = hyd_kw / efficiency;
+
+            document.getElementById('resultBox').classList.remove('hidden');
+            document.getElementById('tdhVal').innerText = TDH.toFixed(2);
+            document.getElementById('hydroVal').innerText = hyd_kw.toFixed(2);
+            document.getElementById('shaftVal').innerText = shaft_kw.toFixed(2);
+
+            saveToHistory("Pump Calc", `${TDH.toFixed(1)}m / ${shaft_kw.toFixed(1)}kW`);
+        }
+
+        function saveToHistory(label, value) {
+            let history = JSON.parse(localStorage.getItem('processProHistory')) || [];
+            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            history.unshift({ label, value, time: timestamp });
+            if(history.length > 10) history.pop();
+            localStorage.setItem('processProHistory', JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('history-list');
+            const history = JSON.parse(localStorage.getItem('processProHistory')) || [];
+            if (!list) return;
+            list.innerHTML = history.map(item => `<div class="bg-white/5 p-3 rounded-xl border border-white/5 mb-2"><div class="flex justify-between text-[9px] uppercase font-black text-blue-400 mb-1"><span>${item.label}</span><span class="text-slate-500">${item.time}</span></div><div class="text-sm font-bold text-white">${item.value}</div></div>`).join('');
+        }
+
+        function clearHistory() { localStorage.removeItem('processProHistory'); renderHistory(); }
+
+        window.onload = () => {
+            const picker = document.getElementById('mocPicker');
+            Object.keys(mocRoughness).forEach(moc => picker.add(new Option(moc, moc)));
+            updateRoughness();
+            renderHistory();
+            const arrow = document.getElementById('fluid-arrow');
+            arrow.style.transform = 'rotate(180deg)';
+        };
+    </script>
+</body>
+</html>
