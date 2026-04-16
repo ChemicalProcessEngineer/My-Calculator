@@ -25,11 +25,11 @@
 
     <nav class="bg-[#0a192f] text-white p-4 flex items-center shadow-md fixed w-full z-50">
         <button onclick="document.getElementById('sidebar').classList.toggle('sidebar-closed')" class="mr-4 hover:bg-white/10 p-1 rounded transition-all"><span class="material-icons">menu</span></button>
-        <h1 class="font-[900] italic uppercase tracking-tighter text-xl">Process Pro <span class="text-blue-400 font-normal">| Master Hydraulics</span></h1>
+        <h1 class="font-[900] italic uppercase tracking-tighter text-xl text-white">Process Pro <span class="text-blue-400 font-normal">| Master Hydraulics</span></h1>
     </nav>
 
     <aside id="sidebar" class="fixed left-0 top-0 h-full w-72 bg-[#0a192f] text-white z-50 sidebar-closed shadow-2xl p-6 pt-24">
-        <a href="index.html" class="flex items-center gap-2 bg-white/10 p-3 rounded-xl hover:bg-white/20 font-bold text-xs uppercase mb-10">
+        <a href="index.html" class="flex items-center gap-2 bg-white/10 p-3 rounded-xl hover:bg-white/20 font-bold text-xs uppercase mb-10 text-white">
             <span class="material-icons text-sm">arrow_back</span> Dashboard
         </a>
     </aside>
@@ -49,9 +49,9 @@
                 <tbody>
                     <tr><td colspan="4" class="sub-header text-blue-600">1.0 Fluid Properties</td></tr>
                     <tr><td>Mass Flow Rate</td><td><input type="number" id="m_flow" value="45000" class="input-yellow" oninput="runLogic()"></td><td>kg/h</td><td id="v_flow_txt">Volumetric Flow: -- m³/h</td></tr>
-                    <tr><td>Fluid Density</td><td><input type="number" id="rho" value="1000" class="input-yellow" oninput="runLogic()"></td><td>kg/m³</td><td>Operating Density</td></tr>
-                    <tr><td>Viscosity</td><td><input type="number" id="visc_cp" value="1" class="input-yellow" oninput="runLogic()"></td><td>cP</td><td>Viscosity in Pa.s: <span id="visc_pas_txt">--</span></td></tr>
-                    <tr><td>Vapor Pressure</td><td><input type="number" id="vpr_kpa" value="3.2" class="input-yellow" oninput="runLogic()"></td><td>kPa (a)</td><td>Required for NPSHa</td></tr>
+                    <tr><td>Fluid Density at operating temperature</td><td><input type="number" id="rho" value="1000" class="input-yellow" oninput="runLogic()"></td><td>kg/m³</td><td>@ Operating Temperature</td></tr>
+                    <tr><td>Viscosity at operating temperature</td><td><input type="number" id="visc_cp" value="1" class="input-yellow" oninput="runLogic()"></td><td>cP</td><td>Pa.s: <span id="visc_pas_txt">--</span></td></tr>
+                    <tr><td>Vapor Pressure at operating temperature</td><td><input type="number" id="vpr_kpa" value="3.2" class="input-yellow" oninput="runLogic()"></td><td>kPa (a)</td><td>Required for NPSHa</td></tr>
 
                     <tr><td colspan="4" class="sub-header text-indigo-600">2.0 Material of Construction</td></tr>
                     <tr>
@@ -68,66 +68,54 @@
                         <td>--</td>
                         <td>Absolute Roughness (ε): <span id="roughness_disp" class="font-bold">0.000045</span> m</td>
                     </tr>
-                    <tr id="manual_moc_row" class="hidden"><td>Input Manual Roughness</td><td><input type="number" id="roughness_manual" value="0.000045" step="0.000001" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>User defined roughness</td></tr>
+                    <tr id="manual_moc_row" class="hidden"><td>Input Manual Roughness</td><td><input type="number" id="roughness_manual" value="0.000045" step="0.000001" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Manual ε</td></tr>
 
                     <tr><td colspan="4" class="sub-header text-orange-600">3.0 Suction Side Calculation</td></tr>
-                    <tr><td>Suction Velocity (Target)</td><td><input type="number" id="s_v_target" value="0.25" class="input-yellow" oninput="runLogic()"></td><td>m/sec</td><td>Calculated ID: <span id="s_calc_id" class="font-bold">--</span> mm</td></tr>
+                    <tr><td>1) Absolute Pressure over free surface of liquid at source</td><td><input type="number" id="s_pr" value="0" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Gauge pressure at source</td></tr>
+                    <tr><td>2) Static Head (Suction)</td><td><input type="number" id="s_static" value="5" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Elevation height</td></tr>
+                    <tr><td>3) Pressure drop due to intermediate equipments like Heat exchanger, PRV, etc.</td><td><input type="number" id="s_equip_pr" value="0" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Equip. Head: <span id="s_equip_head">0.00</span> m</td></tr>
+                    <tr><td>4) Straight Pipe Length in suction line</td><td><input type="number" id="s_len" value="10" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Horiz + Vert</td></tr>
+                    <tr><td>5) Suction Velocity</td><td><input type="number" id="s_v_target" value="0.25" class="input-yellow" oninput="runLogic()"></td><td>m/sec</td><td>Calculated ID: <span id="s_calc_id" class="font-bold">--</span> mm</td></tr>
+                    <tr><td>6) Standard Pipe Size</td><td><select id="s_pipe_size" class="input-yellow" onchange="manualPipeChange('s')"></select></td><td>Inch</td><td id="s_detailed_notes" class="text-xs">--</td></tr>
+                    <tr><td>7) Friction factor</td><td id="s_f_val" class="cell-calc">--</td><td>--</td><td id="s_f_logic" class="note-highlight text-xs font-bold italic">--</td></tr>
+                    <tr><td>8) Friction Head (Pipe)</td><td id="s_friction_head" class="cell-calc">--</td><td>m</td><td>Darcy-Weisbach head loss</td></tr>
                     <tr>
-                        <td>Standard Pipe Size</td>
-                        <td><select id="s_pipe_size" class="input-yellow" onchange="manualPipeChange('s')"></select></td>
-                        <td>Inch</td>
-                        <td id="s_detailed_notes" class="text-xs leading-relaxed">--</td>
-                    </tr>
-                    <tr><td>Friction factor</td><td id="s_f_val" class="cell-calc">--</td><td>--</td><td id="s_f_logic" class="note-highlight text-xs font-bold italic">--</td></tr>
-                    <tr><td>Source Vessel Pressure</td><td><input type="number" id="s_pr" value="0" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Pressure over surface</td></tr>
-                    <tr><td>Static Head (Suction)</td><td><input type="number" id="s_static" value="5" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Elevation of source</td></tr>
-                    <tr><td>Straight Pipe Length</td><td><input type="number" id="s_len" value="10" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Horizontal + Vertical</td></tr>
-                    <tr><td>Equip. Pressure Drop</td><td><input type="number" id="s_equip_pr" value="0" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Equip. Head: <span id="s_equip_head">0.00</span> m</td></tr>
-                    
-                    <tr>
-                        <td>Fittings Manager</td>
+                        <td>9) Fittings in Suction line</td>
                         <td colspan="3">
                             <div id="s_fittings_container" class="p-2 border rounded bg-slate-50">
                                 <div id="s_fittings_list"></div>
-                                <button onclick="addFitting('s')" class="mt-2 text-[10px] bg-blue-600 text-white px-3 py-1 rounded font-black uppercase tracking-widest">+ Add Suction Fitting</button>
+                                <button onclick="addFitting('s')" class="mt-2 text-[10px] bg-blue-600 text-white px-3 py-1 rounded font-black uppercase">+ Add Fitting</button>
                             </div>
                         </td>
                     </tr>
-                    <tr><td>Friction Head (Pipe)</td><td id="s_friction_head" class="cell-calc">--</td><td>m</td><td>Based on straight length</td></tr>
-                    <tr><td>Friction Loss due to fittings</td><td id="s_fit_loss" class="cell-calc">--</td><td>m</td><td>Calculated from K-Factors</td></tr>
-                    <tr class="bg-orange-50 font-black"><td>Total friction loss in suction line</td><td id="s_total_fric" class="cell-calc text-orange-700">--</td><td>m</td><td>Friction Head + Fittings</td></tr>
+                    <tr><td>10) Friction Loss due to fittings</td><td id="s_fit_loss" class="cell-calc">--</td><td>m</td><td>Σ (K * v²/2g)</td></tr>
+                    <tr class="bg-orange-50 font-black"><td>11) Total friction loss in suction line</td><td id="s_total_fric" class="cell-calc text-orange-700">--</td><td>m</td><td>(8) + (10)</td></tr>
 
                     <tr><td colspan="4" class="sub-header text-green-600">4.0 Discharge Side Calculation</td></tr>
-                    <tr><td>Discharge Velocity (Target)</td><td><input type="number" id="d_v_target" value="0.6" class="input-yellow" oninput="runLogic()"></td><td>m/sec</td><td>Calculated ID: <span id="d_calc_id" class="font-bold">--</span> mm</td></tr>
+                    <tr><td>1) Absolute Pressure over free surface of liquid in receiver</td><td><input type="number" id="d_pr" value="2.0" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Receiver tank pressure</td></tr>
+                    <tr><td>2) Static Head (Discharge)</td><td><input type="number" id="d_static" value="20" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Elevation of delivery</td></tr>
+                    <tr><td>3) Pressure drop due to intermediate equipments like Heat exchanger, PRV, etc.</td><td><input type="number" id="d_equip_pr" value="0.2" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Equip. Head: <span id="d_equip_head">0.00</span> m</td></tr>
+                    <tr><td>4) Straight Pipe Length in discharge line</td><td><input type="number" id="d_len" value="50" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Horiz + Vert</td></tr>
+                    <tr><td>5) Discharge Velocity</td><td><input type="number" id="d_v_target" value="0.6" class="input-yellow" oninput="runLogic()"></td><td>m/sec</td><td>Calculated ID: <span id="d_calc_id" class="font-bold">--</span> mm</td></tr>
+                    <tr><td>6) Standard Pipe Size</td><td><select id="d_pipe_size" class="input-yellow" onchange="manualPipeChange('d')"></select></td><td>Inch</td><td id="d_detailed_notes" class="text-xs">--</td></tr>
+                    <tr><td>7) Friction factor</td><td id="d_f_val" class="cell-calc">--</td><td>--</td><td id="d_f_logic" class="note-highlight text-xs font-bold italic">--</td></tr>
+                    <tr><td>8) Friction Head (Pipe)</td><td id="d_friction_head" class="cell-calc">--</td><td>m</td><td>Darcy-Weisbach head loss</td></tr>
                     <tr>
-                        <td>Standard Pipe Size</td>
-                        <td><select id="d_pipe_size" class="input-yellow" onchange="manualPipeChange('d')"></select></td>
-                        <td>Inch</td>
-                        <td id="d_detailed_notes" class="text-xs leading-relaxed">--</td>
-                    </tr>
-                    <tr><td>Friction factor</td><td id="d_f_val" class="cell-calc">--</td><td>--</td><td id="d_f_logic" class="note-highlight text-xs font-bold italic">--</td></tr>
-                    <tr><td>Destination Vessel Pressure</td><td><input type="number" id="d_pr" value="2.0" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Receiver tank pressure</td></tr>
-                    <tr><td>Static Head (Discharge)</td><td><input type="number" id="d_static" value="20" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Elevation of delivery</td></tr>
-                    <tr><td>Straight Pipe Length</td><td><input type="number" id="d_len" value="50" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Horizontal + Vertical</td></tr>
-                    <tr><td>Equip. Pressure Drop</td><td><input type="number" id="d_equip_pr" value="0.2" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Equip. Head: <span id="d_equip_head">0.00</span> m</td></tr>
-                    
-                    <tr>
-                        <td>Fittings Manager</td>
+                        <td>9) Fittings in Discharge line</td>
                         <td colspan="3">
                             <div id="d_fittings_container" class="p-2 border rounded bg-slate-50">
                                 <div id="d_fittings_list"></div>
-                                <button onclick="addFitting('d')" class="mt-2 text-[10px] bg-green-600 text-white px-3 py-1 rounded font-black uppercase tracking-widest">+ Add Discharge Fitting</button>
+                                <button onclick="addFitting('d')" class="mt-2 text-[10px] bg-green-600 text-white px-3 py-1 rounded font-black uppercase">+ Add Fitting</button>
                             </div>
                         </td>
                     </tr>
-                    <tr><td>Friction Head (Pipe)</td><td id="d_friction_head" class="cell-calc">--</td><td>m</td><td>Based on straight length</td></tr>
-                    <tr><td>Friction Loss due to fittings</td><td id="d_fit_loss" class="cell-calc">--</td><td>m</td><td>Calculated from K-Factors</td></tr>
-                    <tr class="bg-green-50 font-black"><td>Total friction loss in discharge line</td><td id="d_total_fric" class="cell-calc text-green-700">--</td><td>m</td><td>Friction Head + Fittings</td></tr>
+                    <tr><td>10) Friction Loss due to fittings</td><td id="d_fit_loss" class="cell-calc">--</td><td>m</td><td>Σ (K * v²/2g)</td></tr>
+                    <tr class="bg-green-50 font-black"><td>11) Total friction loss in discharge line</td><td id="d_total_fric" class="cell-calc text-green-700">--</td><td>m</td><td>(8) + (10)</td></tr>
 
-                    <tr><td colspan="4" class="sub-header text-red-600">7.0 Final Summary</td></tr>
+                    <tr><td colspan="4" class="sub-header text-red-600">5.0 Results</td></tr>
                     <tr class="bg-red-50"><td class="font-black">TOTAL DYNAMIC HEAD (TDH)</td><td id="tdh_val" class="text-red-700 font-black text-lg">--</td><td>m</td><td>Net Requirement</td></tr>
-                    <tr class="bg-orange-50"><td class="font-black">NPSH AVAILABLE</td><td id="npsha_val" class="text-orange-700 font-black text-lg">--</td><td>m</td><td>Available at Inlet</td></tr>
-                    <tr><td>Shaft Power (BHP)</td><td id="bhp_val" class="font-black text-blue-800">--</td><td>kW</td><td>Eff: <input type="number" id="eff" value="70" class="w-12 border rounded px-1" oninput="runLogic()">%</td></tr>
+                    <tr class="bg-orange-50"><td class="font-black">NPSH AVAILABLE</td><td id="npsha_val" class="text-orange-700 font-black text-lg">--</td><td>m</td><td>Available at Suction</td></tr>
+                    <tr><td>Shaft Power (BHP)</td><td id="bhp_val" class="font-black text-blue-800">--</td><td>kW</td><td>@ <input type="number" id="eff" value="70" class="w-12 border rounded px-1" oninput="runLogic()">% Eff</td></tr>
                 </tbody>
             </table>
         </div>
@@ -184,7 +172,7 @@
             const conv = 98066.52 / (rho * 9.81);
             const v_m3s = (mFlow / rho) / 3600;
 
-            document.getElementById('v_flow_txt').innerText = `Volumetric Flow: ${(mFlow/rho).toFixed(2)} m³/h`;
+            document.getElementById('v_flow_txt').innerText = `Vol. Flow: ${(mFlow/rho).toFixed(2)} m³/h`;
             document.getElementById('visc_pas_txt').innerText = (visc_cp/1000).toFixed(5);
 
             let eps = document.getElementById('moc_select').value === 'other' ? parseFloat(document.getElementById('roughness_manual').value) : parseFloat(document.getElementById('moc_select').value);
@@ -235,7 +223,6 @@
             document.getElementById('bhp_val').innerText = ((rho*9.81*v_m3s*(dHead-sHead))/1000 / (parseFloat(document.getElementById('eff').value)/100)).toFixed(2);
         }
 
-        function toggleMocManual() { document.getElementById('manual_moc_row').classList.toggle('hidden', document.getElementById('moc_select').value!=='other'); runLogic(); }
         window.onload = () => { 
             const sSel = document.getElementById('s_pipe_size'); const dSel = document.getElementById('d_pipe_size');
             Object.keys(pipeData).forEach(size => { sSel.add(new Option(size + '"', size)); dSel.add(new Option(size + '"', size)); });
