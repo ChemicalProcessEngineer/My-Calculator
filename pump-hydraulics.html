@@ -40,7 +40,7 @@
     </aside>
 
     <main class="pt-24 pb-20 px-4 md:px-10 flex flex-col items-center">
-        <div class="max-w-6xl w-full bg-white shadow-2xl rounded-xl overflow-hidden border border-slate-200 overflow-x-auto">
+        <div class="max-w-6xl w-full bg-white shadow-2xl rounded-xl border border-slate-200 overflow-x-auto">
             
             <table class="excel-table">
                 <thead>
@@ -89,7 +89,7 @@
                         <td id="s_detailed_notes" class="text-xs leading-relaxed">--</td>
                     </tr>
                     <tr><td>Friction factor</td><td id="s_f_val" class="cell-calc">--</td><td>--</td><td id="s_f_logic" class="note-highlight text-xs text-blue-800 font-bold italic">--</td></tr>
-                    <tr><td class="font-bold">Friction Head</td><td id="s_friction_head" class="cell-calc">--</td><td>m</td><td>Calculated Suction Friction Head</td></tr>
+                    <tr><td>Friction Head (Pipe)</td><td id="s_friction_head" class="cell-calc">--</td><td>m</td><td>Based on length and f</td></tr>
 
                     <tr><td colspan="4" class="sub-header text-green-600">4.0 Line Sizing - Discharge Side</td></tr>
                     <tr><td>Discharge Velocity (Target)</td><td><input type="number" id="d_v_target" value="0.6" class="input-yellow" oninput="runLogic()"></td><td>m/sec</td><td>Calculated ID: <span id="d_calc_id" class="font-bold">--</span> mm</td></tr>
@@ -100,21 +100,23 @@
                         <td id="d_detailed_notes" class="text-xs leading-relaxed">--</td>
                     </tr>
                     <tr><td>Friction factor</td><td id="d_f_val" class="cell-calc">--</td><td>--</td><td id="d_f_logic" class="note-highlight text-xs text-green-800 font-bold italic">--</td></tr>
-                    <tr><td class="font-bold">Friction Head</td><td id="d_friction_head" class="cell-calc">--</td><td>m</td><td>Calculated Discharge Friction Head</td></tr>
+                    <tr><td>Friction Head (Pipe)</td><td id="d_friction_head" class="cell-calc">--</td><td>m</td><td>Based on length and f</td></tr>
 
                     <tr><td colspan="4" class="sub-header text-orange-600">5.0 Suction Side Calculation</td></tr>
                     <tr><td>Source Vessel Pressure</td><td><input type="number" id="s_pr" value="0" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Pressure over surface</td></tr>
                     <tr><td>Static Head (Suction)</td><td><input type="number" id="s_static" value="5" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Elevation of source</td></tr>
                     <tr><td>Straight Pipe Length</td><td><input type="number" id="s_len" value="10" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Horizontal + Vertical</td></tr>
                     <tr><td>Equip. Pressure Drop</td><td><input type="number" id="s_equip_pr" value="0" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Heat Exchanger / PRV etc.</td></tr>
-                    <tr><td>Fittings K-Factor Sum</td><td><input type="number" id="s_k" value="1.5" class="input-yellow" oninput="runLogic()"></td><td>--</td><td>Minor losses sum</td></tr>
+                    <tr><td>Friction Loss due to fittings</td><td><input type="number" id="s_fit_loss" value="0.15" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Input manual fitting loss</td></tr>
+                    <tr class="bg-orange-50 font-bold"><td>Total friction loss in suction line</td><td id="s_total_fric" class="cell-calc">--</td><td>m</td><td>Sum of Friction Head + Fittings</td></tr>
 
                     <tr><td colspan="4" class="sub-header text-green-600">6.0 Discharge Side Calculation</td></tr>
                     <tr><td>Destination Vessel Pressure</td><td><input type="number" id="d_pr" value="2.0" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Receiver tank pressure</td></tr>
                     <tr><td>Static Head (Discharge)</td><td><input type="number" id="d_static" value="20" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Elevation of delivery</td></tr>
                     <tr><td>Straight Pipe Length</td><td><input type="number" id="d_len" value="50" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Horizontal + Vertical</td></tr>
                     <tr><td>Equip. Pressure Drop</td><td><input type="number" id="d_equip_pr" value="0.2" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Heat Exchanger / PRV etc.</td></tr>
-                    <tr><td>Fittings K-Factor Sum</td><td><input type="number" id="d_k" value="5.2" class="input-yellow" oninput="runLogic()"></td><td>--</td><td>Minor losses sum</td></tr>
+                    <tr><td>Friction Loss due to fittings</td><td><input type="number" id="d_fit_loss" value="1.20" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Input manual fitting loss</td></tr>
+                    <tr class="bg-green-50 font-bold"><td>Total friction loss in discharge line</td><td id="d_total_fric" class="cell-calc">--</td><td>m</td><td>Sum of Friction Head + Fittings</td></tr>
 
                     <tr><td colspan="4" class="sub-header text-red-600">7.0 Final Summary</td></tr>
                     <tr class="bg-red-50"><td class="font-black">TOTAL DYNAMIC HEAD (TDH)</td><td id="tdh_val" class="text-red-700 font-black text-lg">--</td><td>m</td><td>Net Head Requirement</td></tr>
@@ -179,7 +181,6 @@
                 const calc_id = Math.sqrt((4 * v_flow_m3s) / (Math.PI * target_v)) * 1000;
                 document.getElementById(prefix + '_calc_id').innerText = calc_id.toFixed(2);
 
-                // Auto-calculate Standard Pipe Size
                 const autoSize = findNearestSize(calc_id);
                 document.getElementById(prefix + '_pipe_size').value = autoSize;
 
@@ -205,20 +206,22 @@
                 document.getElementById(prefix + '_f_logic').innerText = formulaText;
 
                 const L = parseFloat(document.getElementById(prefix + '_len').value) || 0;
-                const K = parseFloat(document.getElementById(prefix + '_k').value) || 0;
+                const fit_loss = parseFloat(document.getElementById(prefix + '_fit_loss').value) || 0;
                 const equip_pr = parseFloat(document.getElementById(prefix + '_equip_pr').value) || 0;
                 const equip_h = equip_pr * conv_factor;
                 
                 const h_pipe = (f * L * Math.pow(actual_v, 2)) / (d_m * 2 * 9.81);
-                const h_fitt = (K * Math.pow(actual_v, 2)) / (2 * 9.81);
-                const total_h_loss = h_pipe + h_fitt + equip_h;
+                const total_fric_loss = h_pipe + fit_loss;
+                const total_h_loss = total_fric_loss + equip_h;
 
                 document.getElementById(prefix + '_friction_head').innerText = h_pipe.toFixed(4);
+                document.getElementById(prefix + '_total_fric').innerText = total_fric_loss.toFixed(4);
+
                 document.getElementById(prefix + '_detailed_notes').innerHTML = 
                     `Internal Diameter: <b>${d_mm} mm</b><br>` +
                     `Actual Velocity: <b>${actual_v.toFixed(2)} m/s</b><br>` +
                     `Reynolds Number: <b>${Math.round(Re)}</b><br>` +
-                    `Head Loss Breakdown (Pipe/Fittings/Equip): <b>${h_pipe.toFixed(2)} / ${h_fitt.toFixed(2)} / ${equip_h.toFixed(2)} m</b>`;
+                    `Total Loss Breakdown: <b>Pipe ${h_pipe.toFixed(2)}m + Fits ${fit_loss.toFixed(2)}m + Equip ${equip_h.toFixed(2)}m</b>`;
 
                 return { total_h_loss };
             }
