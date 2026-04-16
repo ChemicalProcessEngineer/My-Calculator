@@ -12,13 +12,13 @@
         .excel-table { border-collapse: collapse; width: 100%; background: white; }
         .excel-table th, .excel-table td { border: 1px solid #e2e8f0; padding: 10px 12px; text-align: left; font-size: 13px; }
         .excel-table th { background-color: #0f172a; color: white; font-weight: 800; text-transform: uppercase; font-size: 11px; }
-        .input-yellow { background-color: #fefce8; border: 1px solid #fde047 !important; width: 100%; outline: none; font-weight: bold; color: #854d0e; padding: 4px; border-radius: 4px; }
+        .input-yellow { background-color: #fefce8; border: 1px solid #fde047 !important; width: 100%; outline: none; font-weight: bold; color: #854d0e; padding: 6px; border-radius: 4px; }
         .cell-calc { background-color: #ffffff; font-weight: 700; color: #1e293b; }
         .sub-header { background-color: #f1f5f9; font-weight: 900; text-transform: uppercase; font-size: 11px; color: #475569; letter-spacing: 0.1em; }
         .note-highlight { background-color: #f0fdf4; border-left: 4px solid #22c55e; padding: 8px; }
         #sidebar { transition: transform 0.3s ease; }
         .sidebar-closed { transform: translateX(-100%); }
-        .fittings-container { background: #f8fafc; border: 1px dashed #cbd5e1; padding: 10px; border-radius: 8px; margin-top: 5px; }
+        .fitting-row { background: #f8fafc; border: 1px dashed #cbd5e1; margin-bottom: 4px; padding: 4px; border-radius: 4px; display: flex; align-items: center; gap: 8px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -48,14 +48,14 @@
                 </thead>
                 <tbody>
                     <tr><td colspan="4" class="sub-header text-blue-600">1.0 Fluid Properties</td></tr>
-                    <tr><td>Mass Flow Rate</td><td><input type="number" id="m_flow" value="45000" class="input-yellow" oninput="runLogic()"></td><td>kg/h</td><td id="v_flow_txt">--</td></tr>
+                    <tr><td>Mass Flow Rate</td><td><input type="number" id="m_flow" value="45000" class="input-yellow" oninput="runLogic()"></td><td>kg/h</td><td id="v_flow_txt">Volumetric Flow: -- m³/h</td></tr>
                     <tr><td>Fluid Density</td><td><input type="number" id="rho" value="1000" class="input-yellow" oninput="runLogic()"></td><td>kg/m³</td><td>Operating Density</td></tr>
-                    <tr><td>Viscosity</td><td><input type="number" id="visc_cp" value="1" class="input-yellow" oninput="runLogic()"></td><td>cP</td><td>Pa.s: <span id="visc_pas_txt">--</span></td></tr>
+                    <tr><td>Viscosity</td><td><input type="number" id="visc_cp" value="1" class="input-yellow" oninput="runLogic()"></td><td>cP</td><td>Viscosity in Pa.s: <span id="visc_pas_txt">--</span></td></tr>
                     <tr><td>Vapor Pressure</td><td><input type="number" id="vpr_kpa" value="3.2" class="input-yellow" oninput="runLogic()"></td><td>kPa (a)</td><td>Required for NPSHa</td></tr>
 
                     <tr><td colspan="4" class="sub-header text-indigo-600">2.0 Material of Construction</td></tr>
                     <tr>
-                        <td>Pipe MOC</td>
+                        <td>Select Suitable Pipe MOC</td>
                         <td>
                             <select id="moc_select" class="input-yellow" onchange="toggleMocManual()">
                                 <option value="0.000015">Stainless steel</option>
@@ -66,102 +66,114 @@
                             </select>
                         </td>
                         <td>--</td>
-                        <td>ε: <span id="roughness_disp" class="font-bold">0.000045</span> m</td>
+                        <td>Absolute Roughness (ε): <span id="roughness_disp" class="font-bold">0.000045</span> m</td>
                     </tr>
-                    <tr id="manual_moc_row" class="hidden"><td>Manual Roughness</td><td><input type="number" id="roughness_manual" value="0.000045" step="0.000001" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Manual ε</td></tr>
+                    <tr id="manual_moc_row" class="hidden"><td>Input Manual Roughness</td><td><input type="number" id="roughness_manual" value="0.000045" step="0.000001" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>User defined roughness</td></tr>
 
-                    <tr><td colspan="4" class="sub-header text-orange-600">3.0 Suction Side (Sizing & Friction)</td></tr>
-                    <tr><td>Target Velocity</td><td><input type="number" id="s_v_target" value="0.25" class="input-yellow" oninput="runLogic()"></td><td>m/sec</td><td>Calculated ID: <span id="s_calc_id" class="font-bold">--</span> mm</td></tr>
-                    <tr><td>Selected Pipe Size</td><td><select id="s_pipe_size" class="input-yellow" onchange="runLogic()"></select></td><td>Inch</td><td id="s_detailed_notes" class="text-xs">--</td></tr>
-                    <tr><td>Friction factor (f)</td><td id="s_f_val" class="cell-calc">--</td><td>--</td><td id="s_f_logic" class="note-highlight text-xs font-bold italic">--</td></tr>
+                    <tr><td colspan="4" class="sub-header text-orange-600">3.0 Suction Side Calculation</td></tr>
+                    <tr><td>Suction Velocity (Target)</td><td><input type="number" id="s_v_target" value="0.25" class="input-yellow" oninput="runLogic()"></td><td>m/sec</td><td>Calculated ID: <span id="s_calc_id" class="font-bold">--</span> mm</td></tr>
+                    <tr>
+                        <td>Standard Pipe Size</td>
+                        <td><select id="s_pipe_size" class="input-yellow" onchange="manualPipeChange('s')"></select></td>
+                        <td>Inch</td>
+                        <td id="s_detailed_notes" class="text-xs leading-relaxed">--</td>
+                    </tr>
+                    <tr><td>Friction factor</td><td id="s_f_val" class="cell-calc">--</td><td>--</td><td id="s_f_logic" class="note-highlight text-xs font-bold italic">--</td></tr>
+                    <tr><td>Source Vessel Pressure</td><td><input type="number" id="s_pr" value="0" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Pressure over surface</td></tr>
+                    <tr><td>Static Head (Suction)</td><td><input type="number" id="s_static" value="5" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Elevation of source</td></tr>
+                    <tr><td>Straight Pipe Length</td><td><input type="number" id="s_len" value="10" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Horizontal + Vertical</td></tr>
+                    <tr><td>Equip. Pressure Drop</td><td><input type="number" id="s_equip_pr" value="0" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Equip. Head: <span id="s_equip_head">0.00</span> m</td></tr>
                     
                     <tr>
-                        <td>Fitting Selection</td>
+                        <td>Fittings Manager</td>
                         <td colspan="3">
-                            <div class="fittings-container">
-                                <p class="text-[10px] font-black uppercase text-slate-400 mb-2">Suction Fittings List</p>
-                                <div id="s_fittings_list" class="space-y-2"></div>
-                                <button onclick="addFitting('s')" class="mt-2 text-[10px] bg-blue-600 text-white px-2 py-1 rounded font-bold uppercase">+ Add Fitting</button>
+                            <div id="s_fittings_container" class="p-2 border rounded bg-slate-50">
+                                <div id="s_fittings_list"></div>
+                                <button onclick="addFitting('s')" class="mt-2 text-[10px] bg-blue-600 text-white px-3 py-1 rounded font-black uppercase tracking-widest">+ Add Suction Fitting</button>
                             </div>
                         </td>
                     </tr>
+                    <tr><td>Friction Head (Pipe)</td><td id="s_friction_head" class="cell-calc">--</td><td>m</td><td>Based on straight length</td></tr>
+                    <tr><td>Friction Loss due to fittings</td><td id="s_fit_loss" class="cell-calc">--</td><td>m</td><td>Calculated from K-Factors</td></tr>
+                    <tr class="bg-orange-50 font-black"><td>Total friction loss in suction line</td><td id="s_total_fric" class="cell-calc text-orange-700">--</td><td>m</td><td>Friction Head + Fittings</td></tr>
 
-                    <tr><td>Friction Head (Pipe)</td><td id="s_friction_head" class="cell-calc">--</td><td>m</td><td>L = <input type="number" id="s_len" value="10" class="w-12 border rounded" oninput="runLogic()"> m</td></tr>
-                    <tr><td>Friction Loss (Fittings)</td><td id="s_fit_loss" class="cell-calc">--</td><td>m</td><td>Based on sum of (K * v²/2g)</td></tr>
-                    <tr class="bg-orange-50 font-bold"><td>Total Friction Loss (Suc.)</td><td id="s_total_fric" class="cell-calc text-orange-700">--</td><td>m</td><td>Pipe + Fittings</td></tr>
-                    <tr><td>Equip. Pressure Drop</td><td><input type="number" id="s_equip_pr" value="0" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>HE / PRV etc.</td></tr>
-
-                    <tr><td colspan="4" class="sub-header text-green-600">4.0 Discharge Side (Sizing & Friction)</td></tr>
-                    <tr><td>Target Velocity</td><td><input type="number" id="d_v_target" value="0.6" class="input-yellow" oninput="runLogic()"></td><td>m/sec</td><td>Calculated ID: <span id="d_calc_id" class="font-bold">--</span> mm</td></tr>
-                    <tr><td>Selected Pipe Size</td><td><select id="d_pipe_size" class="input-yellow" onchange="runLogic()"></select></td><td>Inch</td><td id="d_detailed_notes" class="text-xs">--</td></tr>
-                    <tr><td>Friction factor (f)</td><td id="d_f_val" class="cell-calc">--</td><td>--</td><td id="d_f_logic" class="note-highlight text-xs font-bold italic">--</td></tr>
+                    <tr><td colspan="4" class="sub-header text-green-600">4.0 Discharge Side Calculation</td></tr>
+                    <tr><td>Discharge Velocity (Target)</td><td><input type="number" id="d_v_target" value="0.6" class="input-yellow" oninput="runLogic()"></td><td>m/sec</td><td>Calculated ID: <span id="d_calc_id" class="font-bold">--</span> mm</td></tr>
+                    <tr>
+                        <td>Standard Pipe Size</td>
+                        <td><select id="d_pipe_size" class="input-yellow" onchange="manualPipeChange('d')"></select></td>
+                        <td>Inch</td>
+                        <td id="d_detailed_notes" class="text-xs leading-relaxed">--</td>
+                    </tr>
+                    <tr><td>Friction factor</td><td id="d_f_val" class="cell-calc">--</td><td>--</td><td id="d_f_logic" class="note-highlight text-xs font-bold italic">--</td></tr>
+                    <tr><td>Destination Vessel Pressure</td><td><input type="number" id="d_pr" value="2.0" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Receiver tank pressure</td></tr>
+                    <tr><td>Static Head (Discharge)</td><td><input type="number" id="d_static" value="20" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Elevation of delivery</td></tr>
+                    <tr><td>Straight Pipe Length</td><td><input type="number" id="d_len" value="50" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Horizontal + Vertical</td></tr>
+                    <tr><td>Equip. Pressure Drop</td><td><input type="number" id="d_equip_pr" value="0.2" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Equip. Head: <span id="d_equip_head">0.00</span> m</td></tr>
                     
                     <tr>
-                        <td>Fitting Selection</td>
+                        <td>Fittings Manager</td>
                         <td colspan="3">
-                            <div class="fittings-container">
-                                <p class="text-[10px] font-black uppercase text-slate-400 mb-2">Discharge Fittings List</p>
-                                <div id="d_fittings_list" class="space-y-2"></div>
-                                <button onclick="addFitting('d')" class="mt-2 text-[10px] bg-green-600 text-white px-2 py-1 rounded font-bold uppercase">+ Add Fitting</button>
+                            <div id="d_fittings_container" class="p-2 border rounded bg-slate-50">
+                                <div id="d_fittings_list"></div>
+                                <button onclick="addFitting('d')" class="mt-2 text-[10px] bg-green-600 text-white px-3 py-1 rounded font-black uppercase tracking-widest">+ Add Discharge Fitting</button>
                             </div>
                         </td>
                     </tr>
+                    <tr><td>Friction Head (Pipe)</td><td id="d_friction_head" class="cell-calc">--</td><td>m</td><td>Based on straight length</td></tr>
+                    <tr><td>Friction Loss due to fittings</td><td id="d_fit_loss" class="cell-calc">--</td><td>m</td><td>Calculated from K-Factors</td></tr>
+                    <tr class="bg-green-50 font-black"><td>Total friction loss in discharge line</td><td id="d_total_fric" class="cell-calc text-green-700">--</td><td>m</td><td>Friction Head + Fittings</td></tr>
 
-                    <tr><td>Friction Head (Pipe)</td><td id="d_friction_head" class="cell-calc">--</td><td>m</td><td>L = <input type="number" id="d_len" value="50" class="w-12 border rounded" oninput="runLogic()"> m</td></tr>
-                    <tr><td>Friction Loss (Fittings)</td><td id="d_fit_loss" class="cell-calc">--</td><td>m</td><td>Based on sum of (K * v²/2g)</td></tr>
-                    <tr class="bg-green-50 font-bold"><td>Total Friction Loss (Dis.)</td><td id="d_total_fric" class="cell-calc text-green-700">--</td><td>m</td><td>Pipe + Fittings</td></tr>
-                    <tr><td>Equip. Pressure Drop</td><td><input type="number" id="d_equip_pr" value="0.2" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>HE / PRV etc.</td></tr>
-
-                    <tr><td colspan="4" class="sub-header text-slate-600">5.0 Elevations & Final Summary</td></tr>
-                    <tr><td>Static Head (S/D)</td><td colspan="2"><input type="number" id="s_static" value="5" class="input-yellow w-20 inline" oninput="runLogic()"> / <input type="number" id="d_static" value="20" class="input-yellow w-20 inline" oninput="runLogic()"></td><td>m</td><td>Suction / Discharge</td></tr>
-                    <tr><td>Vessel Pr. (S/D)</td><td colspan="2"><input type="number" id="s_pr" value="0" class="input-yellow w-20 inline" oninput="runLogic()"> / <input type="number" id="d_pr" value="2" class="input-yellow w-20 inline" oninput="runLogic()"></td><td>kg/cm²g</td><td>Source / Destination</td></tr>
-                    <tr class="bg-red-50"><td class="font-black">TOTAL DYNAMIC HEAD (TDH)</td><td id="tdh_val" class="text-red-700 font-black text-lg">--</td><td>m</td><td>Net Pump Head</td></tr>
-                    <tr class="bg-orange-50"><td class="font-black">NPSH AVAILABLE</td><td id="npsha_val" class="text-orange-700 font-black text-lg">--</td><td>m</td><td>Net Suction Head</td></tr>
-                    <tr><td>Shaft Power (BHP)</td><td id="bhp_val" class="font-black text-blue-800">--</td><td>kW</td><td>@ <input type="number" id="eff" value="70" class="w-12 border rounded px-1" oninput="runLogic()">% Eff</td></tr>
+                    <tr><td colspan="4" class="sub-header text-red-600">7.0 Final Summary</td></tr>
+                    <tr class="bg-red-50"><td class="font-black">TOTAL DYNAMIC HEAD (TDH)</td><td id="tdh_val" class="text-red-700 font-black text-lg">--</td><td>m</td><td>Net Requirement</td></tr>
+                    <tr class="bg-orange-50"><td class="font-black">NPSH AVAILABLE</td><td id="npsha_val" class="text-orange-700 font-black text-lg">--</td><td>m</td><td>Available at Inlet</td></tr>
+                    <tr><td>Shaft Power (BHP)</td><td id="bhp_val" class="font-black text-blue-800">--</td><td>kW</td><td>Eff: <input type="number" id="eff" value="70" class="w-12 border rounded px-1" oninput="runLogic()">%</td></tr>
                 </tbody>
             </table>
         </div>
     </main>
 
     <script>
-        const pipeData = {"0.5": 15.8, "0.75": 20.94, "1": 26.64, "1.5": 40.9, "2": 52.5, "3": 77.92, "4": 102.26, "6": 154.05, "8": 202.72, "10": 254.51, "12": 303.23};
+        const pipeData = {"0.5": 15.8, "0.75": 20.94, "1": 26.64, "1.25": 35.05, "1.5": 40.9, "2": 52.5, "2.5": 62.71, "3": 77.92, "4": 102.26, "6": 154.05, "8": 202.72, "10": 254.51, "12": 303.23};
         const K_FACTORS = {
-            "Elbow 90° (Standard)": 0.75, "Elbow 90° (Long Radius)": 0.45, "Elbow 45°": 0.35,
-            "Tee (Straight flow)": 0.40, "Tee (Branch flow)": 1.50, "Gate Valve (Open)": 0.17,
-            "Globe Valve (Open)": 6.00, "Check Valve (Swing)": 2.00, "Butterfly Valve": 0.60,
-            "Strainers": 2.50, "Entrance Loss": 0.50, "Exit Loss": 1.00
+            "90° Elbow (Std)": 0.75, "90° Elbow (LR)": 0.45, "45° Elbow (Std)": 0.35, "Tee (Straight)": 0.40, "Tee (Branch)": 1.50,
+            "Gate Valve (Open)": 0.17, "Globe Valve (Open)": 6.00, "Check Valve (Swing)": 2.00, "Butterfly Valve": 3.13,
+            "Entrance (Sharp)": 0.50, "Exit (Sharp)": 1.00
         };
 
         let suctionFittings = []; let dischargeFittings = [];
+        let manualOverrides = { s: false, d: false };
 
         function addFitting(type) {
             const list = type === 's' ? suctionFittings : dischargeFittings;
-            list.push({ name: "Gate Valve (Open)", qty: 1 });
-            renderFittings();
-            runLogic();
+            list.push({ name: "90° Elbow (Std)", qty: 1 });
+            renderFittings(); runLogic();
         }
 
-        function removeFitting(type, index) {
+        function removeFitting(type, i) {
             const list = type === 's' ? suctionFittings : dischargeFittings;
-            list.splice(index, 1);
-            renderFittings();
-            runLogic();
+            list.splice(i, 1);
+            renderFittings(); runLogic();
         }
 
         function renderFittings() {
             ['s', 'd'].forEach(type => {
                 const list = type === 's' ? suctionFittings : dischargeFittings;
-                const container = document.getElementById(type + '_fittings_list');
-                container.innerHTML = list.map((f, i) => `
-                    <div class="flex gap-2 items-center">
-                        <select onchange="${type}Fittings[${i}].name=this.value; runLogic()" class="text-xs p-1 border rounded bg-white w-40">
+                document.getElementById(type + '_fittings_list').innerHTML = list.map((f, i) => `
+                    <div class="fitting-row">
+                        <select onchange="${type}Fittings[${i}].name=this.value; runLogic()" class="text-[11px] p-1 border rounded bg-white w-40">
                             ${Object.keys(K_FACTORS).map(k => `<option value="${k}" ${f.name===k?'selected':''}>${k}</option>`).join('')}
                         </select>
-                        <input type="number" value="${f.qty}" oninput="${type}Fittings[${i}].qty=this.value; runLogic()" class="w-10 text-xs p-1 border rounded text-center">
+                        <input type="number" value="${f.qty}" oninput="${type}Fittings[${i}].qty=this.value; runLogic()" class="w-10 text-[11px] p-1 border rounded text-center font-bold">
                         <button onclick="removeFitting('${type}', ${i})" class="text-red-500 material-icons text-xs">delete</button>
                     </div>
                 `).join('');
             });
+        }
+
+        function manualPipeChange(prefix) {
+            manualOverrides[prefix] = true;
+            runLogic();
         }
 
         function runLogic() {
@@ -169,58 +181,66 @@
             const rho = parseFloat(document.getElementById('rho').value) || 1000;
             const visc_cp = parseFloat(document.getElementById('visc_cp').value) || 1;
             const vpr_kpa = parseFloat(document.getElementById('vpr_kpa').value) || 0;
-            const eps = document.getElementById('moc_select').value === 'other' ? parseFloat(document.getElementById('roughness_manual').value) : parseFloat(document.getElementById('moc_select').value);
             const conv = 98066.52 / (rho * 9.81);
             const v_m3s = (mFlow / rho) / 3600;
 
-            document.getElementById('v_flow_txt').innerText = `Vol. Flow: ${(mFlow/rho).toFixed(2)} m³/h`;
+            document.getElementById('v_flow_txt').innerText = `Volumetric Flow: ${(mFlow/rho).toFixed(2)} m³/h`;
             document.getElementById('visc_pas_txt').innerText = (visc_cp/1000).toFixed(5);
+
+            let eps = document.getElementById('moc_select').value === 'other' ? parseFloat(document.getElementById('roughness_manual').value) : parseFloat(document.getElementById('moc_select').value);
             document.getElementById('roughness_disp').innerText = eps.toFixed(6);
 
             function solve(prefix) {
                 const target_v = parseFloat(document.getElementById(prefix + '_v_target').value) || 0.1;
                 const calc_id = Math.sqrt((4 * v_m3s) / (Math.PI * target_v)) * 1000;
                 document.getElementById(prefix + '_calc_id').innerText = calc_id.toFixed(2);
-                
-                const size = findNearestSize(calc_id);
-                document.getElementById(prefix + '_pipe_size').value = size;
-                const d_m = pipeData[size] / 1000;
-                const v = v_m3s / (Math.PI * Math.pow(d_m/2, 2));
+
+                if (!manualOverrides[prefix]) {
+                    for (let size in pipeData) { if (pipeData[size] >= calc_id) { document.getElementById(prefix + '_pipe_size').value = size; break; } }
+                }
+
+                const d_mm = pipeData[document.getElementById(prefix + '_pipe_size').value];
+                const d_m = d_mm / 1000;
+                const v = v_m3s / (Math.PI * (d_m/2)**2);
                 const Re = (rho * v * d_m) / (visc_cp/1000);
                 
-                let f = (Re < 2100) ? 64/Re : 0.25 / Math.pow(Math.log10((eps/(3.7*d_m)) + (5.74/Math.pow(Re,0.9))), 2);
-                document.getElementById(prefix + '_f_val').innerText = f.toFixed(5);
-                document.getElementById(prefix + '_f_logic').innerText = Re < 2100 ? `Re (${Math.round(Re)}) < 2100: Laminar` : `Re (${Math.round(Re)}) > 2100: Swamee-Jain`;
+                let f, logic;
+                if (Re < 2100) { f = 64/Re; logic = `Since Re (${Math.round(Re)}) is < 2100, using f = 64/Re`; }
+                else { f = 0.25 / Math.pow(Math.log10((eps/(3.7*d_m)) + (5.74/Math.pow(Re,0.9))), 2); logic = `Since Re (${Math.round(Re)}) is > 2100, using Swamee-Jain Equation`; }
 
-                const L = parseFloat(document.getElementById(prefix + '_len').value) || 0;
-                const h_pipe = (f * L * v**2) / (d_m * 2 * 9.81);
-                
+                document.getElementById(prefix + '_f_val').innerText = f.toFixed(5);
+                document.getElementById(prefix + '_f_logic').innerText = logic;
+
+                const h_pipe = (f * (parseFloat(document.getElementById(prefix + '_len').value)||0) * v**2) / (d_m * 2 * 9.81);
                 const fittings = prefix === 's' ? suctionFittings : dischargeFittings;
                 const totalK = fittings.reduce((acc, f) => acc + (K_FACTORS[f.name] * f.qty), 0);
                 const h_fit = totalK * (v**2 / (2 * 9.81));
-                
                 const equip_h = (parseFloat(document.getElementById(prefix + '_equip_pr').value) || 0) * conv;
-                
+
                 document.getElementById(prefix + '_friction_head').innerText = h_pipe.toFixed(4);
                 document.getElementById(prefix + '_fit_loss').innerText = h_fit.toFixed(4);
                 document.getElementById(prefix + '_total_fric').innerText = (h_pipe + h_fit).toFixed(4);
-                document.getElementById(prefix + '_detailed_notes').innerHTML = `ID: ${pipeData[size]}mm | Vel: ${v.toFixed(2)}m/s | Total Sum of K: ${totalK.toFixed(2)}`;
+                document.getElementById(prefix + '_equip_head').innerText = equip_h.toFixed(2);
+                document.getElementById(prefix + '_detailed_notes').innerHTML = `Internal Diameter: <b>${d_mm} mm</b> | Actual Vel: <b>${v.toFixed(2)} m/s</b> | Re: <b>${Math.round(Re)}</b>`;
 
                 return h_pipe + h_fit + equip_h;
             }
 
             const sLoss = solve('s'); const dLoss = solve('d');
-            const tdh = ((parseFloat(document.getElementById('d_pr').value)*conv)+parseFloat(document.getElementById('d_static').value)+dLoss) - ((parseFloat(document.getElementById('s_pr').value)*conv)+parseFloat(document.getElementById('s_static').value)-sLoss);
-            const npsha = (( (parseFloat(document.getElementById('s_pr').value)+1.0332) - (vpr_kpa*0.010197) ) * conv) + parseFloat(document.getElementById('s_static').value) - sLoss;
+            const sHead = (parseFloat(document.getElementById('s_pr').value)*conv) + parseFloat(document.getElementById('s_static').value) - sLoss;
+            const dHead = (parseFloat(document.getElementById('d_pr').value)*conv) + parseFloat(document.getElementById('d_static').value) + dLoss;
 
-            document.getElementById('tdh_val').innerText = tdh.toFixed(2);
-            document.getElementById('npsha_val').innerText = npsha.toFixed(2);
-            document.getElementById('bhp_val').innerText = ((rho*9.81*v_m3s*tdh)/1000 / (parseFloat(document.getElementById('eff').value)/100)).toFixed(2);
+            document.getElementById('tdh_val').innerText = (dHead - sHead).toFixed(2);
+            document.getElementById('npsha_val').innerText = (((parseFloat(document.getElementById('s_pr').value)+1.0332)-(vpr_kpa*0.010197))*conv + parseFloat(document.getElementById('s_static').value) - sLoss).toFixed(2);
+            document.getElementById('bhp_val').innerText = ((rho*9.81*v_m3s*(dHead-sHead))/1000 / (parseFloat(document.getElementById('eff').value)/100)).toFixed(2);
         }
 
-        function findNearestSize(calcID) { for (let s in pipeData) if (pipeData[s] >= calcID) return s; return "12"; }
         function toggleMocManual() { document.getElementById('manual_moc_row').classList.toggle('hidden', document.getElementById('moc_select').value!=='other'); runLogic(); }
-        window.onload = () => { populateDropdowns(); renderFittings(); runLogic(); };
+        window.onload = () => { 
+            const sSel = document.getElementById('s_pipe_size'); const dSel = document.getElementById('d_pipe_size');
+            Object.keys(pipeData).forEach(size => { sSel.add(new Option(size + '"', size)); dSel.add(new Option(size + '"', size)); });
+            runLogic(); 
+        };
     </script>
 </body>
 </html>
