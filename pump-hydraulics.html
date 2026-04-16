@@ -10,16 +10,13 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         
-        /* Excel Styling */
         .excel-table { border-collapse: collapse; width: 100%; background: white; }
         .excel-table th, .excel-table td { border: 1px solid #e2e8f0; padding: 8px; text-align: left; font-size: 13px; }
         .excel-table th { background-color: #f1f5f9; font-weight: 800; text-transform: uppercase; color: #64748b; font-size: 11px; }
         
-        /* Input Styling (Yellow Cells) */
         .cell-input { background-color: #fefce8; border: 1px solid #fde047 !important; width: 100%; outline: none; font-weight: bold; color: #854d0e; padding: 4px; }
         .cell-input:focus { background-color: #fef9c3; border-color: #eab308 !important; }
         
-        /* Calculated Styling (White/Grey Cells) */
         .cell-calc { background-color: #ffffff; font-weight: 700; color: #1e293b; }
         .section-header { background-color: #0a192f !important; color: white !important; font-weight: 900; }
         
@@ -38,163 +35,135 @@
         <a href="index.html" class="flex items-center gap-2 bg-white/10 p-3 rounded-xl hover:bg-white/20 font-bold text-xs uppercase mb-10">
             <span class="material-icons text-sm">arrow_back</span> Dashboard
         </a>
-        <div class="space-y-2">
-            <p class="text-[10px] text-slate-500 font-black uppercase">Tools</p>
-            <a href="pump-hydraulics.html" class="block text-xs text-slate-400 py-2">Standard Calculator</a>
-            <a href="chemical-db.html" class="block text-xs text-slate-400 py-2">Property DB</a>
-        </div>
     </aside>
 
+    <div id="overlay" onclick="document.getElementById('sidebar').classList.add('sidebar-closed')" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
+
     <main class="pt-24 pb-20 px-4 md:px-10 flex flex-col items-center">
-        <div class="max-w-5xl w-full bg-white rounded-xl shadow-xl overflow-hidden border border-slate-200">
+        <div class="max-w-6xl w-full bg-white rounded-xl shadow-xl overflow-hidden border border-slate-200">
             
             <table class="excel-table">
                 <thead>
+                    <tr><th colspan="4" class="section-header text-center py-3">Engineering Line Sizing & Pump Hydraulics Sheet</th></tr>
                     <tr>
-                        <th colspan="4" class="section-header text-center py-3">Line Sizing & Pump Hydraulics Master Sheet</th>
-                    </tr>
-                    <tr>
-                        <th width="35%">Parameter Description</th>
+                        <th width="40%">Parameter Description</th>
                         <th width="15%">Value</th>
                         <th width="10%">Unit</th>
-                        <th width="40%">Notes / Formula Logic</th>
+                        <th width="35%">Notes / Logic</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr><td colspan="4" class="bg-slate-100 font-black text-[10px] text-blue-600 px-4 py-2 uppercase tracking-widest">1.0 Fluid Properties</td></tr>
-                    <tr>
-                        <td>Mass Flow Rate</td>
-                        <td><input type="number" id="m_flow" value="45000" class="cell-input" oninput="runLogic()"></td>
-                        <td>kg/h</td>
-                        <td>Input provided by user</td>
-                    </tr>
-                    <tr>
-                        <td>Fluid Density</td>
-                        <td><input type="number" id="rho" value="1000" class="cell-input" oninput="runLogic()"></td>
-                        <td>kg/m³</td>
-                        <td>@ Operating Temperature</td>
-                    </tr>
-                    <tr>
-                        <td>Volumetric Flow</td>
-                        <td id="v_flow" class="cell-calc">45.00</td>
-                        <td>m³/h</td>
-                        <td>Mass Flow / Density</td>
-                    </tr>
+                    <tr><td>Mass Flow Rate</td><td><input type="number" id="m_flow" value="45000" class="cell-input" oninput="runLogic()"></td><td>kg/h</td><td>Operating Flow</td></tr>
+                    <tr><td>Fluid Density</td><td><input type="number" id="rho" value="1000" class="cell-input" oninput="runLogic()"></td><td>kg/m³</td><td>@ Op. Temperature</td></tr>
+                    <tr><td>Viscosity of Service Fluid</td><td><input type="number" id="visc_cp" value="1" class="cell-input" oninput="runLogic()"></td><td>cp</td><td>Operating Viscosity</td></tr>
+                    <tr><td>Vapor Pressure of Fluid</td><td><input type="number" id="vpr_kpa" value="3.2" class="cell-input" oninput="runLogic()"></td><td>kPa (a)</td><td>@ Op. Temperature</td></tr>
+                    <tr><td>Volumetric Flow</td><td id="v_flow" class="cell-calc">--</td><td>m³/h</td><td>Mass Flow / Density</td></tr>
 
-                    <tr><td colspan="4" class="bg-slate-100 font-black text-[10px] text-orange-600 px-4 py-2 uppercase tracking-widest">2.0 Suction Side Calculation</td></tr>
+                    <tr><td colspan="4" class="bg-slate-100 font-black text-[10px] text-indigo-600 px-4 py-2 uppercase tracking-widest">2.0 Material of Construction</td></tr>
                     <tr>
-                        <td>Source Vessel Pressure</td>
-                        <td><input type="number" id="s_pr" value="0" class="cell-input" oninput="runLogic()"></td>
-                        <td>kg/cm²g</td>
-                        <td>Suction Tank Pressure</td>
+                        <td>Select Pipe MOC</td>
+                        <td>
+                            <select id="moc_select" class="cell-input" onchange="runLogic()">
+                                <option value="0.000015">Stainless steel</option>
+                                <option value="0.000045">Weld steel</option>
+                                <option value="0.000152">Galvanized Steel</option>
+                                <option value="0.0000015">PVC/Plastic</option>
+                                <option value="0.00055">New Cast Iron</option>
+                            </select>
+                        </td>
+                        <td>--</td>
+                        <td>Dropdown Selection</td>
                     </tr>
-                    <tr>
-                        <td>Static Head (Suction)</td>
-                        <td><input type="number" id="s_static" value="5" class="cell-input" oninput="runLogic()"></td>
-                        <td>m</td>
-                        <td>Vessel liquid level height</td>
-                    </tr>
-                    <tr>
-                        <td>Suction Line Head Loss</td>
-                        <td><input type="number" id="s_loss" value="0.85" class="cell-input" oninput="runLogic()"></td>
-                        <td>m</td>
-                        <td>Based on Pipe & Fittings</td>
-                    </tr>
-                    <tr>
-                        <td>Pressure at Pump Inlet</td>
-                        <td id="s_inlet_pr" class="cell-calc">--</td>
-                        <td>kg/cm²g</td>
-                        <td>(P_source + Static) - Losses</td>
-                    </tr>
+                    <tr><td>Absolute Roughness (ε)</td><td id="roughness_val" class="cell-calc">--</td><td>m</td><td>Generated from MOC</td></tr>
 
-                    <tr><td colspan="4" class="bg-slate-100 font-black text-[10px] text-green-600 px-4 py-2 uppercase tracking-widest">3.0 Discharge Side Calculation</td></tr>
-                    <tr>
-                        <td>Destination Vessel Pressure</td>
-                        <td><input type="number" id="d_pr" value="2.5" class="cell-input" oninput="runLogic()"></td>
-                        <td>kg/cm²g</td>
-                        <td>Required arrival pressure</td>
-                    </tr>
-                    <tr>
-                        <td>Static Head (Discharge)</td>
-                        <td><input type="number" id="d_static" value="20" class="cell-input" oninput="runLogic()"></td>
-                        <td>m</td>
-                        <td>Lift height to destination</td>
-                    </tr>
-                    <tr>
-                        <td>Discharge Line Head Loss</td>
-                        <td><input type="number" id="d_loss" value="4.20" class="cell-input" oninput="runLogic()"></td>
-                        <td>m</td>
-                        <td>Friction + Fittings Loss</td>
-                    </tr>
+                    <tr><td colspan="4" class="bg-slate-100 font-black text-[10px] text-orange-600 px-4 py-2 uppercase tracking-widest">3.0 Suction Side Calculation</td></tr>
+                    <tr><td>Source Vessel Pressure</td><td><input type="number" id="s_pr" value="0" class="cell-input" oninput="runLogic()"></td><td>kg/cm²g</td><td>Gauge Pressure</td></tr>
+                    <tr><td>Static Head (Suction)</td><td><input type="number" id="s_static" value="5" class="cell-input" oninput="runLogic()"></td><td>m</td><td>Elevation (+/-)</td></tr>
+                    <tr><td>Straight Pipe Length</td><td><input type="number" id="s_len" value="10" class="cell-input" oninput="runLogic()"></td><td>m</td><td>Horizontal + Vertical</td></tr>
+                    <tr><td>Equipment Pressure Drop</td><td><input type="number" id="s_equip_pr" value="0" class="cell-input" oninput="runLogic()"></td><td>kg/cm²g</td><td>HE, PRV, etc.</td></tr>
+                    <tr><td>Equipment Head Loss</td><td id="s_equip_head" class="cell-calc">--</td><td>m</td><td>(P*98066.52)/(Density*9.81)</td></tr>
+                    <tr><td>Pipe & Fittings Head Loss</td><td><input type="number" id="s_pipe_loss" value="0.5" class="cell-input" oninput="runLogic()"></td><td>m</td><td>Friction Loss</td></tr>
 
-                    <tr><td colspan="4" class="bg-slate-100 font-black text-[10px] text-red-600 px-4 py-2 uppercase tracking-widest">4.0 Pump Requirements</td></tr>
-                    <tr class="bg-red-50">
-                        <td class="font-bold">TOTAL DYNAMIC HEAD (TDH)</td>
-                        <td id="tdh" class="text-red-600 text-lg font-black">--</td>
-                        <td class="font-bold">m</td>
-                        <td>Head required at Rated Flow</td>
-                    </tr>
-                    <tr>
-                        <td>Hydraulic Power</td>
-                        <td id="hyd_pwr" class="cell-calc">--</td>
-                        <td>kW</td>
-                        <td>(rho * g * Q * TDH)</td>
-                    </tr>
-                    <tr>
-                        <td>Efficiency</td>
-                        <td><input type="number" id="eff" value="70" class="cell-input" oninput="runLogic()"></td>
-                        <td>%</td>
-                        <td>Pump Efficiency</td>
-                    </tr>
-                    <tr class="bg-blue-50">
-                        <td class="font-bold">Shaft Power (BHP)</td>
-                        <td id="bhp" class="text-blue-600 text-lg font-black">--</td>
-                        <td class="font-bold">kW</td>
-                        <td>Required Motor Rating</td>
-                    </tr>
+                    <tr><td colspan="4" class="bg-slate-100 font-black text-[10px] text-green-600 px-4 py-2 uppercase tracking-widest">4.0 Discharge Side Calculation</td></tr>
+                    <tr><td>Destination Vessel Pressure</td><td><input type="number" id="d_pr" value="2" class="cell-input" oninput="runLogic()"></td><td>kg/cm²g</td><td>Gauge Pressure</td></tr>
+                    <tr><td>Static Head (Discharge)</td><td><input type="number" id="d_static" value="20" class="cell-input" oninput="runLogic()"></td><td>m</td><td>Lift Elevation</td></tr>
+                    <tr><td>Straight Pipe Length</td><td><input type="number" id="d_len" value="50" class="cell-input" oninput="runLogic()"></td><td>m</td><td>Horizontal + Vertical</td></tr>
+                    <tr><td>Equipment Pressure Drop</td><td><input type="number" id="d_equip_pr" value="0.2" class="cell-input" oninput="runLogic()"></td><td>kg/cm²g</td><td>HE, PRV, etc.</td></tr>
+                    <tr><td>Equipment Head Loss</td><td id="d_equip_head" class="cell-calc">--</td><td>m</td><td>(P*98066.52)/(Density*9.81)</td></tr>
+                    <tr><td>Pipe & Fittings Head Loss</td><td><input type="number" id="d_pipe_loss" value="3.2" class="cell-input" oninput="runLogic()"></td><td>m</td><td>Friction Loss</td></tr>
+
+                    <tr><td colspan="4" class="bg-slate-100 font-black text-[10px] text-red-600 px-4 py-2 uppercase tracking-widest">5.0 Results & NPSH</td></tr>
+                    <tr class="bg-red-50"><td class="font-black">TOTAL DYNAMIC HEAD (TDH)</td><td id="tdh_val" class="text-red-700 font-black text-lg">--</td><td>m</td><td>Net Pump Requirement</td></tr>
+                    <tr class="bg-orange-50"><td class="font-black">NPSH AVAILABLE</td><td id="npsha_val" class="text-orange-700 font-black text-lg">--</td><td>m</td><td>Available at Inlet</td></tr>
+                    <tr><td>Hydraulic Power</td><td id="hyd_pwr" class="cell-calc">--</td><td>kW</td><td>Fluid Work</td></tr>
+                    <tr><td>Pump Efficiency</td><td><input type="number" id="eff" value="70" class="cell-input" oninput="runLogic()"></td><td>%</td><td>User Input</td></tr>
+                    <tr class="bg-blue-50"><td class="font-black">SHAFT POWER (BHP)</td><td id="bhp_val" class="text-blue-700 font-black text-lg">--</td><td>kW</td><td>Total Motor Demand</td></tr>
                 </tbody>
             </table>
-
-            <div class="p-6 bg-slate-50 border-t border-slate-200 flex justify-between items-center">
-                <p class="text-[11px] text-slate-400 italic font-medium">Locked cells: Formula protection active. Only yellow cells are editable.</p>
-                <button onclick="window.print()" class="bg-white border border-slate-300 px-4 py-2 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-100">Export as PDF</button>
-            </div>
         </div>
     </main>
 
     <script>
         function runLogic() {
-            // Get values from Yellow Cells
-            const massFlow = parseFloat(document.getElementById('m_flow').value) || 0;
+            // Fluid Inputs
+            const mFlow = parseFloat(document.getElementById('m_flow').value) || 0;
             const rho = parseFloat(document.getElementById('rho').value) || 1;
+            const visc = parseFloat(document.getElementById('visc_cp').value) || 0;
+            const vprKpa = parseFloat(document.getElementById('vpr_kpa').value) || 0;
+            
+            // MOC
+            const roughness = document.getElementById('moc_select').value;
+            document.getElementById('roughness_val').innerText = roughness;
+
+            // Pressure to Head Helper
+            const conv = 98066.52 / (rho * 9.81);
+            
+            // Suction Calculations
             const sPr = parseFloat(document.getElementById('s_pr').value) || 0;
             const sStatic = parseFloat(document.getElementById('s_static').value) || 0;
-            const sLoss = parseFloat(document.getElementById('s_loss').value) || 0;
+            const sEquipPr = parseFloat(document.getElementById('s_equip_pr').value) || 0;
+            const sPipeLoss = parseFloat(document.getElementById('s_pipe_loss').value) || 0;
+
+            const sEquipHead = sEquipPr * conv;
+            document.getElementById('s_equip_head').innerText = sEquipHead.toFixed(2);
+            
+            const totalSucLoss = sEquipHead + sPipeLoss;
+            const suctionPrHead = (sPr * conv) + sStatic - totalSucLoss;
+
+            // NPSHa Calculation: ((P_abs_suc - P_vapor_abs) / rho*g)
+            // Converting Kpa to kg/cm2: Kpa * 0.010197
+            const vprKg = vprKpa * 0.010197;
+            const pAbsSucKg = sPr + 1.0332; // Source absolute pressure
+            const npsha = ((pAbsSucKg - vprKg) * conv) + sStatic - totalSucLoss;
+
+            // Discharge Calculations
             const dPr = parseFloat(document.getElementById('d_pr').value) || 0;
             const dStatic = parseFloat(document.getElementById('d_static').value) || 0;
-            const dLoss = parseFloat(document.getElementById('d_loss').value) || 0;
-            const eff = parseFloat(document.getElementById('eff').value) || 1;
+            const dEquipPr = parseFloat(document.getElementById('d_equip_pr').value) || 0;
+            const dPipeLoss = parseFloat(document.getElementById('d_pipe_loss').value) || 0;
 
-            // Excel Formulas
-            const vFlow = massFlow / rho;
-            const sInletHead = (sPr * 10) + sStatic - sLoss;
-            const sInletPr = sInletHead / 10;
+            const dEquipHead = dEquipPr * conv;
+            document.getElementById('d_equip_head').innerText = dEquipHead.toFixed(2);
             
-            const dReqHead = (dPr * 10) + dStatic + dLoss;
-            
-            const tdh = dReqHead - sInletHead;
+            const totalDisLoss = dEquipHead + dPipeLoss;
+            const dischargeReqHead = (dPr * conv) + dStatic + totalDisLoss;
+
+            // Final Results
+            const tdh = dischargeReqHead - suctionPrHead;
+            const vFlow = mFlow / rho;
             const hydPwr = (rho * 9.81 * (vFlow/3600) * tdh) / 1000;
+            const eff = parseFloat(document.getElementById('eff').value) || 70;
             const bhp = hydPwr / (eff / 100);
 
-            // Update White Cells
+            // Display Results
             document.getElementById('v_flow').innerText = vFlow.toFixed(2);
-            document.getElementById('s_inlet_pr').innerText = sInletPr.toFixed(3);
-            document.getElementById('tdh').innerText = tdh.toFixed(2);
+            document.getElementById('tdh_val').innerText = tdh.toFixed(2);
+            document.getElementById('npsha_val').innerText = npsha.toFixed(2);
             document.getElementById('hyd_pwr').innerText = hydPwr.toFixed(2);
-            document.getElementById('bhp').innerText = bhp.toFixed(2);
+            document.getElementById('bhp_val').innerText = bhp.toFixed(2);
         }
 
-        // Initialize on load
         window.onload = runLogic;
     </script>
 </body>
