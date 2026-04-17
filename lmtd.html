@@ -11,108 +11,116 @@
         body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; overflow-x: hidden; }
         .mono { font-family: 'JetBrains Mono', monospace; }
         
-        /* Sidebar - DCS Style */
-        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(-100%); z-index: 100; }
-        #sidebar.open { transform: translateX(0); }
+        /* Top Navigation Bar */
+        .top-nav { background: white; border-bottom: 1px solid #e2e8f0; height: 60px; display: flex; align-items: center; padding: 0 20px; }
         
-        /* Result Box Styling */
-        .formula-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
-        .derivation-box { background: #fdf2f2; border: 1.5px solid #fee2e2; border-radius: 12px; padding: 24px; color: #450a0a; }
+        /* Sidebar Styling - Exactly as per Image */
+        #sidebar { background: #0a192f; width: 280px; position: fixed; left: -280px; top: 0; height: 100%; transition: 0.3s; z-index: 100; color: white; }
+        #sidebar.open { left: 0; }
+        .sidebar-header { padding: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-item { display: flex; items-center: center; padding: 12px 25px; font-weight: 700; font-size: 13px; text-transform: uppercase; color: #94a3b8; transition: 0.2s; }
+        .sidebar-item:hover { color: white; background: rgba(255,255,255,0.05); }
+        .active-link { color: white; background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; }
         
+        /* Main Card Styling */
+        .main-card { background: white; border-radius: 40px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; border-top: 8px solid #c53030; }
+        
+        /* Green Link */
+        .back-link { color: #10b981; font-weight: 600; font-size: 14px; text-decoration: none; display: flex; align-items: center; gap: 5px; margin-bottom: 15px; transition: 0.2s; }
+        .back-link:hover { opacity: 0.8; }
+
         /* Input Styling */
-        .input-dcs { background-color: #fefce8; border: 1.5px solid #fde047 !important; width: 100%; outline: none; font-weight: 700; color: #854d0e; padding: 10px; border-radius: 8px; }
-        .input-dcs:focus { border-color: #eab308 !important; box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.1); }
+        .input-field { background-color: #f8fafc; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; color: #1e293b; font-size: 16px; margin-top: 5px; }
         
-        .active-tab { background: #ef4444; color: white; border-color: #ef4444; }
+        /* Derivation Box from your Previous Requirement */
+        .derivation-box { background: #fdf2f2; border: 1.5px solid #fee2e2; border-radius: 20px; padding: 25px; color: #450a0a; margin-top: 20px; }
         
-        @media (max-width: 768px) { .mobile-title { font-size: 1rem !important; } }
+        .btn-red { background: #c53030; color: white; padding: 18px; border-radius: 12px; width: 100%; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
-<body class="min-h-screen">
+<body>
 
-    <nav class="bg-[#0f172a] text-white p-3 flex justify-between items-center sticky top-0 z-[60] shadow-xl">
-        <div class="flex items-center gap-3">
-            <button onclick="toggleSidebar()" class="p-2 hover:bg-slate-800 rounded-lg">
-                <span class="material-icons">menu</span>
-            </button>
-            <h1 class="font-black italic uppercase tracking-tighter mobile-title text-xl">
-                Process Pro <span class="text-red-500 font-normal">| LMTD Solver</span>
-            </h1>
-        </div>
-        <a href="index.html" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg transition-all text-xs font-bold uppercase tracking-widest">
-            <span class="material-icons text-sm">arrow_back</span> Dashboard
-        </a>
-    </nav>
+    <header class="top-nav">
+        <button onclick="toggleSidebar()" class="flex items-center gap-2 text-[#0a192f] font-bold uppercase text-xs">
+            <span class="material-icons">menu</span> Menu
+        </button>
+        <div class="ml-10 font-black italic text-xl text-[#0a192f]">PROCESS<span class="text-blue-600">PRO</span></div>
+    </header>
 
-    <aside id="sidebar" class="fixed left-0 top-0 h-full w-72 bg-[#0a192f] text-white shadow-2xl p-6">
-        <div class="flex justify-between items-center mb-10">
-            <h2 class="text-blue-400 font-black italic uppercase tracking-widest">Navigation</h2>
+    <aside id="sidebar">
+        <div class="sidebar-header">
+            <h1 class="text-blue-400 font-black italic text-xl uppercase tracking-widest">Navigation</h1>
             <button onclick="toggleSidebar()"><span class="material-icons">close</span></button>
         </div>
-        <nav class="space-y-4">
-            <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 font-bold text-xs uppercase tracking-widest">
-                <span class="material-icons text-sm">dashboard</span> Dashboard
+        <div class="p-5">
+            <a href="index.html" class="flex items-center gap-3 bg-slate-800 p-4 rounded-xl text-xs font-black uppercase mb-6">
+                <span class="material-icons text-sm">arrow_back</span> Dashboard
             </a>
-            <a href="pump-hydraulics.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 text-slate-400 font-bold text-xs uppercase tracking-widest">
-                <span class="material-icons text-sm">precision_manufacturing</span> Pump Hydraulics
-            </a>
-            <a href="lmtd.html" class="flex items-center gap-3 p-3 rounded-xl bg-red-600 font-bold text-xs uppercase tracking-widest">
-                <span class="material-icons text-sm">thermostat</span> LMTD Solver
-            </a>
-        </nav>
+            
+            <p class="text-[10px] text-slate-500 font-black uppercase mb-3 ml-2">Heat Transfer</p>
+            <a href="lmtd.html" class="sidebar-item active-link"><span class="material-icons mr-3">thermostat</span> LMTD Solver</a>
+            <a href="heat-duty.html" class="sidebar-item"><span class="material-icons mr-3">calculate</span> Heat Duty & Area</a>
+            
+            <p class="text-[10px] text-slate-500 font-black uppercase mt-6 mb-3 ml-2">Fluid Mechanics</p>
+            <a href="pump-hydraulics.html" class="sidebar-item"><span class="material-icons mr-3">precision_manufacturing</span> Pump Hydraulics</a>
+        </div>
     </aside>
 
-    <main class="max-w-4xl mx-auto p-4 md:p-10">
-        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
-            <div class="p-6 md:p-10">
-                <h2 class="text-2xl font-black text-slate-800 uppercase italic mb-8 border-b pb-4">Temperature Parameters</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-                    <div class="space-y-4 p-6 bg-red-50/50 rounded-2xl border border-red-100">
-                        <p class="text-[10px] font-black text-red-600 uppercase tracking-widest">Hot Fluid Temperatures</p>
-                        <div><label class="text-xs font-bold text-slate-500 mb-1 block uppercase">Inlet Temp (T1) °C</label><input type="number" id="T1" value="100" class="input-dcs" oninput="calculate()"></div>
-                        <div><label class="text-xs font-bold text-slate-500 mb-1 block uppercase">Outlet Temp (T2) °C</label><input type="number" id="T2" value="85" class="input-dcs" oninput="calculate()"></div>
-                    </div>
-                    <div class="space-y-4 p-6 bg-blue-50/50 rounded-2xl border border-blue-100">
-                        <p class="text-[10px] font-black text-blue-600 uppercase tracking-widest">Cold Fluid Temperatures</p>
-                        <div><label class="text-xs font-bold text-slate-500 mb-1 block uppercase">Inlet Temp (t1) °C</label><input type="number" id="t1" value="30" class="input-dcs" oninput="calculate()"></div>
-                        <div><label class="text-xs font-bold text-slate-500 mb-1 block uppercase">Outlet Temp (t2) °C</label><input type="number" id="t2" value="55" class="input-dcs" oninput="calculate()"></div>
-                    </div>
+    <main class="max-w-4xl mx-auto py-12 px-5">
+        
+        <div class="main-card">
+            <a href="index.html" class="back-link">
+                <span class="material-icons text-sm">arrow_back</span> Back to Dashboard
+            </a>
+            
+            <h2 class="text-4xl font-black text-[#0a192f] uppercase italic mb-10 tracking-tighter">LMTD Solver</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Hot Inlet Temp (T1) °C</label>
+                    <input type="number" id="T1" value="100" class="input-field">
                 </div>
-
-                <div class="mb-10">
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Flow Configuration</p>
-                    <div class="flex gap-4 p-1 bg-slate-100 rounded-xl">
-                        <button id="btn-counter" onclick="setFlow('counter')" class="flex-1 py-3 rounded-lg font-black text-xs uppercase transition-all active-tab">Counter-Current</button>
-                        <button id="btn-co" onclick="setFlow('co')" class="flex-1 py-3 rounded-lg font-black text-xs uppercase transition-all text-slate-500 hover:text-slate-800">Co-Current</button>
-                    </div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Hot Outlet Temp (T2) °C</label>
+                    <input type="number" id="T2" value="85" class="input-field">
                 </div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Cold Inlet Temp (t1) °C</label>
+                    <input type="number" id="t1" value="30" class="input-field">
+                </div>
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Cold Outlet Temp (t2) °C</label>
+                    <input type="number" id="t2" value="55" class="input-field">
+                </div>
+            </div>
 
-                <div id="result-breakdown" class="space-y-6">
-                    <h3 class="text-xl font-black text-slate-900 uppercase italic">Result</h3>
-                    
-                    <div class="formula-card mono text-slate-600 text-center border-dashed border-2">
-                        LMTD = (ΔT1 - ΔT2) / ln(ΔT1 / ΔT2)
+            <div class="mb-10">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Flow Configuration</label>
+                <div class="flex gap-4">
+                    <button id="btn-counter" onclick="setFlow('counter')" class="flex-1 py-4 rounded-xl font-black text-xs uppercase border-2 border-[#c53030] bg-[#c53030] text-white">Counter-Current</button>
+                    <button id="btn-co" onclick="setFlow('co')" class="flex-1 py-4 rounded-xl font-black text-xs uppercase border-2 border-slate-100 bg-slate-50 text-slate-400">Co-Current</button>
+                </div>
+            </div>
+
+            <button onclick="calculate()" class="btn-red mb-12">Calculate LMTD</button>
+
+            <div id="derivation-section" class="hidden">
+                <h3 class="text-xl font-black text-[#0a192f] uppercase italic mb-4">Calculation Breakdown</h3>
+                <div class="derivation-box mono text-sm leading-relaxed">
+                    <div class="mb-5">
+                        <span class="text-red-700 font-black">ΔT1</span> = <span id="lbl-dt1"></span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp; = <span id="val-1a"></span> - <span id="val-1b"></span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp; = <span id="res-dt1" class="font-black text-slate-900 text-lg"></span>
                     </div>
-
-                    <h3 id="flow-title" class="text-xl font-black text-slate-900 uppercase italic pt-6">Counter-current Flow</h3>
-                    
-                    <div class="derivation-box mono text-sm leading-relaxed shadow-inner">
-                        <div class="mb-6">
-                            <span class="text-red-700 font-black">ΔT1</span> = <span id="lbl-dt1">T_Hot_In - T_Cold_Out</span><br>
-                            &nbsp;&nbsp;&nbsp;&nbsp; = <span id="val-t1">100.00</span> - <span id="val-t2-cold">55.00</span><br>
-                            &nbsp;&nbsp;&nbsp;&nbsp; = <span id="res-dt1" class="font-black text-slate-900 text-lg">45.00</span>
-                        </div>
-                        <div class="mb-6">
-                            <span class="text-red-700 font-black">ΔT2</span> = <span id="lbl-dt2">T_Hot_Out - T_Cold_In</span><br>
-                            &nbsp;&nbsp;&nbsp;&nbsp; = <span id="val-t2-hot">85.00</span> - <span id="val-t1-cold">30.00</span><br>
-                            &nbsp;&nbsp;&nbsp;&nbsp; = <span id="res-dt2" class="font-black text-slate-900 text-lg">55.00</span>
-                        </div>
-                        <div class="pt-6 border-t border-red-200">
-                            <span class="font-black text-slate-900 uppercase italic text-lg">Final LMTD</span> = 
-                            <span id="res-final" class="text-3xl text-red-600 font-black ml-2">49.83</span> 
-                            <span class="text-sm text-slate-400 font-bold ml-1">°C</span>
-                        </div>
+                    <div class="mb-5 border-t border-red-200 pt-5">
+                        <span class="text-red-700 font-black">ΔT2</span> = <span id="lbl-dt2"></span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp; = <span id="val-2a"></span> - <span id="val-2b"></span><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp; = <span id="res-dt2" class="font-black text-slate-900 text-lg"></span>
+                    </div>
+                    <div class="pt-5 border-t border-red-200">
+                        <span class="font-black text-slate-900 uppercase italic text-lg">Final LMTD</span> = 
+                        <span id="res-final" class="text-4xl text-red-600 font-black ml-2"></span> 
+                        <span class="text-sm text-slate-400 font-bold ml-1">°C</span>
                     </div>
                 </div>
             </div>
@@ -120,64 +128,44 @@
     </main>
 
     <script>
-        let flowType = 'counter';
+        let flowMode = 'counter';
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
-        function setFlow(type) {
-            flowType = type;
-            const bc = document.getElementById('btn-counter');
-            const bo = document.getElementById('btn-co');
-            const ft = document.getElementById('flow-title');
-
-            if(type === 'counter') {
-                bc.className = "flex-1 py-3 rounded-lg font-black text-xs uppercase transition-all active-tab";
-                bo.className = "flex-1 py-3 rounded-lg font-black text-xs uppercase transition-all text-slate-500";
-                ft.innerText = "Counter-current Flow";
-            } else {
-                bo.className = "flex-1 py-3 rounded-lg font-black text-xs uppercase transition-all active-tab";
-                bc.className = "flex-1 py-3 rounded-lg font-black text-xs uppercase transition-all text-slate-500";
-                ft.innerText = "Co-current Flow";
-            }
+        function setFlow(mode) {
+            flowMode = mode;
+            document.getElementById('btn-counter').className = mode === 'counter' ? "flex-1 py-4 rounded-xl font-black text-xs uppercase border-2 border-[#c53030] bg-[#c53030] text-white" : "flex-1 py-4 rounded-xl font-black text-xs uppercase border-2 border-slate-100 bg-slate-50 text-slate-400";
+            document.getElementById('btn-co').className = mode === 'co' ? "flex-1 py-4 rounded-xl font-black text-xs uppercase border-2 border-[#c53030] bg-[#c53030] text-white" : "flex-1 py-4 rounded-xl font-black text-xs uppercase border-2 border-slate-100 bg-slate-50 text-slate-400";
             calculate();
         }
 
         function calculate() {
-            const T1 = parseFloat(document.getElementById('T1').value) || 0;
-            const T2 = parseFloat(document.getElementById('T2').value) || 0;
-            const t1 = parseFloat(document.getElementById('t1').value) || 0;
-            const t2 = parseFloat(document.getElementById('t2').value) || 0;
+            document.getElementById('derivation-section').classList.remove('hidden');
+            const T1 = parseFloat(document.getElementById('T1').value);
+            const T2 = parseFloat(document.getElementById('T2').value);
+            const t1 = parseFloat(document.getElementById('t1').value);
+            const t2 = parseFloat(document.getElementById('t2').value);
 
             let dt1, dt2;
-            if (flowType === 'counter') {
+            if (flowMode === 'counter') {
                 dt1 = T1 - t2; dt2 = T2 - t1;
-                document.getElementById('lbl-dt1').innerText = "T_Hot_In - T_Cold_Out";
-                document.getElementById('lbl-dt2').innerText = "T_Hot_Out - T_Cold_In";
-                document.getElementById('val-t1').innerText = T1.toFixed(2);
-                document.getElementById('val-t2-cold').innerText = t2.toFixed(2);
-                document.getElementById('val-t2-hot').innerText = T2.toFixed(2);
-                document.getElementById('val-t1-cold').innerText = t1.toFixed(2);
+                document.getElementById('lbl-dt1').innerText = "Hot_In - Cold_Out";
+                document.getElementById('lbl-dt2').innerText = "Hot_Out - Cold_In";
             } else {
                 dt1 = T1 - t1; dt2 = T2 - t2;
-                document.getElementById('lbl-dt1').innerText = "T_Hot_In - T_Cold_In";
-                document.getElementById('lbl-dt2').innerText = "T_Hot_Out - T_Cold_Out";
-                document.getElementById('val-t1').innerText = T1.toFixed(2);
-                document.getElementById('val-t2-cold').innerText = t1.toFixed(2);
-                document.getElementById('val-t2-hot').innerText = T2.toFixed(2);
-                document.getElementById('val-t1-cold').innerText = t2.toFixed(2);
+                document.getElementById('lbl-dt1').innerText = "Hot_In - Cold_In";
+                document.getElementById('lbl-dt2').innerText = "Hot_Out - Cold_Out";
             }
 
+            document.getElementById('val-1a').innerText = (flowMode === 'counter' ? T1 : T1).toFixed(2);
+            document.getElementById('val-1b').innerText = (flowMode === 'counter' ? t2 : t1).toFixed(2);
+            document.getElementById('val-2a').innerText = (flowMode === 'counter' ? T2 : T2).toFixed(2);
+            document.getElementById('val-2b').innerText = (flowMode === 'counter' ? t1 : t2).toFixed(2);
             document.getElementById('res-dt1').innerText = dt1.toFixed(2);
             document.getElementById('res-dt2').innerText = dt2.toFixed(2);
 
-            let result = 0;
-            if (dt1 === dt2) result = dt1;
-            else if (dt1 <= 0 || dt2 <= 0) result = 0;
-            else result = (dt1 - dt2) / Math.log(dt1 / dt2);
-
-            document.getElementById('res-final').innerText = result <= 0 ? "Error" : result.toFixed(2);
+            let lmtd = (dt1 === dt2) ? dt1 : (dt1 - dt2) / Math.log(dt1 / dt2);
+            document.getElementById('res-final').innerText = (isNaN(lmtd) || lmtd <= 0) ? "Error" : lmtd.toFixed(2);
         }
-
-        window.onload = calculate;
     </script>
 </body>
 </html>
