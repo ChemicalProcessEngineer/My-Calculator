@@ -12,70 +12,102 @@
         .mono { font-family: 'JetBrains Mono', monospace; }
         
         /* Top Navigation Bar */
-        .top-nav { background: white; border-bottom: 1px solid #e2e8f0; height: 60px; display: flex; align-items: center; padding: 0 20px; }
+        .top-nav { background: white; border-bottom: 1px solid #e2e8f0; height: 60px; display: flex; align-items: center; padding: 0 20px; position: sticky; top: 0; z-index: 40; }
         
-        /* Sidebar Styling - Exactly as per Image */
-        #sidebar { background: #0a192f; width: 280px; position: fixed; left: -280px; top: 0; height: 100%; transition: 0.3s; z-index: 100; color: white; }
+        /* Sidebar Styling - Matching your image exactly */
+        #sidebar { background: #0a192f; width: 300px; position: fixed; left: -300px; top: 0; height: 100%; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; color: white; }
         #sidebar.open { left: 0; }
-        .sidebar-header { padding: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; }
-        .sidebar-item { display: flex; items-center: center; padding: 12px 25px; font-weight: 700; font-size: 13px; text-transform: uppercase; color: #94a3b8; transition: 0.2s; }
-        .sidebar-item:hover { color: white; background: rgba(255,255,255,0.05); }
-        .active-link { color: white; background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; }
+        .sidebar-header { padding: 25px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* Main Card Styling */
-        .main-card { background: white; border-radius: 40px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; border-top: 8px solid #c53030; }
-        
-        /* Green Link */
-        .back-link { color: #10b981; font-weight: 600; font-size: 14px; text-decoration: none; display: flex; align-items: center; gap: 5px; margin-bottom: 15px; transition: 0.2s; }
-        .back-link:hover { opacity: 0.8; }
+        /* Dashboard Button in Sidebar */
+        .dash-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 12px; display: flex; justify-content: center; align-items: center; gap: 10px; margin: 0 20px 30px 20px; font-size: 11px; font-weight: 900; text-transform: uppercase; color: white; transition: 0.2s; }
+        .dash-btn:hover { background: rgba(255,255,255,0.1); }
 
-        /* Input Styling */
+        /* Accordion Style Menu Items */
+        .menu-category { display: flex; align-items: center; justify-content: space-between; padding: 15px 25px; font-weight: 700; font-size: 13px; color: #94a3b8; cursor: pointer; transition: 0.2s; }
+        .menu-category:hover { color: white; background: rgba(255,255,255,0.03); }
+        .menu-category.active { color: white; background: rgba(255,255,255,0.05); }
+        .submenu { background: rgba(0,0,0,0.2); padding-left: 20px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .submenu.show { max-height: 200px; }
+        .submenu-item { display: block; padding: 10px 40px; font-size: 12px; font-weight: 600; color: #64748b; text-decoration: none; border-left: 2px solid transparent; }
+        .submenu-item:hover { color: #3b82f6; }
+        .submenu-item.active { color: #3b82f6; border-left: 2px solid #3b82f6; }
+
+        /* Main Content Styling */
+        .main-card { background: white; border-radius: 40px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border-top: 8px solid #ef4444; }
+        .back-link { color: #10b981; font-weight: 600; font-size: 14px; text-decoration: none; display: flex; align-items: center; gap: 5px; margin-bottom: 20px; }
         .input-field { background-color: #f8fafc; border: none; width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; color: #1e293b; font-size: 16px; margin-top: 5px; }
-        
-        /* Derivation Box from your Previous Requirement */
-        .derivation-box { background: #fdf2f2; border: 1.5px solid #fee2e2; border-radius: 20px; padding: 25px; color: #450a0a; margin-top: 20px; }
-        
-        .btn-red { background: #c53030; color: white; padding: 18px; border-radius: 12px; width: 100%; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-calc { background: #ef4444; color: white; padding: 20px; border-radius: 15px; width: 100%; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; transition: 0.2s; }
+        .btn-calc:hover { background: #dc2626; transform: translateY(-2px); }
+
+        /* Calculation Breakdown Box */
+        .breakdown-box { background: #fdf2f2; border: 1px solid #fee2e2; border-radius: 20px; padding: 25px; color: #450a0a; margin-top: 25px; }
     </style>
 </head>
 <body>
 
     <header class="top-nav">
-        <button onclick="toggleSidebar()" class="flex items-center gap-2 text-[#0a192f] font-bold uppercase text-xs">
+        <button onclick="toggleSidebar()" class="flex items-center gap-2 text-[#0a192f] font-bold uppercase text-[10px] tracking-widest">
             <span class="material-icons">menu</span> Menu
         </button>
-        <div class="ml-10 font-black italic text-xl text-[#0a192f]">PROCESS<span class="text-blue-600">PRO</span></div>
+        <div class="ml-8 font-black italic text-xl text-[#0a192f] tracking-tighter uppercase">PROCESS<span class="text-blue-600">PRO</span></div>
     </header>
 
     <aside id="sidebar">
         <div class="sidebar-header">
-            <h1 class="text-blue-400 font-black italic text-xl uppercase tracking-widest">Navigation</h1>
-            <button onclick="toggleSidebar()"><span class="material-icons">close</span></button>
+            <h1 class="text-blue-500 font-black italic text-xl uppercase tracking-tighter">Navigation</h1>
+            <button onclick="toggleSidebar()"><span class="material-icons text-slate-500">close</span></button>
         </div>
-        <div class="p-5">
-            <a href="index.html" class="flex items-center gap-3 bg-slate-800 p-4 rounded-xl text-xs font-black uppercase mb-6">
-                <span class="material-icons text-sm">arrow_back</span> Dashboard
-            </a>
-            
-            <p class="text-[10px] text-slate-500 font-black uppercase mb-3 ml-2">Heat Transfer</p>
-            <a href="lmtd.html" class="sidebar-item active-link"><span class="material-icons mr-3">thermostat</span> LMTD Solver</a>
-            <a href="heat-duty.html" class="sidebar-item"><span class="material-icons mr-3">calculate</span> Heat Duty & Area</a>
-            
-            <p class="text-[10px] text-slate-500 font-black uppercase mt-6 mb-3 ml-2">Fluid Mechanics</p>
-            <a href="pump-hydraulics.html" class="sidebar-item"><span class="material-icons mr-3">precision_manufacturing</span> Pump Hydraulics</a>
+
+        <a href="index.html" class="dash-btn">
+            <span class="material-icons text-sm">arrow_back</span> Dashboard
+        </a>
+
+        <div class="menu-category" onclick="toggleSubmenu('fluid-menu')">
+            <div class="flex items-center gap-3"><span class="material-icons text-blue-500 text-lg">water_drop</span> Fluid Mechanics</div>
+            <span class="material-icons text-sm">expand_more</span>
+        </div>
+        <div id="fluid-menu" class="submenu">
+            <a href="pump-hydraulics.html" class="submenu-item">Pump Hydraulics</a>
+            <a href="reynolds.html" class="submenu-item">Reynolds Number</a>
+        </div>
+
+        <div class="menu-category" onclick="toggleSubmenu('unit-menu')">
+            <div class="flex items-center gap-3"><span class="material-icons text-orange-500 text-lg">sync_alt</span> Unit Converter</div>
+            <span class="material-icons text-sm">expand_more</span>
+        </div>
+        <div id="unit-menu" class="submenu">
+            <a href="#" class="submenu-item">Pressure</a>
+            <a href="#" class="submenu-item">Temperature</a>
+        </div>
+
+        <div class="menu-category active" onclick="toggleSubmenu('heat-menu')">
+            <div class="flex items-center gap-3"><span class="material-icons text-red-500 text-lg">thermostat</span> Heat Transfer</div>
+            <span class="material-icons text-sm">expand_more</span>
+        </div>
+        <div id="heat-menu" class="submenu show">
+            <a href="lmtd.html" class="submenu-item active">LMTD Solver</a>
+            <a href="heat-duty.html" class="submenu-item">Heat Duty & Area</a>
+        </div>
+
+        <div class="menu-category" onclick="toggleSubmenu('db-menu')">
+            <div class="flex items-center gap-3"><span class="material-icons text-green-500 text-lg">science</span> Property DB</div>
+            <span class="material-icons text-sm">expand_more</span>
+        </div>
+        <div id="db-menu" class="submenu">
+            <a href="#" class="submenu-item">Chemical Properties</a>
         </div>
     </aside>
 
     <main class="max-w-4xl mx-auto py-12 px-5">
-        
         <div class="main-card">
             <a href="index.html" class="back-link">
-                <span class="material-icons text-sm">arrow_back</span> Back to Dashboard
+                ← Back to Dashboard
             </a>
             
             <h2 class="text-4xl font-black text-[#0a192f] uppercase italic mb-10 tracking-tighter">LMTD Solver</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 <div>
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Hot Inlet Temp (T1) °C</label>
                     <input type="number" id="T1" value="100" class="input-field">
@@ -97,27 +129,26 @@
             <div class="mb-10">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Flow Configuration</label>
                 <div class="flex gap-4">
-                    <button id="btn-counter" onclick="setFlow('counter')" class="flex-1 py-4 rounded-xl font-black text-xs uppercase border-2 border-[#c53030] bg-[#c53030] text-white">Counter-Current</button>
-                    <button id="btn-co" onclick="setFlow('co')" class="flex-1 py-4 rounded-xl font-black text-xs uppercase border-2 border-slate-100 bg-slate-50 text-slate-400">Co-Current</button>
+                    <button id="btn-counter" onclick="setFlow('counter')" class="flex-1 py-4 rounded-2xl font-black text-xs uppercase border-2 border-red-500 bg-red-500 text-white transition-all">Counter-Current</button>
+                    <button id="btn-co" onclick="setFlow('co')" class="flex-1 py-4 rounded-2xl font-black text-xs uppercase border-2 border-slate-100 bg-slate-50 text-slate-400 transition-all">Co-Current</button>
                 </div>
             </div>
 
-            <button onclick="calculate()" class="btn-red mb-12">Calculate LMTD</button>
+            <button onclick="calculate()" class="btn-calc">Calculate LMTD</button>
 
-            <div id="derivation-section" class="hidden">
-                <h3 class="text-xl font-black text-[#0a192f] uppercase italic mb-4">Calculation Breakdown</h3>
-                <div class="derivation-box mono text-sm leading-relaxed">
+            <div id="breakdown" class="hidden animate-fade-in">
+                <div class="breakdown-box mono text-sm leading-relaxed mt-10">
                     <div class="mb-5">
-                        <span class="text-red-700 font-black">ΔT1</span> = <span id="lbl-dt1"></span><br>
+                        <span class="text-red-600 font-black">ΔT1</span> = <span id="lbl-dt1"></span><br>
                         &nbsp;&nbsp;&nbsp;&nbsp; = <span id="val-1a"></span> - <span id="val-1b"></span><br>
                         &nbsp;&nbsp;&nbsp;&nbsp; = <span id="res-dt1" class="font-black text-slate-900 text-lg"></span>
                     </div>
-                    <div class="mb-5 border-t border-red-200 pt-5">
-                        <span class="text-red-700 font-black">ΔT2</span> = <span id="lbl-dt2"></span><br>
+                    <div class="mb-5 border-t border-red-100 pt-5">
+                        <span class="text-red-600 font-black">ΔT2</span> = <span id="lbl-dt2"></span><br>
                         &nbsp;&nbsp;&nbsp;&nbsp; = <span id="val-2a"></span> - <span id="val-2b"></span><br>
                         &nbsp;&nbsp;&nbsp;&nbsp; = <span id="res-dt2" class="font-black text-slate-900 text-lg"></span>
                     </div>
-                    <div class="pt-5 border-t border-red-200">
+                    <div class="pt-5 border-t border-red-100">
                         <span class="font-black text-slate-900 uppercase italic text-lg">Final LMTD</span> = 
                         <span id="res-final" class="text-4xl text-red-600 font-black ml-2"></span> 
                         <span class="text-sm text-slate-400 font-bold ml-1">°C</span>
@@ -129,36 +160,50 @@
 
     <script>
         let flowMode = 'counter';
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+
+        function toggleSidebar() { 
+            document.getElementById('sidebar').classList.toggle('open'); 
+        }
+
+        function toggleSubmenu(id) {
+            const menu = document.getElementById(id);
+            menu.classList.toggle('show');
+        }
 
         function setFlow(mode) {
             flowMode = mode;
-            document.getElementById('btn-counter').className = mode === 'counter' ? "flex-1 py-4 rounded-xl font-black text-xs uppercase border-2 border-[#c53030] bg-[#c53030] text-white" : "flex-1 py-4 rounded-xl font-black text-xs uppercase border-2 border-slate-100 bg-slate-50 text-slate-400";
-            document.getElementById('btn-co').className = mode === 'co' ? "flex-1 py-4 rounded-xl font-black text-xs uppercase border-2 border-[#c53030] bg-[#c53030] text-white" : "flex-1 py-4 rounded-xl font-black text-xs uppercase border-2 border-slate-100 bg-slate-50 text-slate-400";
-            calculate();
+            const b1 = document.getElementById('btn-counter');
+            const b2 = document.getElementById('btn-co');
+            if(mode === 'counter') {
+                b1.className = "flex-1 py-4 rounded-2xl font-black text-xs uppercase border-2 border-red-500 bg-red-500 text-white";
+                b2.className = "flex-1 py-4 rounded-2xl font-black text-xs uppercase border-2 border-slate-100 bg-slate-50 text-slate-400";
+            } else {
+                b2.className = "flex-1 py-4 rounded-2xl font-black text-xs uppercase border-2 border-red-500 bg-red-500 text-white";
+                b1.className = "flex-1 py-4 rounded-2xl font-black text-xs uppercase border-2 border-slate-100 bg-slate-50 text-slate-400";
+            }
         }
 
         function calculate() {
-            document.getElementById('derivation-section').classList.remove('hidden');
+            document.getElementById('breakdown').classList.remove('hidden');
             const T1 = parseFloat(document.getElementById('T1').value);
             const T2 = parseFloat(document.getElementById('T2').value);
             const t1 = parseFloat(document.getElementById('t1').value);
             const t2 = parseFloat(document.getElementById('t2').value);
 
             let dt1, dt2;
-            if (flowMode === 'counter') {
+            if(flowMode === 'counter') {
                 dt1 = T1 - t2; dt2 = T2 - t1;
-                document.getElementById('lbl-dt1').innerText = "Hot_In - Cold_Out";
-                document.getElementById('lbl-dt2').innerText = "Hot_Out - Cold_In";
+                document.getElementById('lbl-dt1').innerText = "T_Hot_In - T_Cold_Out";
+                document.getElementById('lbl-dt2').innerText = "T_Hot_Out - T_Cold_In";
             } else {
                 dt1 = T1 - t1; dt2 = T2 - t2;
-                document.getElementById('lbl-dt1').innerText = "Hot_In - Cold_In";
-                document.getElementById('lbl-dt2').innerText = "Hot_Out - Cold_Out";
+                document.getElementById('lbl-dt1').innerText = "T_Hot_In - T_Cold_In";
+                document.getElementById('lbl-dt2').innerText = "T_Hot_Out - T_Cold_Out";
             }
 
-            document.getElementById('val-1a').innerText = (flowMode === 'counter' ? T1 : T1).toFixed(2);
+            document.getElementById('val-1a').innerText = T1.toFixed(2);
             document.getElementById('val-1b').innerText = (flowMode === 'counter' ? t2 : t1).toFixed(2);
-            document.getElementById('val-2a').innerText = (flowMode === 'counter' ? T2 : T2).toFixed(2);
+            document.getElementById('val-2a').innerText = T2.toFixed(2);
             document.getElementById('val-2b').innerText = (flowMode === 'counter' ? t1 : t2).toFixed(2);
             document.getElementById('res-dt1').innerText = dt1.toFixed(2);
             document.getElementById('res-dt2').innerText = dt2.toFixed(2);
