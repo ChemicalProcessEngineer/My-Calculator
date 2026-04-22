@@ -2,171 +2,227 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pressure Drop | Process Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pump Master Pro | DCS Control Suite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@500;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .sidebar-closed { transform: translateX(-100%); }
-        .sidebar-open { transform: translateX(0); }
-        .submenu { transition: all 0.3s ease-in-out; overflow: hidden; }
-        .submenu.hidden { display: none; }
+        body { font-family: 'Inter', sans-serif; background: #f1f5f9; color: #1e293b; overflow-x: hidden; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; }
+        .excel-table { width: 100%; border-collapse: separate; border-spacing: 0; background: white; min-width: 950px; }
+        .excel-table th { background: #0f172a; color: #f8fafc; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; padding: 14px; position: sticky; top: 0; z-index: 10; }
+        .excel-table td { border-bottom: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; padding: 10px 14px; font-size: 13px; }
         
-        #history-list::-webkit-scrollbar { width: 4px; }
-        #history-list::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        /* Fixed Input to allow negative signs on mobile/desktop */
+        .input-yellow { background-color: #fefce8; border: 1.5px solid #fde047 !important; width: 100%; outline: none; font-weight: 700; color: #854d0e; padding: 6px; border-radius: 6px; }
+        
+        .sub-header { background-color: #f8fafc; font-weight: 800; text-transform: uppercase; font-size: 11px; color: #64748b; border-left: 4px solid #3b82f6; }
+        .result-highlight { background-color: #eff6ff; border: 2px solid #3b82f6 !important; color: #1d4ed8; border-radius: 8px; }
+        
+        #sidebar { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: translateX(-100%); z-index: 100; }
+        #sidebar.open { transform: translateX(0); }
+        
+        .dcs-panel { background: #0a0a0a; border: 4px solid #334155; }
+        .dcs-readout { background: #000; color: #00ffcc; font-family: 'JetBrains Mono'; padding: 5px; border-radius: 4px; border: 1px solid #1e293b; }
+        
+        @media (max-width: 768px) { .mobile-btn-text { display: none; } }
+        @media print { .no-print { display: none; } body { background: white; } .excel-table { min-width: 100%; } }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen">
 
-    <nav class="bg-white border-b p-4 flex items-center shadow-sm z-40 fixed w-full">
-        <button onclick="toggleSidebar()" class="p-2 hover:bg-slate-100 rounded-lg transition-all mr-4 flex items-center">
-            <span class="material-icons text-slate-600">menu</span>
-            <span class="ml-2 text-[10px] font-black uppercase text-slate-400 tracking-widest">Menu</span>
-        </button>
-        <h1 class="font-[900] text-slate-800 uppercase tracking-tighter text-xl italic">Process <span class="text-blue-600">Pro</span></h1>
+    <nav class="bg-[#0f172a] text-white p-3 flex justify-between items-center sticky top-0 z-[60] shadow-xl no-print">
+        <div class="flex items-center gap-2">
+            <button onclick="toggleSidebar()" class="p-2 hover:bg-slate-800 rounded-lg"><span class="material-icons">menu</span></button>
+            <h1 class="font-black italic uppercase tracking-tighter text-sm md:text-xl">Process Pro <span class="text-blue-400 font-normal">| Hydraulics</span></h1>
+        </div>
+        <div class="flex gap-2">
+            <button onclick="toggleSimulator()" class="bg-cyan-600 text-white px-3 py-2 rounded-lg font-bold text-[10px] uppercase flex items-center gap-1"><span class="material-icons text-sm">monitor</span> <span class="mobile-btn-text">DCS Simulator</span></button>
+            <button onclick="window.print()" class="bg-slate-700 text-white px-3 py-2 rounded-lg font-bold text-[10px] uppercase flex items-center gap-1"><span class="material-icons text-sm">picture_as_pdf</span> <span class="mobile-btn-text">PDF Report</span></button>
+        </div>
     </nav>
 
-    <aside id="sidebar" class="fixed left-0 top-0 h-full w-72 bg-[#0a192f] text-white z-50 sidebar-closed shadow-2xl overflow-y-auto">
-        <div class="p-8 border-b border-white/5 flex justify-between items-center">
-            <h1 class="text-xl font-black text-blue-400 uppercase tracking-tighter italic">Navigation</h1>
-            <button onclick="toggleSidebar()" class="text-slate-400 hover:text-white"><span class="material-icons">close</span></button>
-        </div>
-        <nav class="p-6">
-            <div class="mb-10"><a href="index.html" class="flex items-center justify-center gap-2 bg-white/10 border border-white/20 hover:bg-white/20 text-white font-black py-3 rounded-2xl transition-all shadow-lg text-[11px] uppercase tracking-widest"><span class="material-icons text-sm">arrow_back</span> Dashboard</a></div>
-            
-            <div class="space-y-4">
-                <div>
-                    <button onclick="toggleMenu('fluid-menu', 'fluid-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
-                        <div class="flex items-center"><span class="material-icons text-blue-500 mr-3 text-sm">water_drop</span><span class="text-sm font-bold">Fluid Mechanics</span></div>
-                        <span class="material-icons text-sm transition-transform" id="fluid-arrow">expand_more</span>
-                    </button>
-                    <div id="fluid-menu" class="submenu pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
-                        <a href="reynolds.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Reynolds Number</a>
-                        <a href="pressure-drop.html" class="block text-xs text-blue-400 font-bold py-2 border-l-2 border-blue-400 pl-2">Pressure & Head</a>
-                    </div>
-                </div>
-
-                <div>
-                    <button onclick="toggleMenu('unit-menu', 'unit-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
-                        <div class="flex items-center"><span class="material-icons text-orange-500 mr-3 text-sm">sync_alt</span><span class="text-sm font-bold">Unit Converter</span></div>
-                        <span class="material-icons text-sm transition-transform" id="unit-arrow">expand_more</span>
-                    </button>
-                    <div id="unit-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
-                        <a href="unit-converter.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Main Hub</a>
-                    </div>
-                </div>
-
-                <div>
-                    <button onclick="toggleMenu('heat-menu', 'heat-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
-                        <div class="flex items-center"><span class="material-icons text-red-500 mr-3 text-sm">thermostat</span><span class="text-sm font-bold">Heat Transfer</span></div>
-                        <span class="material-icons text-sm transition-transform" id="heat-arrow">expand_more</span>
-                    </button>
-                    <div id="heat-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
-                        <a href="lmtd.html" class="block text-xs text-slate-400 hover:text-white py-2">LMTD Solver</a>
-                        <a href="heat-duty.html" class="block text-xs text-slate-400 hover:text-white py-2">Heat Duty & Area</a>
-                    </div>
-                </div>
-
-                <div>
-                    <button onclick="toggleMenu('db-menu', 'db-arrow')" class="w-full flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all text-left">
-                        <div class="flex items-center"><span class="material-icons text-green-500 mr-3 text-sm">science</span><span class="text-sm font-bold">Property DB</span></div>
-                        <span class="material-icons text-sm transition-transform" id="db-arrow">expand_more</span>
-                    </button>
-                    <div id="db-menu" class="submenu hidden pl-10 space-y-2 mt-2 border-l border-white/10 ml-6">
-                        <a href="chemical-db.html" class="block text-xs text-slate-400 hover:text-white py-2 transition-all">Chemical Search</a>
-                    </div>
-                </div>
-
-                <div class="mt-10 pt-6 border-t border-white/5">
-                    <div class="flex justify-between items-center px-4 mb-4">
-                        <p class="text-[10px] text-slate-500 font-black uppercase tracking-widest">History</p>
-                        <button onclick="clearHistory()" class="text-[10px] text-red-400 font-bold uppercase hover:text-red-300">Clear</button>
-                    </div>
-                    <div id="history-list" class="px-4 space-y-3 max-h-60 overflow-y-auto"></div>
-                </div>
-            </div>
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-72 bg-[#0a192f] text-white shadow-2xl p-6">
+        <div class="flex justify-between items-center mb-8"><h2 class="text-blue-400 font-black italic uppercase">Menu</h2><button onclick="toggleSidebar()"><span class="material-icons">close</span></button></div>
+        <nav class="space-y-3">
+            <a href="index.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-white/10 font-bold text-xs uppercase tracking-widest"><span class="material-icons text-sm">dashboard</span> Dashboard</a>
+            <a href="pump-hydraulics.html" class="flex items-center gap-3 p-3 rounded-xl bg-blue-600 font-bold text-xs uppercase tracking-widest"><span class="material-icons text-sm">precision_manufacturing</span> Pump Hydraulics</a>
         </nav>
     </aside>
 
-    <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
+    <main class="p-2 md:p-8">
+        <div class="glass-panel rounded-xl shadow-xl border border-slate-200 bg-white overflow-hidden">
+            <div class="table-container">
+                <table class="excel-table" id="master-table">
+                    <thead>
+                        <tr><th width="35%">Parameter Description</th><th width="15%">Value</th><th width="10%">Unit</th><th width="40%">Calculated Data / Detailed Notes</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="4" class="sub-header text-blue-600 px-6 py-4">1.0 Fluid Properties</td></tr>
+                        <tr><td>Mass Flow Rate</td><td><input type="number" id="m_flow" value="45000" class="input-yellow" oninput="runLogic()"></td><td>kg/h</td><td id="v_flow_txt">--</td></tr>
+                        <tr><td>Fluid Density at operating temperature</td><td><input type="number" id="rho" value="1000" class="input-yellow" oninput="runLogic()"></td><td>kg/m³</td><td>Operating density</td></tr>
+                        <tr><td>Viscosity at operating temperature</td><td><input type="number" id="visc_cp" value="1" class="input-yellow" oninput="runLogic()"></td><td>cP</td><td>Pa.s: <span id="visc_pas_txt">--</span></td></tr>
+                        <tr><td>Vapor Pressure at operating temperature</td><td><input type="number" id="vpr_kpa" value="3.2" class="input-yellow" oninput="runLogic()"></td><td>kPa (a)</td><td>Absolute vapor pressure</td></tr>
 
-    <main class="flex-1 pt-32 pb-20 flex flex-col items-center px-6">
-        <div class="max-w-xl w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-200">
-            <div class="h-2 bg-green-600"></div>
-            <div class="p-10">
-                <div class="mb-4"><a href="index.html" class="text-[#059669] text-sm font-medium hover:underline flex items-center transition-all"><span class="mr-1">←</span> Back to Dashboard</a></div>
-                <h2 class="text-3xl font-[900] text-slate-800 mb-8 uppercase tracking-tight italic">Pressure & Head Loss</h2>
-                
-                <div class="space-y-5">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Re No.</label><input type="number" id="re" value="5000" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold"></div>
-                        <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Length (m)</label><input type="number" id="l" value="10" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold"></div>
-                    </div>
-                    <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Diameter (mm)</label><input type="number" id="d" value="50" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold"></div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Density (kg/m³)</label><input type="number" id="rho" value="1000" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold"></div>
-                        <div><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Velocity (m/s)</label><input type="number" id="u" value="2.0" class="w-full p-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none font-bold"></div>
-                    </div>
-                    <button onclick="calculate()" class="w-full bg-green-600 hover:bg-green-700 text-white font-black py-5 rounded-2xl shadow-lg transition-all transform active:scale-95 uppercase tracking-[0.2em] mt-4">Calculate Loss</button>
-                    <div id="resultBox" class="hidden mt-8 grid grid-cols-2 gap-4">
-                        <div class="bg-green-50 p-6 rounded-3xl border border-green-100 text-center animate-in fade-in zoom-in duration-300">
-                            <p class="text-[10px] font-black text-green-400 uppercase tracking-widest">ΔP (Pa)</p>
-                            <h3 id="dpVal" class="text-2xl font-black text-green-900 my-1">--</h3>
-                        </div>
-                        <div class="bg-orange-50 p-6 rounded-3xl border border-orange-100 text-center animate-in fade-in zoom-in duration-300">
-                            <p class="text-[10px] font-black text-orange-400 uppercase tracking-widest">Head (m)</p>
-                            <h3 id="hlVal" class="text-2xl font-black text-orange-900 my-1">--</h3>
-                        </div>
-                    </div>
-                </div>
+                        <tr><td colspan="4" class="sub-header text-indigo-600 px-6 py-4">2.0 Material of Construction</td></tr>
+                        <tr>
+                            <td>Select Suitable Pipe MOC</td>
+                            <td>
+                                <select id="moc_select" class="input-yellow" onchange="toggleMocManual()">
+                                    <option value="0.000015">Stainless steel</option>
+                                    <option value="0.000045" selected>Weld steel</option>
+                                    <option value="0.000152">Galvanized Steel</option>
+                                    <option value="0.0000015">PVC/Plastic Pipes</option>
+                                    <option value="other">Other (Manual Input)</option>
+                                </select>
+                            </td>
+                            <td>--</td>
+                            <td>ε: <span id="roughness_disp" class="font-bold">0.000045</span> m.</td>
+                        </tr>
+                        <tr id="manual_moc_row" class="hidden"><td>Input Manual Roughness</td><td><input type="number" id="roughness_manual" value="0.000045" step="0.000001" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Manual ε input</td></tr>
+
+                        <tr><td colspan="4" class="sub-header text-orange-600 px-6 py-4">3.0 Suction Side Calculation</td></tr>
+                        <tr><td>1) Absolute Pressure over free surface of liquid at source</td><td><input type="text" id="s_pr" value="0" class="input-yellow" oninput="validateInput(this); runLogic();"></td><td>kg/cm²g</td><td>Gauge pressure at source</td></tr>
+                        <tr><td>2) Static Head (Suction)</td><td><input type="text" id="s_static" value="5" class="input-yellow" oninput="validateInput(this); runLogic();"></td><td>m</td><td>Elevation height</td></tr>
+                        <tr><td>3) Pressure drop due to intermediate equipments</td><td><input type="number" id="s_equip_pr" value="0" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Equip. Head: <span id="s_equip_head">0.00</span> m.</td></tr>
+                        <tr><td>4) Straight Pipe Length in suction line</td><td><input type="number" id="s_len" value="10" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Horizontal + Vertical</td></tr>
+                        <tr><td>5) Suction Velocity</td><td><input type="number" id="s_v_target" value="0.25" class="input-yellow" oninput="runLogic()"></td><td>m/sec</td><td>Calculated ID: <span id="s_calc_id" class="font-bold">--</span> mm.</td></tr>
+                        <tr><td>6) Standard Pipe Size</td><td><select id="s_pipe_size" class="input-yellow" onchange="manualPipeChange('s')"></select></td><td>Inch</td><td id="s_detailed_notes" class="result-highlight text-xs font-bold px-4 py-2">--</td></tr>
+                        <tr><td>7) Friction factor</td><td id="s_f_val" class="cell-calc">--</td><td>--</td><td id="s_f_logic" class="italic font-bold text-xs p-2 rounded bg-blue-50 text-blue-700">--</td></tr>
+                        <tr><td>8) Friction Head (Pipe)</td><td id="s_friction_head" class="cell-calc">--</td><td>m</td><td>Straight pipe loss</td></tr>
+                        <tr><td>9) Fittings in Suction line</td><td colspan="3"><button onclick="addFitting('s')" class="text-[10px] bg-blue-600 text-white px-3 py-1 rounded-full uppercase font-black tracking-widest">+ Add Fitting</button><div id="s_fittings_list" class="mt-2 space-y-1"></div></td></tr>
+                        <tr><td>10) Friction Loss due to fittings</td><td id="s_fit_loss" class="cell-calc">--</td><td>m</td><td>Σ (K * v²/2g)</td></tr>
+                        <tr class="bg-orange-50 font-black"><td>11) Total friction loss in suction line</td><td id="s_total_fric" class="cell-calc text-orange-700">--</td><td>m</td><td>(8) + (10)</td></tr>
+
+                        <tr><td colspan="4" class="sub-header text-green-600 px-6 py-4">4.0 Discharge Side Calculation</td></tr>
+                        <tr><td>1) Absolute Pressure over free surface of liquid in receiver</td><td><input type="text" id="d_pr" value="2.0" class="input-yellow" oninput="validateInput(this); runLogic();"></td><td>kg/cm²g</td><td>Gauge pressure at receiver</td></tr>
+                        <tr><td>2) Static Head (Discharge)</td><td><input type="text" id="d_static" value="20" class="input-yellow" oninput="validateInput(this); runLogic();"></td><td>m</td><td>Elevation height</td></tr>
+                        <tr><td>3) Pressure drop due to intermediate equipments</td><td><input type="number" id="d_equip_pr" value="0.2" class="input-yellow" oninput="runLogic()"></td><td>kg/cm²g</td><td>Equip. Head: <span id="d_equip_head" class="font-bold">0.00</span> m.</td></tr>
+                        <tr><td>4) Straight Pipe Length in discharge line</td><td><input type="number" id="d_len" value="50" class="input-yellow" oninput="runLogic()"></td><td>m</td><td>Horizontal + Vertical</td></tr>
+                        <tr><td>5) Discharge Velocity</td><td><input type="number" id="d_v_target" value="0.6" class="input-yellow" oninput="runLogic()"></td><td>m/sec</td><td>Calculated ID: <span id="d_calc_id" class="font-bold">--</span> mm.</td></tr>
+                        <tr><td>6) Standard Pipe Size</td><td><select id="d_pipe_size" class="input-yellow" onchange="manualPipeChange('d')"></select></td><td>Inch</td><td id="d_detailed_notes" class="result-highlight text-xs font-bold px-4 py-2">--</td></tr>
+                        <tr><td>7) Friction factor</td><td id="d_f_val" class="cell-calc">--</td><td>--</td><td id="d_f_logic" class="italic font-bold text-xs p-2 rounded bg-green-50 text-green-700">--</td></tr>
+                        <tr><td>8) Friction Head (Pipe)</td><td id="d_friction_head" class="cell-calc">--</td><td>m</td><td>Straight pipe loss</td></tr>
+                        <tr><td>9) Fittings in Discharge line</td><td colspan="3"><button onclick="addFitting('d')" class="text-[10px] bg-green-600 text-white px-3 py-1 rounded-full uppercase font-black tracking-widest">+ Add Fitting</button><div id="d_fittings_list" class="mt-2 space-y-1"></div></td></tr>
+                        <tr><td>10) Friction Loss due to fittings</td><td id="d_fit_loss" class="cell-calc">--</td><td>m</td><td>Σ (K * v²/2g)</td></tr>
+                        <tr class="bg-green-50 font-black"><td>11) Total friction loss in discharge line</td><td id="d_total_fric" class="cell-calc text-green-700">--</td><td>m</td><td>(8) + (10)</td></tr>
+
+                        <tr><td colspan="4" class="sub-header text-red-600 px-6 py-4">5.0 Results Summary</td></tr>
+                        <tr><td>Total Suction Head</td><td id="total_s_head" class="cell-calc">--</td><td>m</td><td>Available Head at Pump Inlet</td></tr>
+                        <tr><td>Total Discharge Head</td><td id="total_d_head" class="cell-calc">--</td><td>m</td><td>Required Head at Pump Outlet</td></tr>
+                        <tr><td>Differential Head (TDH)</td><td id="tdh_val_res" class="cell-calc text-red-600">--</td><td>m</td><td>dH = Total Discharge - Total Suction</td></tr>
+                        <tr class="bg-blue-50"><td>SHAFT POWER (BHP)</td><td id="bhp_val" class="text-blue-700 font-black text-xl">--</td><td>kW</td><td>@ <input type="number" id="eff" value="70" class="w-12 border rounded px-1 font-bold" oninput="runLogic()">% Eff</td></tr>
+                        <tr class="bg-orange-50"><td>NPSH AVAILABLE</td><td id="npsha_val" class="text-orange-700 font-black text-lg">--</td><td>m</td><td>Available NPSH</td></tr>
+                        <tr class="bg-slate-900 text-white"><td class="uppercase font-black tracking-widest">TOTAL DYNAMIC HEAD (TDH)</td><td id="tdh_val" class="text-cyan-400 font-black text-3xl mono">--</td><td>m</td><td>Net Requirement</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </main>
 
     <script>
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('sidebar-closed'); document.getElementById('sidebar').classList.toggle('sidebar-open'); document.getElementById('overlay').classList.toggle('hidden'); }
-        function toggleMenu(menuId, arrowId) { const menu = document.getElementById(menuId); const arrow = document.getElementById(arrowId); menu.classList.toggle('hidden'); arrow.style.transform = menu.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)'; }
+        const pipeData = {"0.5": 15.8, "0.75": 20.94, "1": 26.64, "1.25": 35.05, "1.5": 40.9, "2": 52.5, "2.5": 62.71, "3": 77.92, "4": 102.26, "6": 154.05, "8": 202.72, "10": 254.51, "12": 303.23};
+        const K_FACTORS = {"90° Elbow (Std)": 0.75, "Gate Valve": 0.17, "Globe Valve": 6.0, "Check Valve": 2.0, "Butterfly Valve": 3.13};
 
-        function saveToHistory(label, value) {
-            let history = JSON.parse(localStorage.getItem('processProHistory')) || [];
-            const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            history.unshift({ label, value, time: timestamp });
-            if(history.length > 10) history.pop();
-            localStorage.setItem('processProHistory', JSON.stringify(history));
-            renderHistory();
+        let suctionFittings = [], dischargeFittings = [], manualOverrides = {s: false, d: false};
+
+        function validateInput(el) {
+            el.value = el.value.replace(/[^0-9.-]/g, '');
+            if ((el.value.match(/-/g) || []).length > 1) el.value = el.value.replace(/-$/, '');
         }
 
-        function renderHistory() {
-            const list = document.getElementById('history-list');
-            const history = JSON.parse(localStorage.getItem('processProHistory')) || [];
-            if (history.length === 0) { list.innerHTML = '<p class="text-[10px] text-slate-600 italic">No calculations yet...</p>'; return; }
-            list.innerHTML = history.map(item => `<div class="bg-white/5 p-3 rounded-xl border border-white/5"><div class="flex justify-between text-[9px] uppercase font-black text-blue-400 mb-1"><span>${item.label}</span><span class="text-slate-500">${item.time}</span></div><div class="text-sm font-bold text-white">${item.value}</div></div>`).join('');
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        function addFitting(t) { (t==='s'?suctionFittings:dischargeFittings).push({name: "90° Elbow (Std)", qty: 1}); renderFittings(); runLogic(); }
+        function removeFitting(t, i) { (t==='s'?suctionFittings:dischargeFittings).splice(i, 1); renderFittings(); runLogic(); }
+
+        function renderFittings() {
+            ['s','d'].forEach(t => {
+                const list = t==='s'?suctionFittings:dischargeFittings;
+                document.getElementById(t+'_fittings_list').innerHTML = list.map((f, i) => `
+                    <div class="flex items-center gap-2 mb-1 p-1 bg-slate-100 rounded">
+                        <select onchange="${t}Fittings[${i}].name=this.value; runLogic();" class="text-[10px] p-1 border rounded bg-white flex-1 font-bold">
+                            ${Object.keys(K_FACTORS).map(k=>`<option value="${k}" ${f.name===k?'selected':''}>${k}</option>`).join('')}
+                        </select>
+                        <input type="number" value="${f.qty}" oninput="${t}Fittings[${i}].qty=this.value; runLogic();" class="w-8 text-[10px] p-1 border rounded text-center font-bold">
+                        <button onclick="removeFitting('${t}', ${i})" class="text-red-500 material-icons text-xs">delete</button>
+                    </div>`).join('');
+            });
         }
 
-        function clearHistory() { localStorage.removeItem('processProHistory'); renderHistory(); }
+        function manualPipeChange(p) { manualOverrides[p] = true; runLogic(); }
+        function toggleMocManual() { document.getElementById('manual_moc_row').classList.toggle('hidden', document.getElementById('moc_select').value!=='other'); runLogic(); }
 
-        function calculate() {
-            const re = parseFloat(document.getElementById('re').value);
-            const l = parseFloat(document.getElementById('l').value);
-            const d = parseFloat(document.getElementById('d').value) / 1000;
-            const rho = parseFloat(document.getElementById('rho').value);
-            const u = parseFloat(document.getElementById('u').value);
-            const g = 9.81;
-            let f = (re < 2100) ? (64/re) : 0.316 * Math.pow(re, -0.25);
-            const hl = f * (l/d) * (Math.pow(u,2)/(2*g));
-            const dp = rho * g * hl;
-            
-            document.getElementById('resultBox').classList.remove('hidden');
-            document.getElementById('dpVal').innerText = Math.round(dp).toLocaleString();
-            document.getElementById('hlVal').innerText = hl.toFixed(3);
+        function runLogic() {
+            const mFlow = parseFloat(document.getElementById('m_flow').value) || 0;
+            const rho = parseFloat(document.getElementById('rho').value) || 1000;
+            const visc_cp = parseFloat(document.getElementById('visc_cp').value) || 1;
+            const vpr_kpa = parseFloat(document.getElementById('vpr_kpa').value) || 0;
+            const conv = 98066.52 / (rho * 9.81);
+            const v_m3s = (mFlow / rho) / 3600;
 
-            saveToHistory("Pressure Drop", `${Math.round(dp).toLocaleString()} Pa / ${hl.toFixed(2)} m`);
+            document.getElementById('v_flow_txt').innerText = `Total Volumetric Flow Rate: ${(mFlow/rho).toFixed(2)} m³/h.`;
+            document.getElementById('visc_pas_txt').innerText = (visc_cp/1000).toFixed(5);
+            let eps = document.getElementById('moc_select').value === 'other' ? parseFloat(document.getElementById('roughness_manual').value) : parseFloat(document.getElementById('moc_select').value);
+            document.getElementById('roughness_disp').innerText = eps.toFixed(6);
+
+            function solve(prefix) {
+                const target_v = parseFloat(document.getElementById(prefix + '_v_target').value) || 0.1;
+                const calc_id = Math.sqrt((4 * v_m3s) / (Math.PI * target_v)) * 1000;
+                document.getElementById(prefix + '_calc_id').innerText = calc_id.toFixed(2);
+
+                if (!manualOverrides[prefix]) {
+                    let bestSize = "12";
+                    for (let s in pipeData) {
+                        if (pipeData[s] >= calc_id) { bestSize = s; break; }
+                    }
+                    document.getElementById(prefix + '_pipe_size').value = bestSize;
+                }
+
+                const d_mm = pipeData[document.getElementById(prefix + '_pipe_size').value];
+                const d_m = d_mm / 1000;
+                const v = v_m3s / (Math.PI * (d_m/2)**2);
+                const Re = (rho * v * d_m) / (visc_cp/1000);
+                let f, logic;
+                if (Re < 2100) { f = 64/Re; logic = `Since Reynolds Number (${Math.round(Re)}) is < 2100, the flow is Laminar. Using Darcy friction formula f = 64/Re.`; }
+                else { f = 0.25 / Math.pow(Math.log10((eps/(3.7*d_m)) + (5.74/Math.pow(Re,0.9))), 2); logic = `Since Reynolds Number (${Math.round(Re)}) is > 2100, the flow is Turbulent. Using Swamee-Jain explicit equation.`; }
+                document.getElementById(prefix + '_f_val').innerText = f.toFixed(5);
+                document.getElementById(prefix + '_f_logic').innerText = logic;
+                const h_pipe = (f * (parseFloat(document.getElementById(prefix + '_len').value)||0) * v**2) / (d_m * 2 * 9.81);
+                const fittings = prefix === 's' ? suctionFittings : dischargeFittings;
+                const totalK = fittings.reduce((acc, f) => acc + (K_FACTORS[f.name] * f.qty), 0);
+                const h_fit = totalK * (v**2 / (2 * 9.81));
+                const equip_h = (parseFloat(document.getElementById(prefix + '_equip_pr').value) || 0) * conv;
+                document.getElementById(prefix + '_friction_head').innerText = h_pipe.toFixed(4);
+                document.getElementById(prefix + '_fit_loss').innerText = h_fit.toFixed(4);
+                document.getElementById(prefix + '_total_fric').innerText = (h_pipe + h_fit).toFixed(4);
+                document.getElementById(prefix + '_equip_head').innerText = equip_h.toFixed(2);
+                document.getElementById(prefix + '_detailed_notes').innerHTML = `Internal Diameter: ${d_mm} mm | Actual Velocity: ${v.toFixed(2)} m/s | Reynolds Number: ${Math.round(Re)}`;
+                return h_pipe + h_fit + equip_h;
+            }
+
+            const sL = solve('s'); const dL = solve('d');
+            const totalS = (parseFloat(document.getElementById('s_pr').value)*conv) + parseFloat(document.getElementById('s_static').value) - sL;
+            const totalD = (parseFloat(document.getElementById('d_pr').value)*conv) + parseFloat(document.getElementById('d_static').value) + dL;
+            const tdh = totalD - totalS;
+            const npsh = (((parseFloat(document.getElementById('s_pr').value)+1.0332)-(vpr_kpa*0.010197))*conv + parseFloat(document.getElementById('s_static').value) - sL);
+            const bhp = ((rho * 9.81 * v_m3s * tdh) / 1000) / (parseFloat(document.getElementById('eff').value)/100);
+
+            document.getElementById('total_s_head').innerText = totalS.toFixed(3);
+            document.getElementById('total_d_head').innerText = totalD.toFixed(3);
+            document.getElementById('tdh_val_res').innerText = tdh.toFixed(3);
+            document.getElementById('tdh_val').innerText = tdh.toFixed(2);
+            document.getElementById('npsha_val').innerText = npsh.toFixed(2);
+            document.getElementById('bhp_val').innerText = bhp.toFixed(2);
+            document.getElementById('hyd_pwr').innerText = ((rho * 9.81 * v_m3s * tdh) / 1000).toFixed(2);
         }
 
-        window.onload = () => { renderHistory(); const arrow = document.getElementById('fluid-arrow'); arrow.style.transform = 'rotate(180deg)'; };
+        window.onload = () => {
+            const sS = document.getElementById('s_pipe_size'), dS = document.getElementById('d_pipe_size');
+            Object.keys(pipeData).forEach(sz => { sS.add(new Option(sz + '"', sz)); dS.add(new Option(sz + '"', sz)); });
+            runLogic();
+        };
     </script>
 </body>
 </html>
